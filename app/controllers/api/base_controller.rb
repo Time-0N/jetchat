@@ -1,6 +1,4 @@
-class ApplicationController < ActionController::Base
-  protect_from_forgery with: :null_session, if: :json_request?
-
+class Api::BaseController < ActionController::API
   before_action :authenticate_request
 
   attr_reader :current_user
@@ -15,7 +13,7 @@ class ApplicationController < ActionController::Base
         jwt_payload = JwtService.get_user_from_token(token)
         @current_user = User.find_or_create_from_jwt(jwt_payload)
       rescue StandardError => e
-        render json: { error: e.message }, status: unauthorized
+        render json: { error: e.message }, status: :unauthorized
       end
     else
       render json: { error: "No authorization token provided" }, status: :unauthorized
@@ -28,10 +26,4 @@ class ApplicationController < ActionController::Base
 
     auth_header.split(" ").last
   end
-
-  def json_request?
-    request.format.json?
-  end
-
-  allow_browser versions: :modern
 end

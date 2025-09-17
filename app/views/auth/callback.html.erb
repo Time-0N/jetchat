@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Authentication Successful</title>
+  <script>
+      const tokens = {
+          accessToken: '<%= @access_token %>',
+          idToken: '<%= @id_token %>',
+          refreshToken: '<%= @refresh_token %>'
+      };
+
+      // localStorage is shitter and only used for this ÜK for convenience
+      // implement http only cookie storage for actual prod!!!
+      localStorage.setItem('access_token', tokens.accessToken);
+      localStorage.setItem('id_token', tokens.idToken);
+      localStorage.setItem('refresh_token', tokens.refreshToken);
+
+      function parseJwt(token) {
+          const base64Url = token.split('.')[1];
+          const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+          const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+              return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+          }).join(''));
+          return JSON.parse(jsonPayload);
+      }
+
+      const decoded = parseJwt(tokens.accessToken);
+      localStorage.setItem('token_expires_at', decoded.exp);
+
+      window.location.href = '/dashboard';
+  </script>
+</head>
+<body>
+<p>Authenticating...</p>
+</body>
+</html>

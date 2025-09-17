@@ -1,0 +1,29 @@
+<div style="max-width: 800px; margin: 0 auto; padding: 2rem;">
+  <h1>Welcome to Modul 223 App</h1>
+  <p>This application uses Zitadel for authentication with JWT tokens.</p>
+
+  <div style="margin-top: 2rem;">
+    <a href="<%= auth_login_path %>" style="padding: 10px 20px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+      Login with Zitadel
+    </a>
+  </div>
+
+  <div style="margin-top: 2rem;">
+    <h2>How to use this application:</h2>
+    <ol>
+      <li>Click "Login with Zitadel" above</li>
+      <li>Authenticate with your Zitadel credentials</li>
+      <li>You'll receive JWT tokens for API access</li>
+      <li>Use the access token in the Authorization header for API calls</li>
+    </ol>
+  </div>
+
+  <div style="margin-top: 2rem; padding: 1rem; background-color: #f0f0f0; border-radius: 5px;">
+    <h3>Test API Access</h3>
+    <p>Once logged in, you can test the API:</p>
+    <pre style="background-color: #333; color: #0f0; padding: 10px; border-radius: 3px;">
+curl -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+     http://localhost:3000/api/me
+    </pre>
+  </div>
+</div>
