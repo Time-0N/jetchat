@@ -29,7 +29,7 @@ fi
 
 # Dump the database
 echo -e "${YELLOW}📦 Creating database dump...${NC}"
-docker-compose exec -T db pg_dump -U postgres --clean --if-exists --create zitadel > ./dev-data/zitadel_dev_dump.sql
+docker-compose exec -T db pg_dump -U postgres --clean --if-exists --no-owner --no-privileges zitadel > ./dev-data/zitadel_dev_dump.sql
 
 if [ $? -eq 0 ]; then
     echo -e "${GREEN}✅ Successfully dumped Zitadel data to ./dev-data/zitadel_dev_dump.sql${NC}"

@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict Az1eR2VnDby8gASzcMbuRhJK74HFk2ed1volqGB6YODhcunx03pkhQ8MlzyUSnP
+\restrict PVcsfMWH5w6LZlJYoh3rd2bOVZAGIM4pSdzqAB0US8fJFyDYpGffxkS6zLpdRPv
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -19,106 +19,551 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-DROP DATABASE IF EXISTS zitadel;
+ALTER TABLE IF EXISTS ONLY queue.river_client_queue DROP CONSTRAINT IF EXISTS river_client_queue_river_client_id_fkey;
+ALTER TABLE IF EXISTS ONLY projections.sms_configs3_twilio DROP CONSTRAINT IF EXISTS fk_twilio_ref_sms_configs3;
+ALTER TABLE IF EXISTS ONLY projections.smtp_configs5_smtp DROP CONSTRAINT IF EXISTS fk_smtp_ref_smtp_configs5;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_saml DROP CONSTRAINT IF EXISTS fk_saml_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.apps7_saml_configs DROP CONSTRAINT IF EXISTS fk_saml_configs_ref_apps7;
+ALTER TABLE IF EXISTS ONLY projections.keys4_public DROP CONSTRAINT IF EXISTS fk_public_ref_keys4;
+ALTER TABLE IF EXISTS ONLY projections.keys4_private DROP CONSTRAINT IF EXISTS fk_private_ref_keys4;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_oidc DROP CONSTRAINT IF EXISTS fk_oidc_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.apps7_oidc_configs DROP CONSTRAINT IF EXISTS fk_oidc_configs_ref_apps7;
+ALTER TABLE IF EXISTS ONLY projections.idps3_oidc_config DROP CONSTRAINT IF EXISTS fk_oidc_config_ref_idps3;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_oauth2 DROP CONSTRAINT IF EXISTS fk_oauth2_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.users14_notifications DROP CONSTRAINT IF EXISTS fk_notifications_ref_users14;
+ALTER TABLE IF EXISTS ONLY projections.users14_machines DROP CONSTRAINT IF EXISTS fk_machines_ref_users14;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_ldap2 DROP CONSTRAINT IF EXISTS fk_ldap2_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_jwt DROP CONSTRAINT IF EXISTS fk_jwt_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idps3_jwt_config DROP CONSTRAINT IF EXISTS fk_jwt_config_ref_idps3;
+ALTER TABLE IF EXISTS ONLY projections.users14_humans DROP CONSTRAINT IF EXISTS fk_humans_ref_users14;
+ALTER TABLE IF EXISTS ONLY projections.smtp_configs5_http DROP CONSTRAINT IF EXISTS fk_http_ref_smtp_configs5;
+ALTER TABLE IF EXISTS ONLY projections.sms_configs3_http DROP CONSTRAINT IF EXISTS fk_http_ref_sms_configs3;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_google DROP CONSTRAINT IF EXISTS fk_google_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_gitlab_self_hosted DROP CONSTRAINT IF EXISTS fk_gitlab_self_hosted_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_gitlab DROP CONSTRAINT IF EXISTS fk_gitlab_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_github DROP CONSTRAINT IF EXISTS fk_github_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_github_enterprise DROP CONSTRAINT IF EXISTS fk_github_enterprise_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.executions1_targets DROP CONSTRAINT IF EXISTS fk_executions1_targets_execution;
+ALTER TABLE IF EXISTS ONLY projections.keys4_certificate DROP CONSTRAINT IF EXISTS fk_certificate_ref_keys4;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_azure DROP CONSTRAINT IF EXISTS fk_azure_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_apple DROP CONSTRAINT IF EXISTS fk_apple_ref_idp_templates6;
+ALTER TABLE IF EXISTS ONLY projections.apps7_api_configs DROP CONSTRAINT IF EXISTS fk_api_configs_ref_apps7;
+ALTER TABLE IF EXISTS cache.string_keys DROP CONSTRAINT IF EXISTS fk_object;
+DROP TRIGGER IF EXISTS truncate_user_counts ON projections.users14;
+DROP TRIGGER IF EXISTS truncate_project_counts ON projections.projects4;
+DROP TRIGGER IF EXISTS truncate_password_expiry_policy_counts ON projections.password_age_policies2;
+DROP TRIGGER IF EXISTS truncate_password_complexity_policy_counts ON projections.password_complexity_policies2;
+DROP TRIGGER IF EXISTS truncate_organization_counts ON projections.orgs1;
+DROP TRIGGER IF EXISTS truncate_login_policy_counts ON projections.login_policies5;
+DROP TRIGGER IF EXISTS truncate_lockout_policy_counts ON projections.lockout_policies3;
+DROP TRIGGER IF EXISTS truncate_identity_provider_ldap_counts ON projections.idp_templates6_ldap2;
+DROP TRIGGER IF EXISTS truncate_identity_provider_counts ON projections.idps3;
+DROP TRIGGER IF EXISTS truncate_iam_admin_counts ON projections.instance_members4;
+DROP TRIGGER IF EXISTS truncate_execution_target_counts ON projections.executions1_targets;
+DROP TRIGGER IF EXISTS truncate_execution_counts ON projections.executions1;
+DROP TRIGGER IF EXISTS truncate_action_v1_counts ON projections.actions3;
+DROP TRIGGER IF EXISTS delete_parent_counts_trigger ON projections.orgs1;
+DROP TRIGGER IF EXISTS delete_parent_counts_trigger ON projections.instances;
+DROP TRIGGER IF EXISTS count_user ON projections.users14;
+DROP TRIGGER IF EXISTS count_project ON projections.projects4;
+DROP TRIGGER IF EXISTS count_password_expiry_policy ON projections.password_age_policies2;
+DROP TRIGGER IF EXISTS count_password_complexity_policy ON projections.password_complexity_policies2;
+DROP TRIGGER IF EXISTS count_organization ON projections.orgs1;
+DROP TRIGGER IF EXISTS count_login_policy ON projections.login_policies5;
+DROP TRIGGER IF EXISTS count_lockout_policy ON projections.lockout_policies3;
+DROP TRIGGER IF EXISTS count_identity_provider_ldap ON projections.idp_templates6_ldap2;
+DROP TRIGGER IF EXISTS count_identity_provider ON projections.idps3;
+DROP TRIGGER IF EXISTS count_iam_admin ON projections.instance_members4;
+DROP TRIGGER IF EXISTS count_execution_target ON projections.executions1_targets;
+DROP TRIGGER IF EXISTS count_execution ON projections.executions1;
+DROP TRIGGER IF EXISTS count_action_v1 ON projections.actions3;
+DROP INDEX IF EXISTS queue.river_job_unique_idx;
+DROP INDEX IF EXISTS queue.river_job_state_and_finalized_at_index;
+DROP INDEX IF EXISTS queue.river_job_prioritized_fetching_index;
+DROP INDEX IF EXISTS queue.river_job_metadata_index;
+DROP INDEX IF EXISTS queue.river_job_kind;
+DROP INDEX IF EXISTS queue.river_job_args_index;
+DROP INDEX IF EXISTS projections.web_keys1_web_key_state_idx;
+DROP INDEX IF EXISTS projections.users14_username_idx;
+DROP INDEX IF EXISTS projections.users14_resource_owner_idx;
+DROP INDEX IF EXISTS projections.users14_notifications_email_search;
+DROP INDEX IF EXISTS projections.users14_humans_email_idx;
+DROP INDEX IF EXISTS projections.user_metadata5_resource_owner_idx;
+DROP INDEX IF EXISTS projections.user_grants5_user_id_idx;
+DROP INDEX IF EXISTS projections.user_grants5_resource_owner_idx;
+DROP INDEX IF EXISTS projections.user_auth_methods5_resource_owner_idx;
+DROP INDEX IF EXISTS projections.sessions8_user_id_idx_idx;
+DROP INDEX IF EXISTS projections.sessions8_user_agent_fingerprint_id_idx_idx;
+DROP INDEX IF EXISTS projections.projects4_resource_owner_idx;
+DROP INDEX IF EXISTS projections.project_members4_user_id_idx;
+DROP INDEX IF EXISTS projections.project_members4_pm_instance_idx;
+DROP INDEX IF EXISTS projections.project_grants4_resource_owner_idx;
+DROP INDEX IF EXISTS projections.project_grants4_granted_org_idx;
+DROP INDEX IF EXISTS projections.project_grant_members4_user_id_idx;
+DROP INDEX IF EXISTS projections.project_grant_members4_pgm_instance_idx;
+DROP INDEX IF EXISTS projections.privacy_policies4_owner_removed_idx;
+DROP INDEX IF EXISTS projections.personal_access_tokens3_user_id_idx;
+DROP INDEX IF EXISTS projections.personal_access_tokens3_resource_owner_idx;
+DROP INDEX IF EXISTS projections.personal_access_tokens3_owner_removed_idx;
+DROP INDEX IF EXISTS projections.personal_access_tokens3_expiration_date_idx;
+DROP INDEX IF EXISTS projections.personal_access_tokens3_creation_date_idx;
+DROP INDEX IF EXISTS projections.password_complexity_policies2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.password_age_policies2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.orgs1_name_idx;
+DROP INDEX IF EXISTS projections.orgs1_domain_idx;
+DROP INDEX IF EXISTS projections.org_metadata2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.org_members4_user_id_idx;
+DROP INDEX IF EXISTS projections.org_members4_om_instance_idx;
+DROP INDEX IF EXISTS projections.org_domains2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.message_texts2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.mail_templates2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.login_policies5_owner_removed_idx;
+DROP INDEX IF EXISTS projections.login_names3_users_search;
+DROP INDEX IF EXISTS projections.login_names3_users_lnu_instance_ro_id_idx;
+DROP INDEX IF EXISTS projections.login_names3_users_instance_user_name_idx;
+DROP INDEX IF EXISTS projections.login_names3_policies_is_default_owner_idx;
+DROP INDEX IF EXISTS projections.login_names3_domain_search_result;
+DROP INDEX IF EXISTS projections.login_names3_domain_search;
+DROP INDEX IF EXISTS projections.label_policies3_owner_removed_idx;
+DROP INDEX IF EXISTS projections.instance_trusted_domains_instance_trusted_domain_idx;
+DROP INDEX IF EXISTS projections.instance_members4_user_id_idx;
+DROP INDEX IF EXISTS projections.instance_members4_im_instance_idx;
+DROP INDEX IF EXISTS projections.instance_domains_instance_domain_idx;
+DROP INDEX IF EXISTS projections.idps3_resource_owner_idx;
+DROP INDEX IF EXISTS projections.idps3_owner_removed_idx;
+DROP INDEX IF EXISTS projections.idp_user_links3_user_id_idx;
+DROP INDEX IF EXISTS projections.idp_user_links3_owner_removed_idx;
+DROP INDEX IF EXISTS projections.idp_templates6_resource_owner_idx;
+DROP INDEX IF EXISTS projections.idp_templates6_owner_removed_idx;
+DROP INDEX IF EXISTS projections.idp_login_policy_links5_resource_owner_idx;
+DROP INDEX IF EXISTS projections.idp_login_policy_links5_owner_removed_idx;
+DROP INDEX IF EXISTS projections.fe2_instance_id_idx;
+DROP INDEX IF EXISTS projections.failed_events_instance_id_idx;
+DROP INDEX IF EXISTS projections.executions1_targets_execution_idx;
+DROP INDEX IF EXISTS projections.domain_policies2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.device_auth_requests2_user_code_idx;
+DROP INDEX IF EXISTS projections.custom_texts2_owner_removed_idx;
+DROP INDEX IF EXISTS projections.current_sequences_instance_id_idx;
+DROP INDEX IF EXISTS projections.cs_instance_id_idx;
+DROP INDEX IF EXISTS projections.authn_keys2_resource_owner_idx;
+DROP INDEX IF EXISTS projections.authn_keys2_identifier_idx;
+DROP INDEX IF EXISTS projections.authn_keys2_expiration_date_idx;
+DROP INDEX IF EXISTS projections.authn_keys2_enabled_idx;
+DROP INDEX IF EXISTS projections.authn_keys2_creation_date_idx;
+DROP INDEX IF EXISTS projections.apps7_saml_configs_entity_id_idx;
+DROP INDEX IF EXISTS projections.apps7_project_id_idx;
+DROP INDEX IF EXISTS projections.apps7_oidc_configs_client_id_idx;
+DROP INDEX IF EXISTS projections.apps7_api_configs_client_id_idx;
+DROP INDEX IF EXISTS projections.actions3_resource_owner_idx;
+DROP INDEX IF EXISTS projections.actions3_owner_removed_idx;
+DROP INDEX IF EXISTS logstore.protocol_date_desc;
+DROP INDEX IF EXISTS logstore.log_date_desc;
+DROP INDEX IF EXISTS eventstore.fields_instance_domains_idx;
+DROP INDEX IF EXISTS eventstore.f_text_value_idx;
+DROP INDEX IF EXISTS eventstore.f_text_unique_idx;
+DROP INDEX IF EXISTS eventstore.f_object_idx;
+DROP INDEX IF EXISTS eventstore.f_number_value_idx;
+DROP INDEX IF EXISTS eventstore.f_number_unique_idx;
+DROP INDEX IF EXISTS eventstore.f_bool_value_idx;
+DROP INDEX IF EXISTS eventstore.f_bool_unique_idx;
+DROP INDEX IF EXISTS eventstore.f_aggregate_object_type_idx;
+DROP INDEX IF EXISTS eventstore.events2_current_sequence2;
+DROP INDEX IF EXISTS eventstore.es_wm;
+DROP INDEX IF EXISTS eventstore.es_projection;
+DROP INDEX IF EXISTS eventstore.es_instance_position;
+DROP INDEX IF EXISTS eventstore.es_active_instances;
+DROP INDEX IF EXISTS eventstore.active_instances_events;
+DROP INDEX IF EXISTS cache.string_keys_object_id_idx;
+DROP INDEX IF EXISTS auth.user_sessions_by_user;
+DROP INDEX IF EXISTS auth.user_session_id;
+DROP INDEX IF EXISTS auth.unique_client_user_index;
+DROP INDEX IF EXISTS auth.u2_owner_removed_idx;
+DROP INDEX IF EXISTS auth.org_proj_m2_owner_removed_idx;
+DROP INDEX IF EXISTS auth.inst_usr_agnt_tkn_idx;
+DROP INDEX IF EXISTS auth.inst_ro_tkn_idx;
+DROP INDEX IF EXISTS auth.inst_refresh_tkn_idx;
+DROP INDEX IF EXISTS auth.inst_app_tkn_idx;
+DROP INDEX IF EXISTS auth.idp_prov2_owner_removed_idx;
+DROP INDEX IF EXISTS auth.idp_conf2_owner_removed_idx;
+DROP INDEX IF EXISTS auth.failed_events_instance_id_idx;
+DROP INDEX IF EXISTS auth.ext_idps2_owner_removed_idx;
+DROP INDEX IF EXISTS auth.current_sequences_instance_id_idx;
+DROP INDEX IF EXISTS auth.auth_code_idx;
+DROP INDEX IF EXISTS adminapi.st2_owner_removed_idx;
+DROP INDEX IF EXISTS adminapi.failed_events_instance_id_idx;
+DROP INDEX IF EXISTS adminapi.current_sequences_instance_id_idx;
+ALTER TABLE IF EXISTS ONLY system.encryption_keys DROP CONSTRAINT IF EXISTS encryption_keys_pkey;
+ALTER TABLE IF EXISTS ONLY system.assets DROP CONSTRAINT IF EXISTS assets_pkey;
+ALTER TABLE IF EXISTS ONLY queue.river_queue DROP CONSTRAINT IF EXISTS river_queue_pkey;
+ALTER TABLE IF EXISTS ONLY queue.river_migration DROP CONSTRAINT IF EXISTS river_migration_pkey1;
+ALTER TABLE IF EXISTS ONLY queue.river_leader DROP CONSTRAINT IF EXISTS river_leader_pkey;
+ALTER TABLE IF EXISTS ONLY queue.river_job DROP CONSTRAINT IF EXISTS river_job_pkey;
+ALTER TABLE IF EXISTS ONLY queue.river_client_queue DROP CONSTRAINT IF EXISTS river_client_queue_pkey;
+ALTER TABLE IF EXISTS ONLY queue.river_client DROP CONSTRAINT IF EXISTS river_client_pkey;
+ALTER TABLE IF EXISTS ONLY projections.web_keys1 DROP CONSTRAINT IF EXISTS web_keys1_pkey;
+ALTER TABLE IF EXISTS ONLY projections.users14 DROP CONSTRAINT IF EXISTS users14_pkey;
+ALTER TABLE IF EXISTS ONLY projections.users14_notifications DROP CONSTRAINT IF EXISTS users14_notifications_pkey;
+ALTER TABLE IF EXISTS ONLY projections.users14_machines DROP CONSTRAINT IF EXISTS users14_machines_pkey;
+ALTER TABLE IF EXISTS ONLY projections.users14_humans DROP CONSTRAINT IF EXISTS users14_humans_pkey;
+ALTER TABLE IF EXISTS ONLY projections.user_schemas1 DROP CONSTRAINT IF EXISTS user_schemas1_pkey;
+ALTER TABLE IF EXISTS ONLY projections.user_metadata5 DROP CONSTRAINT IF EXISTS user_metadata5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.user_grants5 DROP CONSTRAINT IF EXISTS user_grants5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.user_auth_methods5 DROP CONSTRAINT IF EXISTS user_auth_methods5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.targets2 DROP CONSTRAINT IF EXISTS targets2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.system_features DROP CONSTRAINT IF EXISTS system_features_pkey;
+ALTER TABLE IF EXISTS ONLY projections.smtp_configs5_smtp DROP CONSTRAINT IF EXISTS smtp_configs5_smtp_pkey;
+ALTER TABLE IF EXISTS ONLY projections.smtp_configs5 DROP CONSTRAINT IF EXISTS smtp_configs5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.smtp_configs5_http DROP CONSTRAINT IF EXISTS smtp_configs5_http_pkey;
+ALTER TABLE IF EXISTS ONLY projections.sms_configs3_twilio DROP CONSTRAINT IF EXISTS sms_configs3_twilio_pkey;
+ALTER TABLE IF EXISTS ONLY projections.sms_configs3 DROP CONSTRAINT IF EXISTS sms_configs3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.sms_configs3_http DROP CONSTRAINT IF EXISTS sms_configs3_http_pkey;
+ALTER TABLE IF EXISTS ONLY projections.sessions8 DROP CONSTRAINT IF EXISTS sessions8_pkey;
+ALTER TABLE IF EXISTS ONLY projections.security_policies2 DROP CONSTRAINT IF EXISTS security_policies2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.secret_generators2 DROP CONSTRAINT IF EXISTS secret_generators2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.saml_requests DROP CONSTRAINT IF EXISTS saml_requests_pkey;
+ALTER TABLE IF EXISTS ONLY projections.restrictions2 DROP CONSTRAINT IF EXISTS restrictions2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.resource_counts DROP CONSTRAINT IF EXISTS resource_counts_pkey;
+ALTER TABLE IF EXISTS ONLY projections.resource_counts DROP CONSTRAINT IF EXISTS resource_counts_instance_id_parent_type_parent_id_table_nam_key;
+ALTER TABLE IF EXISTS ONLY projections.quotas DROP CONSTRAINT IF EXISTS quotas_pkey;
+ALTER TABLE IF EXISTS ONLY projections.quotas_periods DROP CONSTRAINT IF EXISTS quotas_periods_pkey;
+ALTER TABLE IF EXISTS ONLY projections.quotas_notifications DROP CONSTRAINT IF EXISTS quotas_notifications_pkey;
+ALTER TABLE IF EXISTS ONLY projections.projects4 DROP CONSTRAINT IF EXISTS projects4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.project_roles4 DROP CONSTRAINT IF EXISTS project_roles4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.project_members4 DROP CONSTRAINT IF EXISTS project_members4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.project_grants4 DROP CONSTRAINT IF EXISTS project_grants4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.project_grant_members4 DROP CONSTRAINT IF EXISTS project_grant_members4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.privacy_policies4 DROP CONSTRAINT IF EXISTS privacy_policies4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.personal_access_tokens3 DROP CONSTRAINT IF EXISTS personal_access_tokens3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.password_complexity_policies2 DROP CONSTRAINT IF EXISTS password_complexity_policies2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.password_age_policies2 DROP CONSTRAINT IF EXISTS password_age_policies2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.orgs1 DROP CONSTRAINT IF EXISTS orgs1_pkey;
+ALTER TABLE IF EXISTS ONLY projections.org_metadata2 DROP CONSTRAINT IF EXISTS org_metadata2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.org_members4 DROP CONSTRAINT IF EXISTS org_members4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.org_domains2 DROP CONSTRAINT IF EXISTS org_domains2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.oidc_settings2 DROP CONSTRAINT IF EXISTS oidc_settings2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.notification_providers DROP CONSTRAINT IF EXISTS notification_providers_pkey;
+ALTER TABLE IF EXISTS ONLY projections.notification_policies DROP CONSTRAINT IF EXISTS notification_policies_pkey;
+ALTER TABLE IF EXISTS ONLY projections.milestones3 DROP CONSTRAINT IF EXISTS milestones3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.message_texts2 DROP CONSTRAINT IF EXISTS message_texts2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.mail_templates2 DROP CONSTRAINT IF EXISTS mail_templates2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.login_policies5 DROP CONSTRAINT IF EXISTS login_policies5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.login_names3_users DROP CONSTRAINT IF EXISTS login_names3_users_pkey;
+ALTER TABLE IF EXISTS ONLY projections.login_names3_policies DROP CONSTRAINT IF EXISTS login_names3_policies_pkey;
+ALTER TABLE IF EXISTS ONLY projections.login_names3_domains DROP CONSTRAINT IF EXISTS login_names3_domains_pkey;
+ALTER TABLE IF EXISTS ONLY projections.locks DROP CONSTRAINT IF EXISTS locks_pkey;
+ALTER TABLE IF EXISTS ONLY projections.lockout_policies3 DROP CONSTRAINT IF EXISTS lockout_policies3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.limits DROP CONSTRAINT IF EXISTS limits_pkey;
+ALTER TABLE IF EXISTS ONLY projections.label_policies3 DROP CONSTRAINT IF EXISTS label_policies3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.keys4_public DROP CONSTRAINT IF EXISTS keys4_public_pkey;
+ALTER TABLE IF EXISTS ONLY projections.keys4_private DROP CONSTRAINT IF EXISTS keys4_private_pkey;
+ALTER TABLE IF EXISTS ONLY projections.keys4 DROP CONSTRAINT IF EXISTS keys4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.keys4_certificate DROP CONSTRAINT IF EXISTS keys4_certificate_pkey;
+ALTER TABLE IF EXISTS ONLY projections.instances DROP CONSTRAINT IF EXISTS instances_pkey;
+ALTER TABLE IF EXISTS ONLY projections.instance_trusted_domains DROP CONSTRAINT IF EXISTS instance_trusted_domains_pkey;
+ALTER TABLE IF EXISTS ONLY projections.instance_members4 DROP CONSTRAINT IF EXISTS instance_members4_pkey;
+ALTER TABLE IF EXISTS ONLY projections.instance_features2 DROP CONSTRAINT IF EXISTS instance_features2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.instance_domains DROP CONSTRAINT IF EXISTS instance_domains_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idps3 DROP CONSTRAINT IF EXISTS idps3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idps3_oidc_config DROP CONSTRAINT IF EXISTS idps3_oidc_config_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idps3_jwt_config DROP CONSTRAINT IF EXISTS idps3_jwt_config_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_user_links3 DROP CONSTRAINT IF EXISTS idp_user_links3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_saml DROP CONSTRAINT IF EXISTS idp_templates6_saml_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6 DROP CONSTRAINT IF EXISTS idp_templates6_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_oidc DROP CONSTRAINT IF EXISTS idp_templates6_oidc_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_oauth2 DROP CONSTRAINT IF EXISTS idp_templates6_oauth2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_ldap2 DROP CONSTRAINT IF EXISTS idp_templates6_ldap2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_jwt DROP CONSTRAINT IF EXISTS idp_templates6_jwt_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_google DROP CONSTRAINT IF EXISTS idp_templates6_google_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_gitlab_self_hosted DROP CONSTRAINT IF EXISTS idp_templates6_gitlab_self_hosted_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_gitlab DROP CONSTRAINT IF EXISTS idp_templates6_gitlab_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_github DROP CONSTRAINT IF EXISTS idp_templates6_github_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_github_enterprise DROP CONSTRAINT IF EXISTS idp_templates6_github_enterprise_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_azure DROP CONSTRAINT IF EXISTS idp_templates6_azure_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_templates6_apple DROP CONSTRAINT IF EXISTS idp_templates6_apple_pkey;
+ALTER TABLE IF EXISTS ONLY projections.idp_login_policy_links5 DROP CONSTRAINT IF EXISTS idp_login_policy_links5_pkey;
+ALTER TABLE IF EXISTS ONLY projections.hosted_login_translations DROP CONSTRAINT IF EXISTS hosted_login_translations_pkey;
+ALTER TABLE IF EXISTS ONLY projections.flow_triggers3 DROP CONSTRAINT IF EXISTS flow_triggers3_pkey;
+ALTER TABLE IF EXISTS ONLY projections.failed_events DROP CONSTRAINT IF EXISTS failed_events_pkey;
+ALTER TABLE IF EXISTS ONLY projections.failed_events2 DROP CONSTRAINT IF EXISTS failed_events2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.executions1_targets DROP CONSTRAINT IF EXISTS executions1_targets_pkey;
+ALTER TABLE IF EXISTS ONLY projections.executions1 DROP CONSTRAINT IF EXISTS executions1_pkey;
+ALTER TABLE IF EXISTS ONLY projections.domain_policies2 DROP CONSTRAINT IF EXISTS domain_policies2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.device_auth_requests2 DROP CONSTRAINT IF EXISTS device_auth_requests2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.debug_events DROP CONSTRAINT IF EXISTS debug_events_pkey;
+ALTER TABLE IF EXISTS ONLY projections.custom_texts2 DROP CONSTRAINT IF EXISTS custom_texts2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.current_states DROP CONSTRAINT IF EXISTS current_states_pkey;
+ALTER TABLE IF EXISTS ONLY projections.current_sequences DROP CONSTRAINT IF EXISTS current_sequences_pkey;
+ALTER TABLE IF EXISTS ONLY projections.authn_keys2 DROP CONSTRAINT IF EXISTS authn_keys2_pkey;
+ALTER TABLE IF EXISTS ONLY projections.auth_requests DROP CONSTRAINT IF EXISTS auth_requests_pkey;
+ALTER TABLE IF EXISTS ONLY projections.apps7_saml_configs DROP CONSTRAINT IF EXISTS apps7_saml_configs_pkey;
+ALTER TABLE IF EXISTS ONLY projections.apps7 DROP CONSTRAINT IF EXISTS apps7_pkey;
+ALTER TABLE IF EXISTS ONLY projections.apps7_oidc_configs DROP CONSTRAINT IF EXISTS apps7_oidc_configs_pkey;
+ALTER TABLE IF EXISTS ONLY projections.apps7_api_configs DROP CONSTRAINT IF EXISTS apps7_api_configs_pkey;
+ALTER TABLE IF EXISTS ONLY projections.actions3 DROP CONSTRAINT IF EXISTS actions3_pkey;
+ALTER TABLE IF EXISTS ONLY eventstore.unique_constraints DROP CONSTRAINT IF EXISTS unique_constraints_pkey;
+ALTER TABLE IF EXISTS ONLY eventstore.fields DROP CONSTRAINT IF EXISTS fields_pkey;
+ALTER TABLE IF EXISTS ONLY eventstore.events2 DROP CONSTRAINT IF EXISTS events2_pkey;
+ALTER TABLE IF EXISTS ONLY cache.string_keys_id_p_form_callback DROP CONSTRAINT IF EXISTS string_keys_id_p_form_callback_pkey;
+ALTER TABLE IF EXISTS ONLY cache.string_keys_federated_logout DROP CONSTRAINT IF EXISTS string_keys_federated_logout_pkey;
+ALTER TABLE IF EXISTS ONLY cache.string_keys DROP CONSTRAINT IF EXISTS string_keys_pkey;
+ALTER TABLE IF EXISTS ONLY cache.objects_id_p_form_callback DROP CONSTRAINT IF EXISTS objects_id_p_form_callback_pkey;
+ALTER TABLE IF EXISTS ONLY cache.objects_federated_logout DROP CONSTRAINT IF EXISTS objects_federated_logout_pkey;
+ALTER TABLE IF EXISTS ONLY cache.objects DROP CONSTRAINT IF EXISTS objects_pkey;
+ALTER TABLE IF EXISTS ONLY auth.users DROP CONSTRAINT IF EXISTS users_pkey;
+ALTER TABLE IF EXISTS ONLY auth.users3 DROP CONSTRAINT IF EXISTS users3_pkey;
+ALTER TABLE IF EXISTS ONLY auth.users2 DROP CONSTRAINT IF EXISTS users2_pkey;
+ALTER TABLE IF EXISTS ONLY auth.user_sessions DROP CONSTRAINT IF EXISTS user_sessions_pkey;
+ALTER TABLE IF EXISTS ONLY auth.user_external_idps DROP CONSTRAINT IF EXISTS user_external_idps_pkey;
+ALTER TABLE IF EXISTS ONLY auth.user_external_idps2 DROP CONSTRAINT IF EXISTS user_external_idps2_pkey;
+ALTER TABLE IF EXISTS ONLY auth.tokens DROP CONSTRAINT IF EXISTS tokens_pkey;
+ALTER TABLE IF EXISTS ONLY auth.refresh_tokens DROP CONSTRAINT IF EXISTS refresh_tokens_pkey;
+ALTER TABLE IF EXISTS ONLY auth.org_project_mapping DROP CONSTRAINT IF EXISTS org_project_mapping_pkey;
+ALTER TABLE IF EXISTS ONLY auth.org_project_mapping2 DROP CONSTRAINT IF EXISTS org_project_mapping2_pkey;
+ALTER TABLE IF EXISTS ONLY auth.locks DROP CONSTRAINT IF EXISTS locks_pkey;
+ALTER TABLE IF EXISTS ONLY auth.idp_providers DROP CONSTRAINT IF EXISTS idp_providers_pkey;
+ALTER TABLE IF EXISTS ONLY auth.idp_providers2 DROP CONSTRAINT IF EXISTS idp_providers2_pkey;
+ALTER TABLE IF EXISTS ONLY auth.idp_configs DROP CONSTRAINT IF EXISTS idp_configs_pkey;
+ALTER TABLE IF EXISTS ONLY auth.idp_configs2 DROP CONSTRAINT IF EXISTS idp_configs2_pkey;
+ALTER TABLE IF EXISTS ONLY auth.failed_events DROP CONSTRAINT IF EXISTS failed_events_pkey;
+ALTER TABLE IF EXISTS ONLY auth.current_sequences DROP CONSTRAINT IF EXISTS current_sequences_pkey;
+ALTER TABLE IF EXISTS ONLY auth.auth_requests DROP CONSTRAINT IF EXISTS auth_requests_pkey;
+ALTER TABLE IF EXISTS ONLY adminapi.styling DROP CONSTRAINT IF EXISTS styling_pkey;
+ALTER TABLE IF EXISTS ONLY adminapi.styling2 DROP CONSTRAINT IF EXISTS styling2_pkey;
+ALTER TABLE IF EXISTS ONLY adminapi.locks DROP CONSTRAINT IF EXISTS locks_pkey;
+ALTER TABLE IF EXISTS ONLY adminapi.failed_events DROP CONSTRAINT IF EXISTS failed_events_pkey;
+ALTER TABLE IF EXISTS ONLY adminapi.current_sequences DROP CONSTRAINT IF EXISTS current_sequences_pkey;
+ALTER TABLE IF EXISTS queue.river_job ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE IF EXISTS projections.resource_counts ALTER COLUMN id DROP DEFAULT;
+DROP TABLE IF EXISTS system.encryption_keys;
+DROP TABLE IF EXISTS system.assets;
+DROP TABLE IF EXISTS queue.river_queue;
+DROP TABLE IF EXISTS queue.river_migration;
+DROP TABLE IF EXISTS queue.river_leader;
+DROP SEQUENCE IF EXISTS queue.river_job_id_seq;
+DROP TABLE IF EXISTS queue.river_job;
+DROP TABLE IF EXISTS queue.river_client_queue;
+DROP TABLE IF EXISTS queue.river_client;
+DROP TABLE IF EXISTS projections.web_keys1;
+DROP TABLE IF EXISTS projections.users14_notifications;
+DROP TABLE IF EXISTS projections.users14_machines;
+DROP TABLE IF EXISTS projections.users14_humans;
+DROP TABLE IF EXISTS projections.users14;
+DROP TABLE IF EXISTS projections.user_schemas1;
+DROP TABLE IF EXISTS projections.user_metadata5;
+DROP TABLE IF EXISTS projections.user_grants5;
+DROP TABLE IF EXISTS projections.user_auth_methods5;
+DROP TABLE IF EXISTS projections.targets2;
+DROP TABLE IF EXISTS projections.system_features;
+DROP TABLE IF EXISTS projections.smtp_configs5_smtp;
+DROP TABLE IF EXISTS projections.smtp_configs5_http;
+DROP TABLE IF EXISTS projections.smtp_configs5;
+DROP TABLE IF EXISTS projections.sms_configs3_twilio;
+DROP TABLE IF EXISTS projections.sms_configs3_http;
+DROP TABLE IF EXISTS projections.sms_configs3;
+DROP TABLE IF EXISTS projections.sessions8;
+DROP TABLE IF EXISTS projections.security_policies2;
+DROP TABLE IF EXISTS projections.secret_generators2;
+DROP TABLE IF EXISTS projections.saml_requests;
+DROP TABLE IF EXISTS projections.restrictions2;
+DROP SEQUENCE IF EXISTS projections.resource_counts_id_seq;
+DROP TABLE IF EXISTS projections.resource_counts;
+DROP TABLE IF EXISTS projections.quotas_periods;
+DROP TABLE IF EXISTS projections.quotas_notifications;
+DROP TABLE IF EXISTS projections.quotas;
+DROP TABLE IF EXISTS projections.projects4;
+DROP TABLE IF EXISTS projections.project_roles4;
+DROP TABLE IF EXISTS projections.project_members4;
+DROP TABLE IF EXISTS projections.project_grants4;
+DROP TABLE IF EXISTS projections.project_grant_members4;
+DROP TABLE IF EXISTS projections.privacy_policies4;
+DROP TABLE IF EXISTS projections.personal_access_tokens3;
+DROP TABLE IF EXISTS projections.password_complexity_policies2;
+DROP TABLE IF EXISTS projections.password_age_policies2;
+DROP TABLE IF EXISTS projections.orgs1;
+DROP TABLE IF EXISTS projections.org_metadata2;
+DROP TABLE IF EXISTS projections.org_members4;
+DROP TABLE IF EXISTS projections.org_domains2;
+DROP TABLE IF EXISTS projections.oidc_settings2;
+DROP TABLE IF EXISTS projections.notification_providers;
+DROP TABLE IF EXISTS projections.notification_policies;
+DROP TABLE IF EXISTS projections.milestones3;
+DROP TABLE IF EXISTS projections.message_texts2;
+DROP TABLE IF EXISTS projections.mail_templates2;
+DROP TABLE IF EXISTS projections.login_policies5;
+DROP VIEW IF EXISTS projections.login_names3;
+DROP TABLE IF EXISTS projections.login_names3_users;
+DROP TABLE IF EXISTS projections.login_names3_policies;
+DROP TABLE IF EXISTS projections.login_names3_domains;
+DROP TABLE IF EXISTS projections.locks;
+DROP TABLE IF EXISTS projections.lockout_policies3;
+DROP TABLE IF EXISTS projections.limits;
+DROP TABLE IF EXISTS projections.label_policies3;
+DROP TABLE IF EXISTS projections.keys4_public;
+DROP TABLE IF EXISTS projections.keys4_private;
+DROP TABLE IF EXISTS projections.keys4_certificate;
+DROP TABLE IF EXISTS projections.keys4;
+DROP TABLE IF EXISTS projections.instances;
+DROP TABLE IF EXISTS projections.instance_trusted_domains;
+DROP TABLE IF EXISTS projections.instance_members4;
+DROP TABLE IF EXISTS projections.instance_features2;
+DROP TABLE IF EXISTS projections.instance_domains;
+DROP TABLE IF EXISTS projections.idps3_oidc_config;
+DROP TABLE IF EXISTS projections.idps3_jwt_config;
+DROP TABLE IF EXISTS projections.idps3;
+DROP TABLE IF EXISTS projections.idp_user_links3;
+DROP TABLE IF EXISTS projections.idp_templates6_saml;
+DROP TABLE IF EXISTS projections.idp_templates6_oidc;
+DROP TABLE IF EXISTS projections.idp_templates6_oauth2;
+DROP TABLE IF EXISTS projections.idp_templates6_ldap2;
+DROP TABLE IF EXISTS projections.idp_templates6_jwt;
+DROP TABLE IF EXISTS projections.idp_templates6_google;
+DROP TABLE IF EXISTS projections.idp_templates6_gitlab_self_hosted;
+DROP TABLE IF EXISTS projections.idp_templates6_gitlab;
+DROP TABLE IF EXISTS projections.idp_templates6_github_enterprise;
+DROP TABLE IF EXISTS projections.idp_templates6_github;
+DROP TABLE IF EXISTS projections.idp_templates6_azure;
+DROP TABLE IF EXISTS projections.idp_templates6_apple;
+DROP TABLE IF EXISTS projections.idp_templates6;
+DROP TABLE IF EXISTS projections.idp_login_policy_links5;
+DROP TABLE IF EXISTS projections.hosted_login_translations;
+DROP TABLE IF EXISTS projections.flow_triggers3;
+DROP TABLE IF EXISTS projections.failed_events2;
+DROP TABLE IF EXISTS projections.failed_events;
+DROP TABLE IF EXISTS projections.executions1_targets;
+DROP TABLE IF EXISTS projections.executions1;
+DROP TABLE IF EXISTS projections.domain_policies2;
+DROP TABLE IF EXISTS projections.device_auth_requests2;
+DROP TABLE IF EXISTS projections.debug_events;
+DROP TABLE IF EXISTS projections.custom_texts2;
+DROP TABLE IF EXISTS projections.current_states;
+DROP TABLE IF EXISTS projections.current_sequences;
+DROP TABLE IF EXISTS projections.authn_keys2;
+DROP TABLE IF EXISTS projections.auth_requests;
+DROP TABLE IF EXISTS projections.apps7_saml_configs;
+DROP TABLE IF EXISTS projections.apps7_oidc_configs;
+DROP TABLE IF EXISTS projections.apps7_api_configs;
+DROP TABLE IF EXISTS projections.apps7;
+DROP TABLE IF EXISTS projections.actions3;
+DROP TABLE IF EXISTS logstore.execution;
+DROP TABLE IF EXISTS logstore.access;
+DROP TABLE IF EXISTS eventstore.unique_constraints;
+DROP VIEW IF EXISTS eventstore.role_permissions;
+DROP VIEW IF EXISTS eventstore.project_members;
+DROP VIEW IF EXISTS eventstore.org_members;
+DROP VIEW IF EXISTS eventstore.instance_orgs;
+DROP VIEW IF EXISTS eventstore.instance_members;
+DROP TABLE IF EXISTS eventstore.fields;
+DROP TABLE IF EXISTS cache.string_keys_id_p_form_callback;
+DROP TABLE IF EXISTS cache.string_keys_federated_logout;
+DROP TABLE IF EXISTS cache.string_keys;
+DROP TABLE IF EXISTS cache.objects_id_p_form_callback;
+DROP TABLE IF EXISTS cache.objects_federated_logout;
+DROP TABLE IF EXISTS cache.objects;
+DROP TABLE IF EXISTS auth.users3;
+DROP TABLE IF EXISTS auth.users2;
+DROP TABLE IF EXISTS auth.users;
+DROP TABLE IF EXISTS auth.user_sessions;
+DROP TABLE IF EXISTS auth.user_external_idps2;
+DROP TABLE IF EXISTS auth.user_external_idps;
+DROP TABLE IF EXISTS auth.tokens;
+DROP TABLE IF EXISTS auth.refresh_tokens;
+DROP TABLE IF EXISTS auth.org_project_mapping2;
+DROP TABLE IF EXISTS auth.org_project_mapping;
+DROP TABLE IF EXISTS auth.locks;
+DROP TABLE IF EXISTS auth.idp_providers2;
+DROP TABLE IF EXISTS auth.idp_providers;
+DROP TABLE IF EXISTS auth.idp_configs2;
+DROP TABLE IF EXISTS auth.idp_configs;
+DROP TABLE IF EXISTS auth.failed_events;
+DROP TABLE IF EXISTS auth.current_sequences;
+DROP TABLE IF EXISTS auth.auth_requests;
+DROP TABLE IF EXISTS adminapi.styling2;
+DROP TABLE IF EXISTS adminapi.styling;
+DROP TABLE IF EXISTS adminapi.locks;
+DROP TABLE IF EXISTS adminapi.failed_events;
+DROP TABLE IF EXISTS adminapi.current_sequences;
+DROP FUNCTION IF EXISTS queue.river_job_state_in_bitmask(bitmask bit, state queue.river_job_state);
+DROP FUNCTION IF EXISTS projections.delete_table_counts();
+DROP FUNCTION IF EXISTS projections.delete_parent_counts();
+DROP FUNCTION IF EXISTS projections.count_resource();
+DROP FUNCTION IF EXISTS eventstore.push(commands eventstore.command[]);
+DROP FUNCTION IF EXISTS eventstore.permitted_projects(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[]);
+DROP FUNCTION IF EXISTS eventstore.permitted_orgs(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[]);
+DROP FUNCTION IF EXISTS eventstore.latest_aggregate_state(instance_id text, aggregate_type text, aggregate_id text, OUT sequence bigint, OUT owner text);
+DROP FUNCTION IF EXISTS eventstore.get_system_permissions(permissions_json jsonb, permm text);
+DROP FUNCTION IF EXISTS eventstore.find_roles(req_instance_id text, perm text, OUT roles text[]);
+DROP FUNCTION IF EXISTS eventstore.commands_to_events(commands eventstore.command[]);
+DROP TABLE IF EXISTS eventstore.events2;
+DROP FUNCTION IF EXISTS eventstore.check_system_user_perms(system_user_perms jsonb, req_instance_id text, perm text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[], OUT project_grants eventstore.project_grant[]);
+DROP TYPE IF EXISTS queue.river_job_state;
+DROP TYPE IF EXISTS eventstore.project_grant;
+DROP TYPE IF EXISTS eventstore.command;
+DROP SCHEMA IF EXISTS system;
+DROP SCHEMA IF EXISTS queue;
+DROP SCHEMA IF EXISTS projections;
+DROP SCHEMA IF EXISTS logstore;
+DROP SCHEMA IF EXISTS eventstore;
+DROP SCHEMA IF EXISTS cache;
+DROP SCHEMA IF EXISTS auth;
+DROP SCHEMA IF EXISTS adminapi;
 --
--- Name: zitadel; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE zitadel WITH TEMPLATE = template0 ENCODING = 'UTF8' LOCALE_PROVIDER = libc LOCALE = 'en_US.utf8';
-
-
-ALTER DATABASE zitadel OWNER TO postgres;
-
-\unrestrict Az1eR2VnDby8gASzcMbuRhJK74HFk2ed1volqGB6YODhcunx03pkhQ8MlzyUSnP
-\connect zitadel
-\restrict Az1eR2VnDby8gASzcMbuRhJK74HFk2ed1volqGB6YODhcunx03pkhQ8MlzyUSnP
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET xmloption = content;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- Name: adminapi; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: adminapi; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA adminapi;
 
 
-ALTER SCHEMA adminapi OWNER TO zitadel;
-
 --
--- Name: auth; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: auth; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA auth;
 
 
-ALTER SCHEMA auth OWNER TO zitadel;
-
 --
--- Name: cache; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: cache; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA cache;
 
 
-ALTER SCHEMA cache OWNER TO zitadel;
-
 --
--- Name: eventstore; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: eventstore; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA eventstore;
 
 
-ALTER SCHEMA eventstore OWNER TO zitadel;
-
 --
--- Name: logstore; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: logstore; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA logstore;
 
 
-ALTER SCHEMA logstore OWNER TO zitadel;
-
 --
--- Name: projections; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: projections; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA projections;
 
 
-ALTER SCHEMA projections OWNER TO zitadel;
-
 --
--- Name: queue; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: queue; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA queue;
 
 
-ALTER SCHEMA queue OWNER TO zitadel;
-
 --
--- Name: system; Type: SCHEMA; Schema: -; Owner: zitadel
+-- Name: system; Type: SCHEMA; Schema: -; Owner: -
 --
 
 CREATE SCHEMA system;
 
 
-ALTER SCHEMA system OWNER TO zitadel;
-
 --
--- Name: command; Type: TYPE; Schema: eventstore; Owner: zitadel
+-- Name: command; Type: TYPE; Schema: eventstore; Owner: -
 --
 
 CREATE TYPE eventstore.command AS (
@@ -133,10 +578,8 @@ CREATE TYPE eventstore.command AS (
 );
 
 
-ALTER TYPE eventstore.command OWNER TO zitadel;
-
 --
--- Name: project_grant; Type: TYPE; Schema: eventstore; Owner: zitadel
+-- Name: project_grant; Type: TYPE; Schema: eventstore; Owner: -
 --
 
 CREATE TYPE eventstore.project_grant AS (
@@ -145,10 +588,8 @@ CREATE TYPE eventstore.project_grant AS (
 );
 
 
-ALTER TYPE eventstore.project_grant OWNER TO zitadel;
-
 --
--- Name: river_job_state; Type: TYPE; Schema: queue; Owner: zitadel
+-- Name: river_job_state; Type: TYPE; Schema: queue; Owner: -
 --
 
 CREATE TYPE queue.river_job_state AS ENUM (
@@ -163,10 +604,8 @@ CREATE TYPE queue.river_job_state AS ENUM (
 );
 
 
-ALTER TYPE queue.river_job_state OWNER TO zitadel;
-
 --
--- Name: check_system_user_perms(jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: check_system_user_perms(jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.check_system_user_perms(system_user_perms jsonb, req_instance_id text, perm text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[], OUT project_grants eventstore.project_grant[]) RETURNS record
@@ -212,14 +651,12 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.check_system_user_perms(system_user_perms jsonb, req_instance_id text, perm text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[], OUT project_grants eventstore.project_grant[]) OWNER TO zitadel;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
 
 --
--- Name: events2; Type: TABLE; Schema: eventstore; Owner: zitadel
+-- Name: events2; Type: TABLE; Schema: eventstore; Owner: -
 --
 
 CREATE TABLE eventstore.events2 (
@@ -238,10 +675,8 @@ CREATE TABLE eventstore.events2 (
 );
 
 
-ALTER TABLE eventstore.events2 OWNER TO zitadel;
-
 --
--- Name: commands_to_events(eventstore.command[]); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: commands_to_events(eventstore.command[]); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.commands_to_events(commands eventstore.command[]) RETURNS SETOF eventstore.events2
@@ -296,10 +731,8 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.commands_to_events(commands eventstore.command[]) OWNER TO zitadel;
-
 --
--- Name: find_roles(text, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: find_roles(text, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.find_roles(req_instance_id text, perm text, OUT roles text[]) RETURNS text[]
@@ -314,10 +747,8 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.find_roles(req_instance_id text, perm text, OUT roles text[]) OWNER TO zitadel;
-
 --
--- Name: get_system_permissions(jsonb, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: get_system_permissions(jsonb, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.get_system_permissions(permissions_json jsonb, permm text) RETURNS TABLE(member_type text, aggregate_id text, object_id text)
@@ -338,10 +769,8 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.get_system_permissions(permissions_json jsonb, permm text) OWNER TO zitadel;
-
 --
--- Name: latest_aggregate_state(text, text, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: latest_aggregate_state(text, text, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.latest_aggregate_state(instance_id text, aggregate_type text, aggregate_id text, OUT sequence bigint, OUT owner text) RETURNS record
@@ -369,10 +798,8 @@ CREATE FUNCTION eventstore.latest_aggregate_state(instance_id text, aggregate_ty
 $_$;
 
 
-ALTER FUNCTION eventstore.latest_aggregate_state(instance_id text, aggregate_type text, aggregate_id text, OUT sequence bigint, OUT owner text) OWNER TO zitadel;
-
 --
--- Name: permitted_orgs(text, text, jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: permitted_orgs(text, text, jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.permitted_orgs(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[]) RETURNS record
@@ -419,10 +846,8 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.permitted_orgs(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[]) OWNER TO zitadel;
-
 --
--- Name: permitted_projects(text, text, jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: permitted_projects(text, text, jsonb, text, text); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.permitted_projects(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[]) RETURNS record
@@ -465,10 +890,8 @@ END;
 $$;
 
 
-ALTER FUNCTION eventstore.permitted_projects(req_instance_id text, auth_user_id text, system_user_perms jsonb, perm text, filter_org text, OUT instance_permitted boolean, OUT org_ids text[], OUT project_ids text[]) OWNER TO zitadel;
-
 --
--- Name: push(eventstore.command[]); Type: FUNCTION; Schema: eventstore; Owner: zitadel
+-- Name: push(eventstore.command[]); Type: FUNCTION; Schema: eventstore; Owner: -
 --
 
 CREATE FUNCTION eventstore.push(commands eventstore.command[]) RETURNS SETOF eventstore.events2
@@ -481,10 +904,8 @@ RETURNING *
 $$;
 
 
-ALTER FUNCTION eventstore.push(commands eventstore.command[]) OWNER TO zitadel;
-
 --
--- Name: count_resource(); Type: FUNCTION; Schema: projections; Owner: zitadel
+-- Name: count_resource(); Type: FUNCTION; Schema: projections; Owner: -
 --
 
 CREATE FUNCTION projections.count_resource() RETURNS trigger
@@ -530,10 +951,8 @@ END
 $_$;
 
 
-ALTER FUNCTION projections.count_resource() OWNER TO zitadel;
-
 --
--- Name: delete_parent_counts(); Type: FUNCTION; Schema: projections; Owner: zitadel
+-- Name: delete_parent_counts(); Type: FUNCTION; Schema: projections; Owner: -
 --
 
 CREATE FUNCTION projections.delete_parent_counts() RETURNS trigger
@@ -562,10 +981,8 @@ END
 $_$;
 
 
-ALTER FUNCTION projections.delete_parent_counts() OWNER TO zitadel;
-
 --
--- Name: delete_table_counts(); Type: FUNCTION; Schema: projections; Owner: zitadel
+-- Name: delete_table_counts(); Type: FUNCTION; Schema: projections; Owner: -
 --
 
 CREATE FUNCTION projections.delete_table_counts() RETURNS trigger
@@ -581,10 +998,8 @@ END
 $$;
 
 
-ALTER FUNCTION projections.delete_table_counts() OWNER TO zitadel;
-
 --
--- Name: river_job_state_in_bitmask(bit, queue.river_job_state); Type: FUNCTION; Schema: queue; Owner: zitadel
+-- Name: river_job_state_in_bitmask(bit, queue.river_job_state); Type: FUNCTION; Schema: queue; Owner: -
 --
 
 CREATE FUNCTION queue.river_job_state_in_bitmask(bitmask bit, state queue.river_job_state) RETURNS boolean
@@ -604,10 +1019,8 @@ CREATE FUNCTION queue.river_job_state_in_bitmask(bitmask bit, state queue.river_
 $$;
 
 
-ALTER FUNCTION queue.river_job_state_in_bitmask(bitmask bit, state queue.river_job_state) OWNER TO zitadel;
-
 --
--- Name: current_sequences; Type: TABLE; Schema: adminapi; Owner: zitadel
+-- Name: current_sequences; Type: TABLE; Schema: adminapi; Owner: -
 --
 
 CREATE TABLE adminapi.current_sequences (
@@ -619,10 +1032,8 @@ CREATE TABLE adminapi.current_sequences (
 );
 
 
-ALTER TABLE adminapi.current_sequences OWNER TO zitadel;
-
 --
--- Name: failed_events; Type: TABLE; Schema: adminapi; Owner: zitadel
+-- Name: failed_events; Type: TABLE; Schema: adminapi; Owner: -
 --
 
 CREATE TABLE adminapi.failed_events (
@@ -635,10 +1046,8 @@ CREATE TABLE adminapi.failed_events (
 );
 
 
-ALTER TABLE adminapi.failed_events OWNER TO zitadel;
-
 --
--- Name: locks; Type: TABLE; Schema: adminapi; Owner: zitadel
+-- Name: locks; Type: TABLE; Schema: adminapi; Owner: -
 --
 
 CREATE TABLE adminapi.locks (
@@ -649,10 +1058,8 @@ CREATE TABLE adminapi.locks (
 );
 
 
-ALTER TABLE adminapi.locks OWNER TO zitadel;
-
 --
--- Name: styling; Type: TABLE; Schema: adminapi; Owner: zitadel
+-- Name: styling; Type: TABLE; Schema: adminapi; Owner: -
 --
 
 CREATE TABLE adminapi.styling (
@@ -681,10 +1088,8 @@ CREATE TABLE adminapi.styling (
 );
 
 
-ALTER TABLE adminapi.styling OWNER TO zitadel;
-
 --
--- Name: styling2; Type: TABLE; Schema: adminapi; Owner: zitadel
+-- Name: styling2; Type: TABLE; Schema: adminapi; Owner: -
 --
 
 CREATE TABLE adminapi.styling2 (
@@ -714,10 +1119,8 @@ CREATE TABLE adminapi.styling2 (
 );
 
 
-ALTER TABLE adminapi.styling2 OWNER TO zitadel;
-
 --
--- Name: auth_requests; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: auth_requests; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.auth_requests (
@@ -731,10 +1134,8 @@ CREATE TABLE auth.auth_requests (
 );
 
 
-ALTER TABLE auth.auth_requests OWNER TO zitadel;
-
 --
--- Name: current_sequences; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: current_sequences; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.current_sequences (
@@ -746,10 +1147,8 @@ CREATE TABLE auth.current_sequences (
 );
 
 
-ALTER TABLE auth.current_sequences OWNER TO zitadel;
-
 --
--- Name: failed_events; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: failed_events; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.failed_events (
@@ -762,10 +1161,8 @@ CREATE TABLE auth.failed_events (
 );
 
 
-ALTER TABLE auth.failed_events OWNER TO zitadel;
-
 --
--- Name: idp_configs; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: idp_configs; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.idp_configs (
@@ -795,10 +1192,8 @@ CREATE TABLE auth.idp_configs (
 );
 
 
-ALTER TABLE auth.idp_configs OWNER TO zitadel;
-
 --
--- Name: idp_configs2; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: idp_configs2; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.idp_configs2 (
@@ -829,10 +1224,8 @@ CREATE TABLE auth.idp_configs2 (
 );
 
 
-ALTER TABLE auth.idp_configs2 OWNER TO zitadel;
-
 --
--- Name: idp_providers; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: idp_providers; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.idp_providers (
@@ -850,10 +1243,8 @@ CREATE TABLE auth.idp_providers (
 );
 
 
-ALTER TABLE auth.idp_providers OWNER TO zitadel;
-
 --
--- Name: idp_providers2; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: idp_providers2; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.idp_providers2 (
@@ -872,10 +1263,8 @@ CREATE TABLE auth.idp_providers2 (
 );
 
 
-ALTER TABLE auth.idp_providers2 OWNER TO zitadel;
-
 --
--- Name: locks; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: locks; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.locks (
@@ -886,10 +1275,8 @@ CREATE TABLE auth.locks (
 );
 
 
-ALTER TABLE auth.locks OWNER TO zitadel;
-
 --
--- Name: org_project_mapping; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: org_project_mapping; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.org_project_mapping (
@@ -900,10 +1287,8 @@ CREATE TABLE auth.org_project_mapping (
 );
 
 
-ALTER TABLE auth.org_project_mapping OWNER TO zitadel;
-
 --
--- Name: org_project_mapping2; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: org_project_mapping2; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.org_project_mapping2 (
@@ -915,10 +1300,8 @@ CREATE TABLE auth.org_project_mapping2 (
 );
 
 
-ALTER TABLE auth.org_project_mapping2 OWNER TO zitadel;
-
 --
--- Name: refresh_tokens; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: refresh_tokens; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.refresh_tokens (
@@ -942,10 +1325,8 @@ CREATE TABLE auth.refresh_tokens (
 );
 
 
-ALTER TABLE auth.refresh_tokens OWNER TO zitadel;
-
 --
--- Name: tokens; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: tokens; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.tokens (
@@ -968,10 +1349,8 @@ CREATE TABLE auth.tokens (
 );
 
 
-ALTER TABLE auth.tokens OWNER TO zitadel;
-
 --
--- Name: user_external_idps; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: user_external_idps; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.user_external_idps (
@@ -988,10 +1367,8 @@ CREATE TABLE auth.user_external_idps (
 );
 
 
-ALTER TABLE auth.user_external_idps OWNER TO zitadel;
-
 --
--- Name: user_external_idps2; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: user_external_idps2; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.user_external_idps2 (
@@ -1009,10 +1386,8 @@ CREATE TABLE auth.user_external_idps2 (
 );
 
 
-ALTER TABLE auth.user_external_idps2 OWNER TO zitadel;
-
 --
--- Name: user_sessions; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: user_sessions; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.user_sessions (
@@ -1040,10 +1415,8 @@ CREATE TABLE auth.user_sessions (
 );
 
 
-ALTER TABLE auth.user_sessions OWNER TO zitadel;
-
 --
--- Name: users; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: users; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.users (
@@ -1092,10 +1465,8 @@ CREATE TABLE auth.users (
 );
 
 
-ALTER TABLE auth.users OWNER TO zitadel;
-
 --
--- Name: users2; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: users2; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.users2 (
@@ -1147,10 +1518,8 @@ CREATE TABLE auth.users2 (
 );
 
 
-ALTER TABLE auth.users2 OWNER TO zitadel;
-
 --
--- Name: users3; Type: TABLE; Schema: auth; Owner: zitadel
+-- Name: users3; Type: TABLE; Schema: auth; Owner: -
 --
 
 CREATE TABLE auth.users3 (
@@ -1169,10 +1538,8 @@ CREATE TABLE auth.users3 (
 );
 
 
-ALTER TABLE auth.users3 OWNER TO zitadel;
-
 --
--- Name: objects; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: objects; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.objects (
@@ -1185,10 +1552,8 @@ CREATE UNLOGGED TABLE cache.objects (
 PARTITION BY LIST (cache_name);
 
 
-ALTER TABLE cache.objects OWNER TO zitadel;
-
 --
--- Name: objects_federated_logout; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: objects_federated_logout; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.objects_federated_logout (
@@ -1200,10 +1565,8 @@ CREATE UNLOGGED TABLE cache.objects_federated_logout (
 );
 
 
-ALTER TABLE cache.objects_federated_logout OWNER TO zitadel;
-
 --
--- Name: objects_id_p_form_callback; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: objects_id_p_form_callback; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.objects_id_p_form_callback (
@@ -1215,10 +1578,8 @@ CREATE UNLOGGED TABLE cache.objects_id_p_form_callback (
 );
 
 
-ALTER TABLE cache.objects_id_p_form_callback OWNER TO zitadel;
-
 --
--- Name: string_keys; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: string_keys; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.string_keys (
@@ -1233,10 +1594,8 @@ CREATE UNLOGGED TABLE cache.string_keys (
 PARTITION BY LIST (cache_name);
 
 
-ALTER TABLE cache.string_keys OWNER TO zitadel;
-
 --
--- Name: string_keys_federated_logout; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.string_keys_federated_logout (
@@ -1250,10 +1609,8 @@ CREATE UNLOGGED TABLE cache.string_keys_federated_logout (
 );
 
 
-ALTER TABLE cache.string_keys_federated_logout OWNER TO zitadel;
-
 --
--- Name: string_keys_id_p_form_callback; Type: TABLE; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback; Type: TABLE; Schema: cache; Owner: -
 --
 
 CREATE UNLOGGED TABLE cache.string_keys_id_p_form_callback (
@@ -1267,10 +1624,8 @@ CREATE UNLOGGED TABLE cache.string_keys_id_p_form_callback (
 );
 
 
-ALTER TABLE cache.string_keys_id_p_form_callback OWNER TO zitadel;
-
 --
--- Name: fields; Type: TABLE; Schema: eventstore; Owner: zitadel
+-- Name: fields; Type: TABLE; Schema: eventstore; Owner: -
 --
 
 CREATE TABLE eventstore.fields (
@@ -1314,10 +1669,8 @@ END)
 );
 
 
-ALTER TABLE eventstore.fields OWNER TO zitadel;
-
 --
--- Name: instance_members; Type: VIEW; Schema: eventstore; Owner: zitadel
+-- Name: instance_members; Type: VIEW; Schema: eventstore; Owner: -
 --
 
 CREATE VIEW eventstore.instance_members AS
@@ -1328,10 +1681,8 @@ CREATE VIEW eventstore.instance_members AS
   WHERE ((aggregate_type = 'instance'::text) AND (object_type = 'instance_member_role'::text) AND (field_name = 'instance_role'::text));
 
 
-ALTER VIEW eventstore.instance_members OWNER TO zitadel;
-
 --
--- Name: instance_orgs; Type: VIEW; Schema: eventstore; Owner: zitadel
+-- Name: instance_orgs; Type: VIEW; Schema: eventstore; Owner: -
 --
 
 CREATE VIEW eventstore.instance_orgs AS
@@ -1341,10 +1692,8 @@ CREATE VIEW eventstore.instance_orgs AS
   WHERE ((aggregate_type = 'org'::text) AND (object_type = 'org'::text) AND (field_name = 'state'::text));
 
 
-ALTER VIEW eventstore.instance_orgs OWNER TO zitadel;
-
 --
--- Name: org_members; Type: VIEW; Schema: eventstore; Owner: zitadel
+-- Name: org_members; Type: VIEW; Schema: eventstore; Owner: -
 --
 
 CREATE VIEW eventstore.org_members AS
@@ -1356,10 +1705,8 @@ CREATE VIEW eventstore.org_members AS
   WHERE ((aggregate_type = 'org'::text) AND (object_type = 'org_member_role'::text) AND (field_name = 'org_role'::text));
 
 
-ALTER VIEW eventstore.org_members OWNER TO zitadel;
-
 --
--- Name: project_members; Type: VIEW; Schema: eventstore; Owner: zitadel
+-- Name: project_members; Type: VIEW; Schema: eventstore; Owner: -
 --
 
 CREATE VIEW eventstore.project_members AS
@@ -1372,10 +1719,8 @@ CREATE VIEW eventstore.project_members AS
   WHERE ((aggregate_type = 'project'::text) AND (object_type = 'project_member_role'::text) AND (field_name = 'project_role'::text));
 
 
-ALTER VIEW eventstore.project_members OWNER TO zitadel;
-
 --
--- Name: role_permissions; Type: VIEW; Schema: eventstore; Owner: zitadel
+-- Name: role_permissions; Type: VIEW; Schema: eventstore; Owner: -
 --
 
 CREATE VIEW eventstore.role_permissions AS
@@ -1387,10 +1732,8 @@ CREATE VIEW eventstore.role_permissions AS
   WHERE ((aggregate_type = 'permission'::text) AND (object_type = 'role_permission'::text) AND (field_name = 'permission'::text));
 
 
-ALTER VIEW eventstore.role_permissions OWNER TO zitadel;
-
 --
--- Name: unique_constraints; Type: TABLE; Schema: eventstore; Owner: zitadel
+-- Name: unique_constraints; Type: TABLE; Schema: eventstore; Owner: -
 --
 
 CREATE TABLE eventstore.unique_constraints (
@@ -1400,10 +1743,8 @@ CREATE TABLE eventstore.unique_constraints (
 );
 
 
-ALTER TABLE eventstore.unique_constraints OWNER TO zitadel;
-
 --
--- Name: access; Type: TABLE; Schema: logstore; Owner: zitadel
+-- Name: access; Type: TABLE; Schema: logstore; Owner: -
 --
 
 CREATE TABLE logstore.access (
@@ -1420,10 +1761,8 @@ CREATE TABLE logstore.access (
 );
 
 
-ALTER TABLE logstore.access OWNER TO zitadel;
-
 --
--- Name: execution; Type: TABLE; Schema: logstore; Owner: zitadel
+-- Name: execution; Type: TABLE; Schema: logstore; Owner: -
 --
 
 CREATE TABLE logstore.execution (
@@ -1437,10 +1776,8 @@ CREATE TABLE logstore.execution (
 );
 
 
-ALTER TABLE logstore.execution OWNER TO zitadel;
-
 --
--- Name: actions3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: actions3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.actions3 (
@@ -1459,10 +1796,8 @@ CREATE TABLE projections.actions3 (
 );
 
 
-ALTER TABLE projections.actions3 OWNER TO zitadel;
-
 --
--- Name: apps7; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: apps7; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.apps7 (
@@ -1478,10 +1813,8 @@ CREATE TABLE projections.apps7 (
 );
 
 
-ALTER TABLE projections.apps7 OWNER TO zitadel;
-
 --
--- Name: apps7_api_configs; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: apps7_api_configs; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.apps7_api_configs (
@@ -1493,10 +1826,8 @@ CREATE TABLE projections.apps7_api_configs (
 );
 
 
-ALTER TABLE projections.apps7_api_configs OWNER TO zitadel;
-
 --
--- Name: apps7_oidc_configs; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: apps7_oidc_configs; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.apps7_oidc_configs (
@@ -1525,10 +1856,8 @@ CREATE TABLE projections.apps7_oidc_configs (
 );
 
 
-ALTER TABLE projections.apps7_oidc_configs OWNER TO zitadel;
-
 --
--- Name: apps7_saml_configs; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: apps7_saml_configs; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.apps7_saml_configs (
@@ -1542,10 +1871,8 @@ CREATE TABLE projections.apps7_saml_configs (
 );
 
 
-ALTER TABLE projections.apps7_saml_configs OWNER TO zitadel;
-
 --
--- Name: auth_requests; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: auth_requests; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.auth_requests (
@@ -1567,10 +1894,8 @@ CREATE TABLE projections.auth_requests (
 );
 
 
-ALTER TABLE projections.auth_requests OWNER TO zitadel;
-
 --
--- Name: authn_keys2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: authn_keys2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.authn_keys2 (
@@ -1590,10 +1915,8 @@ CREATE TABLE projections.authn_keys2 (
 );
 
 
-ALTER TABLE projections.authn_keys2 OWNER TO zitadel;
-
 --
--- Name: current_sequences; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: current_sequences; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.current_sequences (
@@ -1605,10 +1928,8 @@ CREATE TABLE projections.current_sequences (
 );
 
 
-ALTER TABLE projections.current_sequences OWNER TO zitadel;
-
 --
--- Name: current_states; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: current_states; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.current_states (
@@ -1624,10 +1945,8 @@ CREATE TABLE projections.current_states (
 );
 
 
-ALTER TABLE projections.current_states OWNER TO zitadel;
-
 --
--- Name: custom_texts2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: custom_texts2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.custom_texts2 (
@@ -1645,10 +1964,8 @@ CREATE TABLE projections.custom_texts2 (
 );
 
 
-ALTER TABLE projections.custom_texts2 OWNER TO zitadel;
-
 --
--- Name: debug_events; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: debug_events; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.debug_events (
@@ -1662,10 +1979,8 @@ CREATE TABLE projections.debug_events (
 );
 
 
-ALTER TABLE projections.debug_events OWNER TO zitadel;
-
 --
--- Name: device_auth_requests2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: device_auth_requests2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.device_auth_requests2 (
@@ -1681,10 +1996,8 @@ CREATE TABLE projections.device_auth_requests2 (
 );
 
 
-ALTER TABLE projections.device_auth_requests2 OWNER TO zitadel;
-
 --
--- Name: domain_policies2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: domain_policies2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.domain_policies2 (
@@ -1703,10 +2016,8 @@ CREATE TABLE projections.domain_policies2 (
 );
 
 
-ALTER TABLE projections.domain_policies2 OWNER TO zitadel;
-
 --
--- Name: executions1; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: executions1; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.executions1 (
@@ -1718,10 +2029,8 @@ CREATE TABLE projections.executions1 (
 );
 
 
-ALTER TABLE projections.executions1 OWNER TO zitadel;
-
 --
--- Name: executions1_targets; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: executions1_targets; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.executions1_targets (
@@ -1733,10 +2042,8 @@ CREATE TABLE projections.executions1_targets (
 );
 
 
-ALTER TABLE projections.executions1_targets OWNER TO zitadel;
-
 --
--- Name: failed_events; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: failed_events; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.failed_events (
@@ -1749,10 +2056,8 @@ CREATE TABLE projections.failed_events (
 );
 
 
-ALTER TABLE projections.failed_events OWNER TO zitadel;
-
 --
--- Name: failed_events2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: failed_events2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.failed_events2 (
@@ -1768,10 +2073,8 @@ CREATE TABLE projections.failed_events2 (
 );
 
 
-ALTER TABLE projections.failed_events2 OWNER TO zitadel;
-
 --
--- Name: flow_triggers3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: flow_triggers3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.flow_triggers3 (
@@ -1786,10 +2089,8 @@ CREATE TABLE projections.flow_triggers3 (
 );
 
 
-ALTER TABLE projections.flow_triggers3 OWNER TO zitadel;
-
 --
--- Name: hosted_login_translations; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: hosted_login_translations; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.hosted_login_translations (
@@ -1805,10 +2106,8 @@ CREATE TABLE projections.hosted_login_translations (
 );
 
 
-ALTER TABLE projections.hosted_login_translations OWNER TO zitadel;
-
 --
--- Name: idp_login_policy_links5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_login_policy_links5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_login_policy_links5 (
@@ -1824,10 +2123,8 @@ CREATE TABLE projections.idp_login_policy_links5 (
 );
 
 
-ALTER TABLE projections.idp_login_policy_links5 OWNER TO zitadel;
-
 --
--- Name: idp_templates6; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6 (
@@ -1850,10 +2147,8 @@ CREATE TABLE projections.idp_templates6 (
 );
 
 
-ALTER TABLE projections.idp_templates6 OWNER TO zitadel;
-
 --
--- Name: idp_templates6_apple; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_apple; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_apple (
@@ -1867,10 +2162,8 @@ CREATE TABLE projections.idp_templates6_apple (
 );
 
 
-ALTER TABLE projections.idp_templates6_apple OWNER TO zitadel;
-
 --
--- Name: idp_templates6_azure; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_azure; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_azure (
@@ -1884,10 +2177,8 @@ CREATE TABLE projections.idp_templates6_azure (
 );
 
 
-ALTER TABLE projections.idp_templates6_azure OWNER TO zitadel;
-
 --
--- Name: idp_templates6_github; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_github (
@@ -1899,10 +2190,8 @@ CREATE TABLE projections.idp_templates6_github (
 );
 
 
-ALTER TABLE projections.idp_templates6_github OWNER TO zitadel;
-
 --
--- Name: idp_templates6_github_enterprise; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github_enterprise; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_github_enterprise (
@@ -1917,10 +2206,8 @@ CREATE TABLE projections.idp_templates6_github_enterprise (
 );
 
 
-ALTER TABLE projections.idp_templates6_github_enterprise OWNER TO zitadel;
-
 --
--- Name: idp_templates6_gitlab; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_gitlab (
@@ -1932,10 +2219,8 @@ CREATE TABLE projections.idp_templates6_gitlab (
 );
 
 
-ALTER TABLE projections.idp_templates6_gitlab OWNER TO zitadel;
-
 --
--- Name: idp_templates6_gitlab_self_hosted; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab_self_hosted; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_gitlab_self_hosted (
@@ -1948,10 +2233,8 @@ CREATE TABLE projections.idp_templates6_gitlab_self_hosted (
 );
 
 
-ALTER TABLE projections.idp_templates6_gitlab_self_hosted OWNER TO zitadel;
-
 --
--- Name: idp_templates6_google; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_google; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_google (
@@ -1963,10 +2246,8 @@ CREATE TABLE projections.idp_templates6_google (
 );
 
 
-ALTER TABLE projections.idp_templates6_google OWNER TO zitadel;
-
 --
--- Name: idp_templates6_jwt; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_jwt; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_jwt (
@@ -1979,10 +2260,8 @@ CREATE TABLE projections.idp_templates6_jwt (
 );
 
 
-ALTER TABLE projections.idp_templates6_jwt OWNER TO zitadel;
-
 --
--- Name: idp_templates6_ldap2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_ldap2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_ldap2 (
@@ -2014,10 +2293,8 @@ CREATE TABLE projections.idp_templates6_ldap2 (
 );
 
 
-ALTER TABLE projections.idp_templates6_ldap2 OWNER TO zitadel;
-
 --
--- Name: idp_templates6_oauth2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oauth2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_oauth2 (
@@ -2034,10 +2311,8 @@ CREATE TABLE projections.idp_templates6_oauth2 (
 );
 
 
-ALTER TABLE projections.idp_templates6_oauth2 OWNER TO zitadel;
-
 --
--- Name: idp_templates6_oidc; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oidc; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_oidc (
@@ -2052,10 +2327,8 @@ CREATE TABLE projections.idp_templates6_oidc (
 );
 
 
-ALTER TABLE projections.idp_templates6_oidc OWNER TO zitadel;
-
 --
--- Name: idp_templates6_saml; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_saml; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_templates6_saml (
@@ -2072,10 +2345,8 @@ CREATE TABLE projections.idp_templates6_saml (
 );
 
 
-ALTER TABLE projections.idp_templates6_saml OWNER TO zitadel;
-
 --
--- Name: idp_user_links3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idp_user_links3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idp_user_links3 (
@@ -2092,10 +2363,8 @@ CREATE TABLE projections.idp_user_links3 (
 );
 
 
-ALTER TABLE projections.idp_user_links3 OWNER TO zitadel;
-
 --
--- Name: idps3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idps3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idps3 (
@@ -2115,10 +2384,8 @@ CREATE TABLE projections.idps3 (
 );
 
 
-ALTER TABLE projections.idps3 OWNER TO zitadel;
-
 --
--- Name: idps3_jwt_config; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idps3_jwt_config; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idps3_jwt_config (
@@ -2131,10 +2398,8 @@ CREATE TABLE projections.idps3_jwt_config (
 );
 
 
-ALTER TABLE projections.idps3_jwt_config OWNER TO zitadel;
-
 --
--- Name: idps3_oidc_config; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: idps3_oidc_config; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.idps3_oidc_config (
@@ -2151,10 +2416,8 @@ CREATE TABLE projections.idps3_oidc_config (
 );
 
 
-ALTER TABLE projections.idps3_oidc_config OWNER TO zitadel;
-
 --
--- Name: instance_domains; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: instance_domains; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.instance_domains (
@@ -2168,10 +2431,8 @@ CREATE TABLE projections.instance_domains (
 );
 
 
-ALTER TABLE projections.instance_domains OWNER TO zitadel;
-
 --
--- Name: instance_features2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: instance_features2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.instance_features2 (
@@ -2184,10 +2445,8 @@ CREATE TABLE projections.instance_features2 (
 );
 
 
-ALTER TABLE projections.instance_features2 OWNER TO zitadel;
-
 --
--- Name: instance_members4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: instance_members4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.instance_members4 (
@@ -2203,10 +2462,8 @@ CREATE TABLE projections.instance_members4 (
 );
 
 
-ALTER TABLE projections.instance_members4 OWNER TO zitadel;
-
 --
--- Name: instance_trusted_domains; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: instance_trusted_domains; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.instance_trusted_domains (
@@ -2218,10 +2475,8 @@ CREATE TABLE projections.instance_trusted_domains (
 );
 
 
-ALTER TABLE projections.instance_trusted_domains OWNER TO zitadel;
-
 --
--- Name: instances; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: instances; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.instances (
@@ -2238,10 +2493,8 @@ CREATE TABLE projections.instances (
 );
 
 
-ALTER TABLE projections.instances OWNER TO zitadel;
-
 --
--- Name: keys4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: keys4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.keys4 (
@@ -2256,10 +2509,8 @@ CREATE TABLE projections.keys4 (
 );
 
 
-ALTER TABLE projections.keys4 OWNER TO zitadel;
-
 --
--- Name: keys4_certificate; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: keys4_certificate; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.keys4_certificate (
@@ -2270,10 +2521,8 @@ CREATE TABLE projections.keys4_certificate (
 );
 
 
-ALTER TABLE projections.keys4_certificate OWNER TO zitadel;
-
 --
--- Name: keys4_private; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: keys4_private; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.keys4_private (
@@ -2284,10 +2533,8 @@ CREATE TABLE projections.keys4_private (
 );
 
 
-ALTER TABLE projections.keys4_private OWNER TO zitadel;
-
 --
--- Name: keys4_public; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: keys4_public; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.keys4_public (
@@ -2298,10 +2545,8 @@ CREATE TABLE projections.keys4_public (
 );
 
 
-ALTER TABLE projections.keys4_public OWNER TO zitadel;
-
 --
--- Name: label_policies3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: label_policies3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.label_policies3 (
@@ -2334,10 +2579,8 @@ CREATE TABLE projections.label_policies3 (
 );
 
 
-ALTER TABLE projections.label_policies3 OWNER TO zitadel;
-
 --
--- Name: limits; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: limits; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.limits (
@@ -2352,10 +2595,8 @@ CREATE TABLE projections.limits (
 );
 
 
-ALTER TABLE projections.limits OWNER TO zitadel;
-
 --
--- Name: lockout_policies3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: lockout_policies3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.lockout_policies3 (
@@ -2373,10 +2614,8 @@ CREATE TABLE projections.lockout_policies3 (
 );
 
 
-ALTER TABLE projections.lockout_policies3 OWNER TO zitadel;
-
 --
--- Name: locks; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: locks; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.locks (
@@ -2387,10 +2626,8 @@ CREATE TABLE projections.locks (
 );
 
 
-ALTER TABLE projections.locks OWNER TO zitadel;
-
 --
--- Name: login_names3_domains; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: login_names3_domains; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.login_names3_domains (
@@ -2402,10 +2639,8 @@ CREATE TABLE projections.login_names3_domains (
 );
 
 
-ALTER TABLE projections.login_names3_domains OWNER TO zitadel;
-
 --
--- Name: login_names3_policies; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: login_names3_policies; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.login_names3_policies (
@@ -2416,10 +2651,8 @@ CREATE TABLE projections.login_names3_policies (
 );
 
 
-ALTER TABLE projections.login_names3_policies OWNER TO zitadel;
-
 --
--- Name: login_names3_users; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: login_names3_users; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.login_names3_users (
@@ -2431,10 +2664,8 @@ CREATE TABLE projections.login_names3_users (
 );
 
 
-ALTER TABLE projections.login_names3_users OWNER TO zitadel;
-
 --
--- Name: login_names3; Type: VIEW; Schema: projections; Owner: zitadel
+-- Name: login_names3; Type: VIEW; Schema: projections; Owner: -
 --
 
 CREATE VIEW projections.login_names3 AS
@@ -2455,10 +2686,8 @@ CREATE VIEW projections.login_names3 AS
      LEFT JOIN projections.login_names3_domains d ON ((p.must_be_domain AND (u.resource_owner = d.resource_owner) AND (u.instance_id = d.instance_id))));
 
 
-ALTER VIEW projections.login_names3 OWNER TO zitadel;
-
 --
--- Name: login_policies5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: login_policies5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.login_policies5 (
@@ -2491,10 +2720,8 @@ CREATE TABLE projections.login_policies5 (
 );
 
 
-ALTER TABLE projections.login_policies5 OWNER TO zitadel;
-
 --
--- Name: mail_templates2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: mail_templates2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.mail_templates2 (
@@ -2510,10 +2737,8 @@ CREATE TABLE projections.mail_templates2 (
 );
 
 
-ALTER TABLE projections.mail_templates2 OWNER TO zitadel;
-
 --
--- Name: message_texts2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: message_texts2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.message_texts2 (
@@ -2536,10 +2761,8 @@ CREATE TABLE projections.message_texts2 (
 );
 
 
-ALTER TABLE projections.message_texts2 OWNER TO zitadel;
-
 --
--- Name: milestones3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: milestones3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.milestones3 (
@@ -2550,10 +2773,8 @@ CREATE TABLE projections.milestones3 (
 );
 
 
-ALTER TABLE projections.milestones3 OWNER TO zitadel;
-
 --
--- Name: notification_policies; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: notification_policies; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.notification_policies (
@@ -2570,10 +2791,8 @@ CREATE TABLE projections.notification_policies (
 );
 
 
-ALTER TABLE projections.notification_policies OWNER TO zitadel;
-
 --
--- Name: notification_providers; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: notification_providers; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.notification_providers (
@@ -2589,10 +2808,8 @@ CREATE TABLE projections.notification_providers (
 );
 
 
-ALTER TABLE projections.notification_providers OWNER TO zitadel;
-
 --
--- Name: oidc_settings2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: oidc_settings2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.oidc_settings2 (
@@ -2609,10 +2826,8 @@ CREATE TABLE projections.oidc_settings2 (
 );
 
 
-ALTER TABLE projections.oidc_settings2 OWNER TO zitadel;
-
 --
--- Name: org_domains2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: org_domains2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.org_domains2 (
@@ -2629,10 +2844,8 @@ CREATE TABLE projections.org_domains2 (
 );
 
 
-ALTER TABLE projections.org_domains2 OWNER TO zitadel;
-
 --
--- Name: org_members4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: org_members4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.org_members4 (
@@ -2648,10 +2861,8 @@ CREATE TABLE projections.org_members4 (
 );
 
 
-ALTER TABLE projections.org_members4 OWNER TO zitadel;
-
 --
--- Name: org_metadata2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: org_metadata2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.org_metadata2 (
@@ -2667,10 +2878,8 @@ CREATE TABLE projections.org_metadata2 (
 );
 
 
-ALTER TABLE projections.org_metadata2 OWNER TO zitadel;
-
 --
--- Name: orgs1; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: orgs1; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.orgs1 (
@@ -2686,10 +2895,8 @@ CREATE TABLE projections.orgs1 (
 );
 
 
-ALTER TABLE projections.orgs1 OWNER TO zitadel;
-
 --
--- Name: password_age_policies2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: password_age_policies2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.password_age_policies2 (
@@ -2707,10 +2914,8 @@ CREATE TABLE projections.password_age_policies2 (
 );
 
 
-ALTER TABLE projections.password_age_policies2 OWNER TO zitadel;
-
 --
--- Name: password_complexity_policies2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: password_complexity_policies2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.password_complexity_policies2 (
@@ -2731,10 +2936,8 @@ CREATE TABLE projections.password_complexity_policies2 (
 );
 
 
-ALTER TABLE projections.password_complexity_policies2 OWNER TO zitadel;
-
 --
--- Name: personal_access_tokens3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.personal_access_tokens3 (
@@ -2751,10 +2954,8 @@ CREATE TABLE projections.personal_access_tokens3 (
 );
 
 
-ALTER TABLE projections.personal_access_tokens3 OWNER TO zitadel;
-
 --
--- Name: privacy_policies4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: privacy_policies4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.privacy_policies4 (
@@ -2777,10 +2978,8 @@ CREATE TABLE projections.privacy_policies4 (
 );
 
 
-ALTER TABLE projections.privacy_policies4 OWNER TO zitadel;
-
 --
--- Name: project_grant_members4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: project_grant_members4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.project_grant_members4 (
@@ -2798,10 +2997,8 @@ CREATE TABLE projections.project_grant_members4 (
 );
 
 
-ALTER TABLE projections.project_grant_members4 OWNER TO zitadel;
-
 --
--- Name: project_grants4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: project_grants4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.project_grants4 (
@@ -2818,10 +3015,8 @@ CREATE TABLE projections.project_grants4 (
 );
 
 
-ALTER TABLE projections.project_grants4 OWNER TO zitadel;
-
 --
--- Name: project_members4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: project_members4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.project_members4 (
@@ -2837,10 +3032,8 @@ CREATE TABLE projections.project_members4 (
 );
 
 
-ALTER TABLE projections.project_members4 OWNER TO zitadel;
-
 --
--- Name: project_roles4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: project_roles4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.project_roles4 (
@@ -2856,10 +3049,8 @@ CREATE TABLE projections.project_roles4 (
 );
 
 
-ALTER TABLE projections.project_roles4 OWNER TO zitadel;
-
 --
--- Name: projects4; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: projects4; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.projects4 (
@@ -2878,10 +3069,8 @@ CREATE TABLE projections.projects4 (
 );
 
 
-ALTER TABLE projections.projects4 OWNER TO zitadel;
-
 --
--- Name: quotas; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: quotas; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.quotas (
@@ -2895,10 +3084,8 @@ CREATE TABLE projections.quotas (
 );
 
 
-ALTER TABLE projections.quotas OWNER TO zitadel;
-
 --
--- Name: quotas_notifications; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: quotas_notifications; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.quotas_notifications (
@@ -2913,10 +3100,8 @@ CREATE TABLE projections.quotas_notifications (
 );
 
 
-ALTER TABLE projections.quotas_notifications OWNER TO zitadel;
-
 --
--- Name: quotas_periods; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: quotas_periods; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.quotas_periods (
@@ -2927,10 +3112,8 @@ CREATE TABLE projections.quotas_periods (
 );
 
 
-ALTER TABLE projections.quotas_periods OWNER TO zitadel;
-
 --
--- Name: resource_counts; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: resource_counts; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.resource_counts (
@@ -2946,10 +3129,8 @@ CREATE TABLE projections.resource_counts (
 );
 
 
-ALTER TABLE projections.resource_counts OWNER TO zitadel;
-
 --
--- Name: resource_counts_id_seq; Type: SEQUENCE; Schema: projections; Owner: zitadel
+-- Name: resource_counts_id_seq; Type: SEQUENCE; Schema: projections; Owner: -
 --
 
 CREATE SEQUENCE projections.resource_counts_id_seq
@@ -2961,17 +3142,15 @@ CREATE SEQUENCE projections.resource_counts_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE projections.resource_counts_id_seq OWNER TO zitadel;
-
 --
--- Name: resource_counts_id_seq; Type: SEQUENCE OWNED BY; Schema: projections; Owner: zitadel
+-- Name: resource_counts_id_seq; Type: SEQUENCE OWNED BY; Schema: projections; Owner: -
 --
 
 ALTER SEQUENCE projections.resource_counts_id_seq OWNED BY projections.resource_counts.id;
 
 
 --
--- Name: restrictions2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: restrictions2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.restrictions2 (
@@ -2986,10 +3165,8 @@ CREATE TABLE projections.restrictions2 (
 );
 
 
-ALTER TABLE projections.restrictions2 OWNER TO zitadel;
-
 --
--- Name: saml_requests; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: saml_requests; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.saml_requests (
@@ -3007,10 +3184,8 @@ CREATE TABLE projections.saml_requests (
 );
 
 
-ALTER TABLE projections.saml_requests OWNER TO zitadel;
-
 --
--- Name: secret_generators2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: secret_generators2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.secret_generators2 (
@@ -3030,10 +3205,8 @@ CREATE TABLE projections.secret_generators2 (
 );
 
 
-ALTER TABLE projections.secret_generators2 OWNER TO zitadel;
-
 --
--- Name: security_policies2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: security_policies2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.security_policies2 (
@@ -3047,10 +3220,8 @@ CREATE TABLE projections.security_policies2 (
 );
 
 
-ALTER TABLE projections.security_policies2 OWNER TO zitadel;
-
 --
--- Name: sessions8; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: sessions8; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.sessions8 (
@@ -3082,10 +3253,8 @@ CREATE TABLE projections.sessions8 (
 );
 
 
-ALTER TABLE projections.sessions8 OWNER TO zitadel;
-
 --
--- Name: sms_configs3; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: sms_configs3; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.sms_configs3 (
@@ -3101,10 +3270,8 @@ CREATE TABLE projections.sms_configs3 (
 );
 
 
-ALTER TABLE projections.sms_configs3 OWNER TO zitadel;
-
 --
--- Name: sms_configs3_http; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_http; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.sms_configs3_http (
@@ -3114,10 +3281,8 @@ CREATE TABLE projections.sms_configs3_http (
 );
 
 
-ALTER TABLE projections.sms_configs3_http OWNER TO zitadel;
-
 --
--- Name: sms_configs3_twilio; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_twilio; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.sms_configs3_twilio (
@@ -3130,10 +3295,8 @@ CREATE TABLE projections.sms_configs3_twilio (
 );
 
 
-ALTER TABLE projections.sms_configs3_twilio OWNER TO zitadel;
-
 --
--- Name: smtp_configs5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.smtp_configs5 (
@@ -3149,10 +3312,8 @@ CREATE TABLE projections.smtp_configs5 (
 );
 
 
-ALTER TABLE projections.smtp_configs5 OWNER TO zitadel;
-
 --
--- Name: smtp_configs5_http; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_http; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.smtp_configs5_http (
@@ -3162,10 +3323,8 @@ CREATE TABLE projections.smtp_configs5_http (
 );
 
 
-ALTER TABLE projections.smtp_configs5_http OWNER TO zitadel;
-
 --
--- Name: smtp_configs5_smtp; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_smtp; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.smtp_configs5_smtp (
@@ -3181,10 +3340,8 @@ CREATE TABLE projections.smtp_configs5_smtp (
 );
 
 
-ALTER TABLE projections.smtp_configs5_smtp OWNER TO zitadel;
-
 --
--- Name: system_features; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: system_features; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.system_features (
@@ -3196,10 +3353,8 @@ CREATE TABLE projections.system_features (
 );
 
 
-ALTER TABLE projections.system_features OWNER TO zitadel;
-
 --
--- Name: targets2; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: targets2; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.targets2 (
@@ -3218,10 +3373,8 @@ CREATE TABLE projections.targets2 (
 );
 
 
-ALTER TABLE projections.targets2 OWNER TO zitadel;
-
 --
--- Name: user_auth_methods5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: user_auth_methods5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.user_auth_methods5 (
@@ -3239,10 +3392,8 @@ CREATE TABLE projections.user_auth_methods5 (
 );
 
 
-ALTER TABLE projections.user_auth_methods5 OWNER TO zitadel;
-
 --
--- Name: user_grants5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: user_grants5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.user_grants5 (
@@ -3263,10 +3414,8 @@ CREATE TABLE projections.user_grants5 (
 );
 
 
-ALTER TABLE projections.user_grants5 OWNER TO zitadel;
-
 --
--- Name: user_metadata5; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: user_metadata5; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.user_metadata5 (
@@ -3281,10 +3430,8 @@ CREATE TABLE projections.user_metadata5 (
 );
 
 
-ALTER TABLE projections.user_metadata5 OWNER TO zitadel;
-
 --
--- Name: user_schemas1; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: user_schemas1; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.user_schemas1 (
@@ -3301,10 +3448,8 @@ CREATE TABLE projections.user_schemas1 (
 );
 
 
-ALTER TABLE projections.user_schemas1 OWNER TO zitadel;
-
 --
--- Name: users14; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: users14; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.users14 (
@@ -3320,10 +3465,8 @@ CREATE TABLE projections.users14 (
 );
 
 
-ALTER TABLE projections.users14 OWNER TO zitadel;
-
 --
--- Name: users14_humans; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: users14_humans; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.users14_humans (
@@ -3346,10 +3489,8 @@ CREATE TABLE projections.users14_humans (
 );
 
 
-ALTER TABLE projections.users14_humans OWNER TO zitadel;
-
 --
--- Name: users14_machines; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: users14_machines; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.users14_machines (
@@ -3362,10 +3503,8 @@ CREATE TABLE projections.users14_machines (
 );
 
 
-ALTER TABLE projections.users14_machines OWNER TO zitadel;
-
 --
--- Name: users14_notifications; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: users14_notifications; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.users14_notifications (
@@ -3380,10 +3519,8 @@ CREATE TABLE projections.users14_notifications (
 );
 
 
-ALTER TABLE projections.users14_notifications OWNER TO zitadel;
-
 --
--- Name: web_keys1; Type: TABLE; Schema: projections; Owner: zitadel
+-- Name: web_keys1; Type: TABLE; Schema: projections; Owner: -
 --
 
 CREATE TABLE projections.web_keys1 (
@@ -3400,10 +3537,8 @@ CREATE TABLE projections.web_keys1 (
 );
 
 
-ALTER TABLE projections.web_keys1 OWNER TO zitadel;
-
 --
--- Name: river_client; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_client; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE UNLOGGED TABLE queue.river_client (
@@ -3416,10 +3551,8 @@ CREATE UNLOGGED TABLE queue.river_client (
 );
 
 
-ALTER TABLE queue.river_client OWNER TO zitadel;
-
 --
--- Name: river_client_queue; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_client_queue; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE UNLOGGED TABLE queue.river_client_queue (
@@ -3437,10 +3570,8 @@ CREATE UNLOGGED TABLE queue.river_client_queue (
 );
 
 
-ALTER TABLE queue.river_client_queue OWNER TO zitadel;
-
 --
--- Name: river_job; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_job; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE TABLE queue.river_job (
@@ -3470,10 +3601,8 @@ CREATE TABLE queue.river_job (
 );
 
 
-ALTER TABLE queue.river_job OWNER TO zitadel;
-
 --
--- Name: river_job_id_seq; Type: SEQUENCE; Schema: queue; Owner: zitadel
+-- Name: river_job_id_seq; Type: SEQUENCE; Schema: queue; Owner: -
 --
 
 CREATE SEQUENCE queue.river_job_id_seq
@@ -3484,17 +3613,15 @@ CREATE SEQUENCE queue.river_job_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE queue.river_job_id_seq OWNER TO zitadel;
-
 --
--- Name: river_job_id_seq; Type: SEQUENCE OWNED BY; Schema: queue; Owner: zitadel
+-- Name: river_job_id_seq; Type: SEQUENCE OWNED BY; Schema: queue; Owner: -
 --
 
 ALTER SEQUENCE queue.river_job_id_seq OWNED BY queue.river_job.id;
 
 
 --
--- Name: river_leader; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_leader; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE UNLOGGED TABLE queue.river_leader (
@@ -3507,10 +3634,8 @@ CREATE UNLOGGED TABLE queue.river_leader (
 );
 
 
-ALTER TABLE queue.river_leader OWNER TO zitadel;
-
 --
--- Name: river_migration; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_migration; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE TABLE queue.river_migration (
@@ -3522,10 +3647,8 @@ CREATE TABLE queue.river_migration (
 );
 
 
-ALTER TABLE queue.river_migration OWNER TO zitadel;
-
 --
--- Name: river_queue; Type: TABLE; Schema: queue; Owner: zitadel
+-- Name: river_queue; Type: TABLE; Schema: queue; Owner: -
 --
 
 CREATE TABLE queue.river_queue (
@@ -3537,10 +3660,8 @@ CREATE TABLE queue.river_queue (
 );
 
 
-ALTER TABLE queue.river_queue OWNER TO zitadel;
-
 --
--- Name: assets; Type: TABLE; Schema: system; Owner: zitadel
+-- Name: assets; Type: TABLE; Schema: system; Owner: -
 --
 
 CREATE TABLE system.assets (
@@ -3555,10 +3676,8 @@ CREATE TABLE system.assets (
 );
 
 
-ALTER TABLE system.assets OWNER TO zitadel;
-
 --
--- Name: encryption_keys; Type: TABLE; Schema: system; Owner: zitadel
+-- Name: encryption_keys; Type: TABLE; Schema: system; Owner: -
 --
 
 CREATE TABLE system.encryption_keys (
@@ -3567,52 +3686,50 @@ CREATE TABLE system.encryption_keys (
 );
 
 
-ALTER TABLE system.encryption_keys OWNER TO zitadel;
-
 --
--- Name: objects_federated_logout; Type: TABLE ATTACH; Schema: cache; Owner: zitadel
+-- Name: objects_federated_logout; Type: TABLE ATTACH; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.objects ATTACH PARTITION cache.objects_federated_logout FOR VALUES IN ('federated_logout');
 
 
 --
--- Name: objects_id_p_form_callback; Type: TABLE ATTACH; Schema: cache; Owner: zitadel
+-- Name: objects_id_p_form_callback; Type: TABLE ATTACH; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.objects ATTACH PARTITION cache.objects_id_p_form_callback FOR VALUES IN ('id_p_form_callback');
 
 
 --
--- Name: string_keys_federated_logout; Type: TABLE ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout; Type: TABLE ATTACH; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.string_keys ATTACH PARTITION cache.string_keys_federated_logout FOR VALUES IN ('federated_logout');
 
 
 --
--- Name: string_keys_id_p_form_callback; Type: TABLE ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback; Type: TABLE ATTACH; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.string_keys ATTACH PARTITION cache.string_keys_id_p_form_callback FOR VALUES IN ('id_p_form_callback');
 
 
 --
--- Name: resource_counts id; Type: DEFAULT; Schema: projections; Owner: zitadel
+-- Name: resource_counts id; Type: DEFAULT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.resource_counts ALTER COLUMN id SET DEFAULT nextval('projections.resource_counts_id_seq'::regclass);
 
 
 --
--- Name: river_job id; Type: DEFAULT; Schema: queue; Owner: zitadel
+-- Name: river_job id; Type: DEFAULT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_job ALTER COLUMN id SET DEFAULT nextval('queue.river_job_id_seq'::regclass);
 
 
 --
--- Data for Name: current_sequences; Type: TABLE DATA; Schema: adminapi; Owner: zitadel
+-- Data for Name: current_sequences; Type: TABLE DATA; Schema: adminapi; Owner: -
 --
 
 COPY adminapi.current_sequences (view_name, current_sequence, event_date, last_successful_spooler_run, instance_id) FROM stdin;
@@ -3620,7 +3737,7 @@ COPY adminapi.current_sequences (view_name, current_sequence, event_date, last_s
 
 
 --
--- Data for Name: failed_events; Type: TABLE DATA; Schema: adminapi; Owner: zitadel
+-- Data for Name: failed_events; Type: TABLE DATA; Schema: adminapi; Owner: -
 --
 
 COPY adminapi.failed_events (view_name, failed_sequence, failure_count, err_msg, instance_id, last_failed) FROM stdin;
@@ -3628,7 +3745,7 @@ COPY adminapi.failed_events (view_name, failed_sequence, failure_count, err_msg,
 
 
 --
--- Data for Name: locks; Type: TABLE DATA; Schema: adminapi; Owner: zitadel
+-- Data for Name: locks; Type: TABLE DATA; Schema: adminapi; Owner: -
 --
 
 COPY adminapi.locks (locker_id, locked_until, view_name, instance_id) FROM stdin;
@@ -3636,7 +3753,7 @@ COPY adminapi.locks (locker_id, locked_until, view_name, instance_id) FROM stdin
 
 
 --
--- Data for Name: styling; Type: TABLE DATA; Schema: adminapi; Owner: zitadel
+-- Data for Name: styling; Type: TABLE DATA; Schema: adminapi; Owner: -
 --
 
 COPY adminapi.styling (aggregate_id, creation_date, change_date, label_policy_state, sequence, primary_color, background_color, warn_color, font_color, primary_color_dark, background_color_dark, warn_color_dark, font_color_dark, logo_url, icon_url, logo_dark_url, icon_dark_url, font_url, err_msg_popup, disable_watermark, hide_login_name_suffix, instance_id) FROM stdin;
@@ -3644,7 +3761,7 @@ COPY adminapi.styling (aggregate_id, creation_date, change_date, label_policy_st
 
 
 --
--- Data for Name: styling2; Type: TABLE DATA; Schema: adminapi; Owner: zitadel
+-- Data for Name: styling2; Type: TABLE DATA; Schema: adminapi; Owner: -
 --
 
 COPY adminapi.styling2 (aggregate_id, creation_date, change_date, label_policy_state, sequence, primary_color, background_color, warn_color, font_color, primary_color_dark, background_color_dark, warn_color_dark, font_color_dark, logo_url, icon_url, logo_dark_url, icon_dark_url, font_url, err_msg_popup, disable_watermark, hide_login_name_suffix, instance_id, owner_removed) FROM stdin;
@@ -3654,7 +3771,7 @@ COPY adminapi.styling2 (aggregate_id, creation_date, change_date, label_policy_s
 
 
 --
--- Data for Name: auth_requests; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: auth_requests; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.auth_requests (id, request, code, request_type, creation_date, change_date, instance_id) FROM stdin;
@@ -3662,7 +3779,7 @@ COPY auth.auth_requests (id, request, code, request_type, creation_date, change_
 
 
 --
--- Data for Name: current_sequences; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: current_sequences; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.current_sequences (view_name, current_sequence, event_date, last_successful_spooler_run, instance_id) FROM stdin;
@@ -3670,7 +3787,7 @@ COPY auth.current_sequences (view_name, current_sequence, event_date, last_succe
 
 
 --
--- Data for Name: failed_events; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: failed_events; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.failed_events (view_name, failed_sequence, failure_count, err_msg, instance_id, last_failed) FROM stdin;
@@ -3678,7 +3795,7 @@ COPY auth.failed_events (view_name, failed_sequence, failure_count, err_msg, ins
 
 
 --
--- Data for Name: idp_configs; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: idp_configs; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.idp_configs (idp_config_id, creation_date, change_date, sequence, aggregate_id, name, idp_state, idp_provider_type, is_oidc, oidc_client_id, oidc_client_secret, oidc_issuer, oidc_scopes, oidc_idp_display_name_mapping, oidc_idp_username_mapping, styling_type, oauth_authorization_endpoint, oauth_token_endpoint, auto_register, jwt_endpoint, jwt_keys_endpoint, jwt_header_name, instance_id) FROM stdin;
@@ -3686,7 +3803,7 @@ COPY auth.idp_configs (idp_config_id, creation_date, change_date, sequence, aggr
 
 
 --
--- Data for Name: idp_configs2; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: idp_configs2; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.idp_configs2 (idp_config_id, creation_date, change_date, sequence, aggregate_id, name, idp_state, idp_provider_type, is_oidc, oidc_client_id, oidc_client_secret, oidc_issuer, oidc_scopes, oidc_idp_display_name_mapping, oidc_idp_username_mapping, styling_type, oauth_authorization_endpoint, oauth_token_endpoint, auto_register, jwt_endpoint, jwt_keys_endpoint, jwt_header_name, instance_id, owner_removed) FROM stdin;
@@ -3694,7 +3811,7 @@ COPY auth.idp_configs2 (idp_config_id, creation_date, change_date, sequence, agg
 
 
 --
--- Data for Name: idp_providers; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: idp_providers; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.idp_providers (aggregate_id, idp_config_id, creation_date, change_date, sequence, name, idp_config_type, idp_provider_type, idp_state, styling_type, instance_id) FROM stdin;
@@ -3702,7 +3819,7 @@ COPY auth.idp_providers (aggregate_id, idp_config_id, creation_date, change_date
 
 
 --
--- Data for Name: idp_providers2; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: idp_providers2; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.idp_providers2 (aggregate_id, idp_config_id, creation_date, change_date, sequence, name, idp_config_type, idp_provider_type, idp_state, styling_type, instance_id, owner_removed) FROM stdin;
@@ -3710,7 +3827,7 @@ COPY auth.idp_providers2 (aggregate_id, idp_config_id, creation_date, change_dat
 
 
 --
--- Data for Name: locks; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: locks; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.locks (locker_id, locked_until, view_name, instance_id) FROM stdin;
@@ -3718,7 +3835,7 @@ COPY auth.locks (locker_id, locked_until, view_name, instance_id) FROM stdin;
 
 
 --
--- Data for Name: org_project_mapping; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: org_project_mapping; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.org_project_mapping (org_id, project_id, project_grant_id, instance_id) FROM stdin;
@@ -3726,7 +3843,7 @@ COPY auth.org_project_mapping (org_id, project_id, project_grant_id, instance_id
 
 
 --
--- Data for Name: org_project_mapping2; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: org_project_mapping2; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.org_project_mapping2 (org_id, project_id, project_grant_id, instance_id, owner_removed) FROM stdin;
@@ -3734,7 +3851,7 @@ COPY auth.org_project_mapping2 (org_id, project_id, project_grant_id, instance_i
 
 
 --
--- Data for Name: refresh_tokens; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: refresh_tokens; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.refresh_tokens (id, creation_date, change_date, resource_owner, token, client_id, user_agent_id, user_id, auth_time, idle_expiration, expiration, sequence, scopes, audience, amr, instance_id, actor) FROM stdin;
@@ -3742,7 +3859,7 @@ COPY auth.refresh_tokens (id, creation_date, change_date, resource_owner, token,
 
 
 --
--- Data for Name: tokens; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: tokens; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.tokens (id, creation_date, change_date, resource_owner, application_id, user_agent_id, user_id, expiration, sequence, scopes, audience, preferred_language, refresh_token_id, is_pat, instance_id, actor) FROM stdin;
@@ -3751,7 +3868,7 @@ COPY auth.tokens (id, creation_date, change_date, resource_owner, application_id
 
 
 --
--- Data for Name: user_external_idps; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: user_external_idps; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.user_external_idps (external_user_id, idp_config_id, user_id, idp_name, user_display_name, creation_date, change_date, sequence, resource_owner, instance_id) FROM stdin;
@@ -3759,7 +3876,7 @@ COPY auth.user_external_idps (external_user_id, idp_config_id, user_id, idp_name
 
 
 --
--- Data for Name: user_external_idps2; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: user_external_idps2; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.user_external_idps2 (external_user_id, idp_config_id, user_id, idp_name, user_display_name, creation_date, change_date, sequence, resource_owner, instance_id, owner_removed) FROM stdin;
@@ -3767,7 +3884,7 @@ COPY auth.user_external_idps2 (external_user_id, idp_config_id, user_id, idp_nam
 
 
 --
--- Data for Name: user_sessions; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: user_sessions; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.user_sessions (creation_date, change_date, resource_owner, state, user_agent_id, user_id, user_name, password_verification, second_factor_verification, multi_factor_verification, sequence, second_factor_verification_type, multi_factor_verification_type, user_display_name, login_name, external_login_verification, selected_idp_config_id, passwordless_verification, avatar_key, instance_id, id) FROM stdin;
@@ -3777,7 +3894,7 @@ COPY auth.user_sessions (creation_date, change_date, resource_owner, state, user
 
 
 --
--- Data for Name: users; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: users; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.users (id, creation_date, change_date, resource_owner, user_state, password_set, password_change_required, password_change, last_login, user_name, login_names, preferred_login_name, first_name, last_name, nick_name, display_name, preferred_language, gender, email, is_email_verified, phone, is_phone_verified, country, locality, postal_code, region, street_address, otp_state, mfa_max_set_up, mfa_init_skipped, sequence, init_required, username_change_required, machine_name, machine_description, user_type, u2f_tokens, passwordless_tokens, avatar_key, passwordless_init_required, password_init_required, instance_id) FROM stdin;
@@ -3785,7 +3902,7 @@ COPY auth.users (id, creation_date, change_date, resource_owner, user_state, pas
 
 
 --
--- Data for Name: users2; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: users2; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.users2 (id, creation_date, change_date, resource_owner, user_state, password_set, password_change_required, password_change, last_login, user_name, login_names, preferred_login_name, first_name, last_name, nick_name, display_name, preferred_language, gender, email, is_email_verified, phone, is_phone_verified, country, locality, postal_code, region, street_address, otp_state, mfa_max_set_up, mfa_init_skipped, sequence, init_required, username_change_required, machine_name, machine_description, user_type, u2f_tokens, passwordless_tokens, avatar_key, passwordless_init_required, password_init_required, instance_id, owner_removed, otp_sms_added, otp_email_added) FROM stdin;
@@ -3793,7 +3910,7 @@ COPY auth.users2 (id, creation_date, change_date, resource_owner, user_state, pa
 
 
 --
--- Data for Name: users3; Type: TABLE DATA; Schema: auth; Owner: zitadel
+-- Data for Name: users3; Type: TABLE DATA; Schema: auth; Owner: -
 --
 
 COPY auth.users3 (instance_id, id, resource_owner, change_date, password_set, password_change, last_login, init_required, mfa_init_skipped, username_change_required, passwordless_init_required, password_init_required) FROM stdin;
@@ -3803,7 +3920,7 @@ COPY auth.users3 (instance_id, id, resource_owner, change_date, password_set, pa
 
 
 --
--- Data for Name: objects_federated_logout; Type: TABLE DATA; Schema: cache; Owner: zitadel
+-- Data for Name: objects_federated_logout; Type: TABLE DATA; Schema: cache; Owner: -
 --
 
 COPY cache.objects_federated_logout (cache_name, id, created_at, last_used_at, payload) FROM stdin;
@@ -3811,7 +3928,7 @@ COPY cache.objects_federated_logout (cache_name, id, created_at, last_used_at, p
 
 
 --
--- Data for Name: objects_id_p_form_callback; Type: TABLE DATA; Schema: cache; Owner: zitadel
+-- Data for Name: objects_id_p_form_callback; Type: TABLE DATA; Schema: cache; Owner: -
 --
 
 COPY cache.objects_id_p_form_callback (cache_name, id, created_at, last_used_at, payload) FROM stdin;
@@ -3819,7 +3936,7 @@ COPY cache.objects_id_p_form_callback (cache_name, id, created_at, last_used_at,
 
 
 --
--- Data for Name: string_keys_federated_logout; Type: TABLE DATA; Schema: cache; Owner: zitadel
+-- Data for Name: string_keys_federated_logout; Type: TABLE DATA; Schema: cache; Owner: -
 --
 
 COPY cache.string_keys_federated_logout (cache_name, index_id, index_key, object_id) FROM stdin;
@@ -3827,7 +3944,7 @@ COPY cache.string_keys_federated_logout (cache_name, index_id, index_key, object
 
 
 --
--- Data for Name: string_keys_id_p_form_callback; Type: TABLE DATA; Schema: cache; Owner: zitadel
+-- Data for Name: string_keys_id_p_form_callback; Type: TABLE DATA; Schema: cache; Owner: -
 --
 
 COPY cache.string_keys_id_p_form_callback (cache_name, index_id, index_key, object_id) FROM stdin;
@@ -3835,7 +3952,7 @@ COPY cache.string_keys_id_p_form_callback (cache_name, index_id, index_key, obje
 
 
 --
--- Data for Name: events2; Type: TABLE DATA; Schema: eventstore; Owner: zitadel
+-- Data for Name: events2; Type: TABLE DATA; Schema: eventstore; Owner: -
 --
 
 COPY eventstore.events2 (instance_id, aggregate_type, aggregate_id, event_type, sequence, revision, created_at, payload, creator, owner, "position", in_tx_order) FROM stdin;
@@ -4829,11 +4946,26 @@ COPY eventstore.events2 (instance_id, aggregate_type, aggregate_id, event_type, 
 338293185505656835	session	338305782527295491	session.lifetime.set	9	1	2025-09-17 20:46:26.122538+00	{"lifetime": 864000000000000}	338293185506312195	338293185505656835	1758141986.122538	3
 338293185505656835	session	338305782527295491	session.token.set	10	1	2025-09-17 20:46:26.122538+00	{"tokenID": "338305826466824195"}	338293185506312195	338293185505656835	1758141986.122538	4
 338293185505656835	user	338303017977643011	user.human.mfa.init.skipped	6	2	2025-09-17 20:46:27.721909+00	{}	338293185506312195	338293185505722371	1758141987.721909	1
+	system	SYSTEM	system.migration.started	290	1	2025-09-17 21:20:22.708673+00	{"name": "repeatable_delete_stale_org_fields"}	system	SYSTEM	1758144022.708673	1
+	system	SYSTEM	system.migration.repeatable.done	291	1	2025-09-17 21:20:22.720514+00	{"name": "repeatable_delete_stale_org_fields", "lastRun": {}}	system	SYSTEM	1758144022.720514	1
+	system	SYSTEM	system.migration.started	292	1	2025-09-17 21:20:22.724567+00	{"name": "repeatable_fill_fields_for_instance_domains"}	system	SYSTEM	1758144022.724567	1
+	system	SYSTEM	system.migration.repeatable.done	293	1	2025-09-17 21:20:22.732252+00	{"name": "repeatable_fill_fields_for_instance_domains", "lastRun": {}}	system	SYSTEM	1758144022.732252	1
+	system	SYSTEM	system.migration.started	294	1	2025-09-17 21:20:22.735356+00	{"name": "repeatable_sync_role_permissions"}	system	SYSTEM	1758144022.735356	1
+	system	SYSTEM	system.migration.repeatable.done	295	1	2025-09-17 21:20:22.743229+00	{"name": "repeatable_sync_role_permissions", "lastRun": {}}	system	SYSTEM	1758144022.743229	1
+	system	SYSTEM	system.migration.started	296	1	2025-09-17 21:20:22.746725+00	{"name": "repeatable_migrate_river"}	system	SYSTEM	1758144022.746725	1
+	system	SYSTEM	system.migration.repeatable.done	297	1	2025-09-17 21:20:22.759312+00	{"name": "repeatable_migrate_river", "lastRun": {}}	system	SYSTEM	1758144022.759312	1
+338293185505656835	auth_request	V2_338309262256111619	auth_request.added	1	1	2025-09-17 21:20:34.01249+00	{"nonce": "RDNaSWlLdG1IMXh5ZVNEamRzODE1R2NhY1hiT1V1amt0cUNYLnQuUUFKRUFs", "scope": ["openid", "profile", "email"], "state": "RDNaSWlLdG1IMXh5ZVNEamRzODE1R2NhY1hiT1V1amt0cUNYLnQuUUFKRUFs;5975955c-6534-4759-ba31-63a53b156570", "issuer": "http://localhost:8080", "audience": ["338293186696839171", "338293186696904707", "338293186696970243", "338293186697035779", "338293185505787907"], "client_id": "338293186697035779", "login_hint": "zitadel-admin@zitadel.localhost", "login_client": "", "redirect_uri": "http://localhost:8080/ui/console/auth/callback", "code_challenge": {"Method": 1, "Challenge": "BLr6l_wyHvi2nkF7TzDrOP8DWuo2jxyPkAeX-pvRKVA"}}		338293185505656835	1758144034.012490	1
+338293185505656835	auth_request	V2_338309262256111619	auth_request.session.linked	2	1	2025-09-17 21:20:34.119433+00	{"user_id": "338293185506246659", "auth_time": "2025-09-17T18:41:21.917835314Z", "session_id": "338293226257514499", "auth_methods": [4]}	338293185506312195	338293185505656835	1758144034.119433	1
+338293185505656835	auth_request	V2_338309262256111619	auth_request.code.added	3	1	2025-09-17 21:20:34.121677+00	{}	338293185506312195	338293185505656835	1758144034.121677	1
+338293185505656835	auth_request	V2_338309262256111619	auth_request.code.exchanged	4	1	2025-09-17 21:20:34.585778+00	\N	SYSTEM	338293185505656835	1758144034.585778	1
+338293185505656835	oidc_session	V2_338309263212412931	oidc_session.added	1	1	2025-09-17 21:20:34.585778+00	{"nonce": "RDNaSWlLdG1IMXh5ZVNEamRzODE1R2NhY1hiT1V1amt0cUNYLnQuUUFKRUFs", "scope": ["openid", "profile", "email"], "userID": "338293185506246659", "audience": ["338293186696839171", "338293186696904707", "338293186696970243", "338293186697035779", "338293185505787907"], "authTime": "2025-09-17T18:41:21.917835314Z", "clientID": "338293186697035779", "sessionID": "338293226257514499", "userAgent": {"ip": "192.168.65.1", "header": {"user-agent": ["Mozilla/5.0 (X11; Linux x86_64; rv:142.0) Gecko/20100101 Firefox/142.0"]}, "description": "Firefox, 142.0, ,    , Gecko, 142.0, , Linux, x86_64, ", "fingerprint_id": "5eeb504c-e0c9-461f-bcbb-8f7d307721e9"}, "authMethods": [4], "preferredLanguage": "en", "userResourceOwner": "338293185505722371"}	SYSTEM	338293185505722371	1758144034.585778	2
+338293185505656835	oidc_session	V2_338309263212412931	oidc_session.access_token.added	2	1	2025-09-17 21:20:34.585778+00	{"id": "at_338309263212478467", "scope": ["openid", "profile", "email"], "reason": "auth_request", "lifetime": 43200000000000}	SYSTEM	338293185505722371	1758144034.585778	3
+338293185505656835	auth_request	V2_338309262256111619	auth_request.succeeded	5	1	2025-09-17 21:20:34.585778+00	\N	SYSTEM	338293185505656835	1758144034.585778	4
 \.
 
 
 --
--- Data for Name: fields; Type: TABLE DATA; Schema: eventstore; Owner: zitadel
+-- Data for Name: fields; Type: TABLE DATA; Schema: eventstore; Owner: -
 --
 
 COPY eventstore.fields (id, instance_id, resource_owner, aggregate_type, aggregate_id, object_type, object_id, object_revision, field_name, value, value_must_be_unique, should_index) FROM stdin;
@@ -5356,7 +5488,7 @@ f71597cf-6b40-40a1-b7cd-b45b5eaa6cdd	338293185505656835	338293185505722371	proje
 
 
 --
--- Data for Name: unique_constraints; Type: TABLE DATA; Schema: eventstore; Owner: zitadel
+-- Data for Name: unique_constraints; Type: TABLE DATA; Schema: eventstore; Owner: -
 --
 
 COPY eventstore.unique_constraints (instance_id, unique_type, unique_field) FROM stdin;
@@ -5639,7 +5771,7 @@ COPY eventstore.unique_constraints (instance_id, unique_type, unique_field) FROM
 
 
 --
--- Data for Name: access; Type: TABLE DATA; Schema: logstore; Owner: zitadel
+-- Data for Name: access; Type: TABLE DATA; Schema: logstore; Owner: -
 --
 
 COPY logstore.access (log_date, protocol, request_url, response_status, request_headers, response_headers, instance_id, project_id, requested_domain, requested_host) FROM stdin;
@@ -5647,7 +5779,7 @@ COPY logstore.access (log_date, protocol, request_url, response_status, request_
 
 
 --
--- Data for Name: execution; Type: TABLE DATA; Schema: logstore; Owner: zitadel
+-- Data for Name: execution; Type: TABLE DATA; Schema: logstore; Owner: -
 --
 
 COPY logstore.execution (log_date, took, message, loglevel, instance_id, action_id, metadata) FROM stdin;
@@ -5655,7 +5787,7 @@ COPY logstore.execution (log_date, took, message, loglevel, instance_id, action_
 
 
 --
--- Data for Name: actions3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: actions3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.actions3 (id, creation_date, change_date, resource_owner, instance_id, action_state, sequence, name, script, timeout, allowed_to_fail, owner_removed) FROM stdin;
@@ -5663,7 +5795,7 @@ COPY projections.actions3 (id, creation_date, change_date, resource_owner, insta
 
 
 --
--- Data for Name: apps7; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: apps7; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.apps7 (id, name, project_id, creation_date, change_date, resource_owner, instance_id, state, sequence) FROM stdin;
@@ -5676,7 +5808,7 @@ COPY projections.apps7 (id, name, project_id, creation_date, change_date, resour
 
 
 --
--- Data for Name: apps7_api_configs; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: apps7_api_configs; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.apps7_api_configs (app_id, instance_id, client_id, client_secret, auth_method) FROM stdin;
@@ -5687,7 +5819,7 @@ COPY projections.apps7_api_configs (app_id, instance_id, client_id, client_secre
 
 
 --
--- Data for Name: apps7_oidc_configs; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: apps7_oidc_configs; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.apps7_oidc_configs (app_id, instance_id, version, client_id, client_secret, redirect_uris, response_types, grant_types, application_type, auth_method_type, post_logout_redirect_uris, is_dev_mode, access_token_type, access_token_role_assertion, id_token_role_assertion, id_token_userinfo_assertion, clock_skew, additional_origins, skip_native_app_success_page, back_channel_logout_uri, login_version, login_base_uri) FROM stdin;
@@ -5697,7 +5829,7 @@ COPY projections.apps7_oidc_configs (app_id, instance_id, version, client_id, cl
 
 
 --
--- Data for Name: apps7_saml_configs; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: apps7_saml_configs; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.apps7_saml_configs (app_id, instance_id, entity_id, metadata, metadata_url, login_version, login_base_uri) FROM stdin;
@@ -5705,7 +5837,7 @@ COPY projections.apps7_saml_configs (app_id, instance_id, entity_id, metadata, m
 
 
 --
--- Data for Name: auth_requests; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: auth_requests; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.auth_requests (id, creation_date, change_date, sequence, resource_owner, instance_id, login_client, client_id, redirect_uri, scope, prompt, ui_locales, max_age, login_hint, hint_user_id) FROM stdin;
@@ -5714,7 +5846,7 @@ V2_338305066140172291	2025-09-17 20:38:52.933453+00	2025-09-17 20:38:52.933453+0
 
 
 --
--- Data for Name: authn_keys2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: authn_keys2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.authn_keys2 (id, creation_date, change_date, resource_owner, instance_id, aggregate_id, sequence, object_id, expiration, identifier, public_key, enabled, type) FROM stdin;
@@ -5722,7 +5854,7 @@ COPY projections.authn_keys2 (id, creation_date, change_date, resource_owner, in
 
 
 --
--- Data for Name: current_sequences; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: current_sequences; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.current_sequences (projection_name, aggregate_type, current_sequence, instance_id, "timestamp") FROM stdin;
@@ -5730,89 +5862,89 @@ COPY projections.current_sequences (projection_name, aggregate_type, current_seq
 
 
 --
--- Data for Name: current_states; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: current_states; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.current_states (projection_name, instance_id, last_updated, aggregate_id, aggregate_type, sequence, event_date, "position", filter_offset) FROM stdin;
 project_grant_fields	338293185505656835	2025-09-17 18:40:52.683719+00	338293185505787907	project	11	2025-09-17 18:40:52.502632+00	1758134452.502632	0
 org_domain_verified_fields	338293185505656835	2025-09-17 18:40:52.689215+00	338293185505722371	org	3	2025-09-17 18:40:52.502632+00	1758134452.502632	0
 membership_fields	338293185505656835	2025-09-17 18:40:52.726092+00	338293185505656835	instance	27	2025-09-17 18:40:52.502632+00	1758134452.502632	0
-instance_domain_fields	338293185505656835	2025-09-17 18:40:52.956146+00	338293185505656835	instance	32	2025-09-17 18:40:52.502632+00	1758134452.502632	0
-projections.user_grants5	338293185505656835	2025-09-17 20:56:16.38051+00	338303078325288963	usergrant	1	2025-09-17 20:19:08.104219+00	1758140348.104219	1
-projections.projects4	338293185505656835	2025-09-17 20:55:39.560076+00	338293275599306755	project	1	2025-09-17 18:41:45.226613+00	1758134505.226613	1
-projections.notification_providers	338293185505656835	2025-09-17 20:56:19.662257+00			0	0001-01-01 00:00:00+00	0	0
+projections.login_policies5	338293185505656835	2025-09-17 21:20:34.097466+00	338293185505656835	instance	18	2025-09-17 18:40:52.502632+00	1758134452.502632	4
+projections.user_metadata5	338293185505656835	2025-09-17 21:06:30.996284+00			0	0001-01-01 00:00:00+00	0	0
+projections.smtp_configs5	338293185505656835	2025-09-17 21:06:54.802276+00			0	0001-01-01 00:00:00+00	0	0
+projections.project_members4	338293185505656835	2025-09-17 21:06:32.011418+00			0	0001-01-01 00:00:00+00	0	0
 projections.notifications_back_channel_logout	338293185505656835	2025-09-17 20:38:00.266929+00			57	2025-09-17 18:40:52.707855+00	1758134452.707855	0
-projections.password_complexity_policies2	338293185505656835	2025-09-17 20:56:37.753755+00	338293185505656835	instance	12	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.message_texts2	338293185505656835	2025-09-17 20:55:46.961758+00	338293185505656835	instance	105	2025-09-17 18:40:52.502632+00	1758134452.502632	72
-projections.login_policies5	338293185505656835	2025-09-17 20:55:48.121638+00	338293185505656835	instance	18	2025-09-17 18:40:52.502632+00	1758134452.502632	4
-projections.password_age_policies2	338293185505656835	2025-09-17 20:56:38.4254+00	338293185505656835	instance	13	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.instance_trusted_domains	338293185505656835	2025-09-17 20:56:17.947591+00			0	0001-01-01 00:00:00+00	0	0
-projections.secret_generators2	338293185505656835	2025-09-17 20:56:26.218352+00	338293185505656835	instance	11	2025-09-17 18:40:52.502632+00	1758134452.502632	9
-projections.domain_policies2	338293185505656835	2025-09-17 20:55:56.563423+00	338293185505656835	instance	14	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.authn_keys2	338293185505656835	2025-09-17 20:56:27.670196+00	338293275599306755	project	8	2025-09-17 20:38:32.518665+00	1758141512.518665	1
-projections.org_domains2	338293185505656835	2025-09-17 20:56:08.462904+00	338293185505722371	org	4	2025-09-17 18:40:52.502632+00	1758134452.502632	3
-projections.project_members4	338293185505656835	2025-09-17 20:56:31.893967+00			0	0001-01-01 00:00:00+00	0	0
-projections.privacy_policies4	338293185505656835	2025-09-17 20:56:25.549165+00	338293185505656835	instance	19	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.device_auth_requests2	338293185505656835	2025-09-17 20:56:37.905323+00			0	0001-01-01 00:00:00+00	0	0
-projections.smtp_configs5	338293185505656835	2025-09-17 20:55:54.658765+00			0	0001-01-01 00:00:00+00	0	0
-projections.lockout_policies3	338293185505656835	2025-09-17 20:56:03.261197+00	338293185505656835	instance	21	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.personal_access_tokens3	338293185505656835	2025-09-17 20:56:22.647593+00	338293185506312195	user	2	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.apps7	338293185505656835	2025-09-17 20:55:49.348926+00	338293275599306755	project	8	2025-09-17 20:38:32.518665+00	1758141512.518665	1
-projections.flow_triggers3	338293185505656835	2025-09-17 20:56:21.462089+00			0	0001-01-01 00:00:00+00	0	0
-projections.org_members4	338293185505656835	2025-09-17 20:55:59.949463+00	338293185505722371	org	5	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.sms_configs3	338293185505656835	2025-09-17 20:55:48.668905+00			0	0001-01-01 00:00:00+00	0	0
-projections.security_policies2	338293185505656835	2025-09-17 20:55:57.185747+00			0	0001-01-01 00:00:00+00	0	0
-projections.instance_domains	338293185505656835	2025-09-17 20:56:05.743059+00	338293185505656835	instance	33	2025-09-17 18:40:52.502632+00	1758134452.502632	4
-projections.milestones3	338293185505656835	2025-09-17 20:56:09.418396+00	338293185505656835	milestone	5	2025-09-17 20:45:19.539767+00	1758141919.539767	1
-projections.mail_templates2	338293185505656835	2025-09-17 20:56:29.057425+00	338293185505656835	instance	24	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.oidc_settings2	338293185505656835	2025-09-17 20:55:41.254086+00	338293185505656835	instance	106	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.org_metadata2	338293185505656835	2025-09-17 20:56:06.887147+00			0	0001-01-01 00:00:00+00	0	0
-projections.user_metadata5	338293185505656835	2025-09-17 20:56:30.865876+00			0	0001-01-01 00:00:00+00	0	0
-projections.project_grant_members4	338293185505656835	2025-09-17 20:56:33.629921+00			0	0001-01-01 00:00:00+00	0	0
-projections.label_policies3	338293185505656835	2025-09-17 20:56:21.619552+00	338293185505656835	instance	23	2025-09-17 18:40:52.502632+00	1758134452.502632	2
-projections.project_grants4	338293185505656835	2025-09-17 20:55:45.485108+00			0	0001-01-01 00:00:00+00	0	0
-projections.login_names3	338293185505656835	2025-09-17 20:56:08.928691+00	338303017977643011	user	1	2025-09-17 20:18:32.828518+00	1758140312.828518	1
-projections.keys4	338293185505656835	2025-09-17 20:55:45.187396+00			0	0001-01-01 00:00:00+00	0	0
-projections.saml_requests	338293185505656835	2025-09-17 20:55:53.453283+00			0	0001-01-01 00:00:00+00	0	0
-projections.user_auth_methods5	338293185505656835	2025-09-17 20:56:02.327219+00			0	0001-01-01 00:00:00+00	0	0
-projections.idp_login_policy_links5	338293185505656835	2025-09-17 20:55:58.469588+00			0	0001-01-01 00:00:00+00	0	0
-projections.auth_requests	338293185505656835	2025-09-17 20:55:50.552782+00	V2_338305771471175683	auth_request	5	2025-09-17 20:46:27.810431+00	1758141987.810431	1
-projections.idp_templates6	338293185505656835	2025-09-17 20:56:32.970581+00			0	0001-01-01 00:00:00+00	0	0
-projections.idp_user_links3	338293185505656835	2025-09-17 20:55:51.235833+00			0	0001-01-01 00:00:00+00	0	0
-projections.custom_texts2	338293185505656835	2025-09-17 20:56:07.41434+00	338293185505656835	instance	105	2025-09-17 18:40:52.502632+00	1758134452.502632	72
-projections.instances	338293185505656835	2025-09-17 20:55:54.661377+00	338293185505656835	instance	29	2025-09-17 18:40:52.502632+00	1758134452.502632	5
-projections.notification_policies	338293185505656835	2025-09-17 20:55:51.23862+00	338293185505656835	instance	20	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.orgs1	338293185505656835	2025-09-17 20:56:09.422335+00	338293185505722371	org	4	2025-09-17 18:40:52.502632+00	1758134452.502632	2
-projections.actions3	338293185505656835	2025-09-17 20:56:27.672741+00			0	0001-01-01 00:00:00+00	0	0
-projections.instance_members4	338293185505656835	2025-09-17 20:56:30.868056+00	338293185505656835	instance	27	2025-09-17 18:40:52.502632+00	1758134452.502632	2
-projections.restrictions2	338293185505656835	2025-09-17 20:55:57.655784+00			0	0001-01-01 00:00:00+00	0	0
-auth.tokens	338293185505656835	2025-09-17 20:54:12.903398+00	338293185506312195	user	2	2025-09-17 18:40:52.502632+00	1758134452.502632	1
-projections.sessions8	338293185505656835	2025-09-17 20:55:58.99173+00	338305782527295491	session	10	2025-09-17 20:46:26.122538+00	1758141986.122538	3
-auth.refresh_tokens	338293185505656835	2025-09-17 20:56:01.957392+00			0	0001-01-01 00:00:00+00	0	0
-projections.limits	338293185505656835	2025-09-17 20:56:02.90219+00			0	0001-01-01 00:00:00+00	0	0
-projections.notifications	338293185505656835	2025-09-17 20:56:06.425442+00	338303017977643011	user	4	2025-09-17 20:46:25.16009+00	1758141985.160090	1
-auth.users3	338293185505656835	2025-09-17 20:56:07.040189+00	338303017977643011	user	6	2025-09-17 20:46:27.721909+00	1758141987.721909	1
-projections.notifications_quota	338293185505656835	2025-09-17 20:54:31.49941+00			0	0001-01-01 00:00:00+00	0	0
-projections.users14	338293185505656835	2025-09-17 20:56:12.443975+00	338303017977643011	user	6	2025-09-17 20:46:27.721909+00	1758141987.721909	1
-projections.quotas	338293185505656835	2025-09-17 20:56:13.428352+00			0	0001-01-01 00:00:00+00	0	0
-projections.targets2	338293185505656835	2025-09-17 20:56:23.705726+00			0	0001-01-01 00:00:00+00	0	0
-projections.hosted_login_translations	338293185505656835	2025-09-17 20:56:26.532545+00			0	0001-01-01 00:00:00+00	0	0
-projections.idps3	338293185505656835	2025-09-17 20:56:27.67255+00			0	0001-01-01 00:00:00+00	0	0
-adminapi.styling2	338293185505656835	2025-09-17 20:54:47.718833+00	338293185505656835	instance	23	2025-09-17 18:40:52.502632+00	1758134452.502632	2
-projections.project_roles4	338293185505656835	2025-09-17 20:56:27.673084+00			0	0001-01-01 00:00:00+00	0	0
-projections.instance_features2	338293185505656835	2025-09-17 20:56:35.692901+00	338293185505656835	feature	2	2025-09-17 18:40:52.502632+00	1758134452.502632	2
-auth.user_sessions	338293185505656835	2025-09-17 20:55:16.114783+00	338303017977643011	user	5	2025-09-17 20:46:26.122538+00	1758141986.122538	1
-projections.executions1	338293185505656835	2025-09-17 20:55:44.009449+00			0	0001-01-01 00:00:00+00	0	0
-projections.debug_events	338293185505656835	2025-09-17 20:55:44.631796+00			0	0001-01-01 00:00:00+00	0	0
-projections.user_schemas1	338293185505656835	2025-09-17 20:55:45.903154+00			0	0001-01-01 00:00:00+00	0	0
-projections.web_keys1	338293185505656835	2025-09-17 20:55:51.654795+00	338293186797502467	web_key	1	2025-09-17 18:40:52.502632+00	1758134452.502632	3
-projections.system_features	338293185505656835	2025-09-17 20:55:54.885787+00			0	0001-01-01 00:00:00+00	0	0
-projections.execution_handler	338293185505656835	2025-09-17 20:55:55.513676+00	V2_338305771471175683	auth_request	5	2025-09-17 20:46:27.810431+00	1758141987.810431	5
+projections.apps7	338293185505656835	2025-09-17 21:06:49.485383+00	338293275599306755	project	8	2025-09-17 20:38:32.518665+00	1758141512.518665	1
+projections.org_members4	338293185505656835	2025-09-17 21:07:00.093232+00	338293185505722371	org	5	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.saml_requests	338293185505656835	2025-09-17 21:06:53.609175+00			0	0001-01-01 00:00:00+00	0	0
+projections.mail_templates2	338293185505656835	2025-09-17 21:20:44.189195+00	338293185505656835	instance	24	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.idp_templates6	338293185505656835	2025-09-17 21:06:33.091716+00			0	0001-01-01 00:00:00+00	0	0
+projections.projects4	338293185505656835	2025-09-17 21:06:39.704747+00	338293275599306755	project	1	2025-09-17 18:41:45.226613+00	1758134505.226613	1
+projections.keys4	338293185505656835	2025-09-17 21:20:34.806861+00			0	0001-01-01 00:00:00+00	0	0
+projections.password_age_policies2	338293185505656835	2025-09-17 21:20:45.41484+00	338293185505656835	instance	13	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.secret_generators2	338293185505656835	2025-09-17 21:06:26.343544+00	338293185505656835	instance	11	2025-09-17 18:40:52.502632+00	1758134452.502632	9
+projections.instances	338293185505656835	2025-09-17 21:20:42.508752+00	338293185505656835	instance	29	2025-09-17 18:40:52.502632+00	1758134452.502632	5
+projections.milestones3	338293185505656835	2025-09-17 21:20:47.596913+00	338293185505656835	milestone	5	2025-09-17 20:45:19.539767+00	1758141919.539767	1
+projections.instance_domains	338293185505656835	2025-09-17 21:20:37.291842+00	338293185505656835	instance	33	2025-09-17 18:40:52.502632+00	1758134452.502632	4
+instance_domain_fields	338293185505656835	2025-09-17 21:20:22.73171+00	338293185505656835	instance	32	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+projections.notification_providers	338293185505656835	2025-09-17 21:20:50.136682+00			0	0001-01-01 00:00:00+00	0	0
+projections.device_auth_requests2	338293185505656835	2025-09-17 21:06:38.026396+00			0	0001-01-01 00:00:00+00	0	0
+projections.lockout_policies3	338293185505656835	2025-09-17 21:07:03.410617+00	338293185505656835	instance	21	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.project_grant_members4	338293185505656835	2025-09-17 21:06:33.755948+00			0	0001-01-01 00:00:00+00	0	0
+projections.instance_trusted_domains	338293185505656835	2025-09-17 21:06:18.085805+00			0	0001-01-01 00:00:00+00	0	0
+projections.idp_user_links3	338293185505656835	2025-09-17 21:20:42.997663+00			0	0001-01-01 00:00:00+00	0	0
+projections.label_policies3	338293185505656835	2025-09-17 21:20:48.437089+00	338293185505656835	instance	23	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+projections.flow_triggers3	338293185505656835	2025-09-17 21:20:48.969442+00			0	0001-01-01 00:00:00+00	0	0
+projections.oidc_settings2	338293185505656835	2025-09-17 21:20:44.780071+00	338293185505656835	instance	106	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.login_names3	338293185505656835	2025-09-17 21:20:36.509129+00	338303017977643011	user	1	2025-09-17 20:18:32.828518+00	1758140312.828518	1
+projections.domain_policies2	338293185505656835	2025-09-17 21:06:56.706631+00	338293185505656835	instance	14	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.personal_access_tokens3	338293185505656835	2025-09-17 21:06:22.782181+00	338293185506312195	user	2	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.project_grants4	338293185505656835	2025-09-17 21:06:45.616045+00			0	0001-01-01 00:00:00+00	0	0
+projections.sms_configs3	338293185505656835	2025-09-17 21:06:48.8203+00			0	0001-01-01 00:00:00+00	0	0
+projections.password_complexity_policies2	338293185505656835	2025-09-17 21:06:37.884839+00	338293185505656835	instance	12	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.idp_login_policy_links5	338293185505656835	2025-09-17 21:06:58.624136+00			0	0001-01-01 00:00:00+00	0	0
+projections.authn_keys2	338293185505656835	2025-09-17 21:06:27.788712+00	338293275599306755	project	8	2025-09-17 20:38:32.518665+00	1758141512.518665	1
+projections.security_policies2	338293185505656835	2025-09-17 21:06:57.31545+00			0	0001-01-01 00:00:00+00	0	0
+projections.org_domains2	338293185505656835	2025-09-17 21:07:08.574602+00	338293185505722371	org	4	2025-09-17 18:40:52.502632+00	1758134452.502632	3
+projections.notification_policies	338293185505656835	2025-09-17 21:20:50.150017+00	338293185505656835	instance	20	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.user_grants5	338293185505656835	2025-09-17 21:06:16.51001+00	338303078325288963	usergrant	1	2025-09-17 20:19:08.104219+00	1758140348.104219	1
+projections.org_metadata2	338293185505656835	2025-09-17 21:07:07.041682+00			0	0001-01-01 00:00:00+00	0	0
+projections.auth_requests	338293185505656835	2025-09-17 21:20:34.598054+00	V2_338309262256111619	auth_request	5	2025-09-17 21:20:34.585778+00	1758144034.585778	1
+projections.custom_texts2	338293185505656835	2025-09-17 21:07:07.57112+00	338293185505656835	instance	105	2025-09-17 18:40:52.502632+00	1758134452.502632	72
+projections.privacy_policies4	338293185505656835	2025-09-17 21:20:34.708439+00	338293185505656835	instance	19	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.user_auth_methods5	338293185505656835	2025-09-17 21:20:50.275887+00			0	0001-01-01 00:00:00+00	0	0
+projections.instance_members4	338293185505656835	2025-09-17 21:06:30.999523+00	338293185505656835	instance	27	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+projections.message_texts2	338293185505656835	2025-09-17 21:20:40.861038+00	338293185505656835	instance	105	2025-09-17 18:40:52.502632+00	1758134452.502632	72
+projections.orgs1	338293185505656835	2025-09-17 21:06:09.551906+00	338293185505722371	org	4	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+projections.actions3	338293185505656835	2025-09-17 21:06:27.78901+00			0	0001-01-01 00:00:00+00	0	0
+projections.user_schemas1	338293185505656835	2025-09-17 21:06:46.04405+00			0	0001-01-01 00:00:00+00	0	0
+adminapi.styling2	338293185505656835	2025-09-17 21:06:47.780472+00	338293185505656835	instance	23	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+auth.refresh_tokens	338293185505656835	2025-09-17 21:05:02.008645+00			0	0001-01-01 00:00:00+00	0	0
+projections.system_features	338293185505656835	2025-09-17 21:06:55.035026+00			0	0001-01-01 00:00:00+00	0	0
+auth.users3	338293185505656835	2025-09-17 21:05:07.073933+00	338303017977643011	user	6	2025-09-17 20:46:27.721909+00	1758141987.721909	1
+projections.sessions8	338293185505656835	2025-09-17 21:06:59.126682+00	338305782527295491	session	10	2025-09-17 20:46:26.122538+00	1758141986.122538	3
+projections.limits	338293185505656835	2025-09-17 21:07:03.04754+00			0	0001-01-01 00:00:00+00	0	0
+projections.notifications	338293185505656835	2025-09-17 21:07:06.554246+00	338303017977643011	user	4	2025-09-17 20:46:25.16009+00	1758141985.160090	1
+projections.execution_handler	338293185505656835	2025-09-17 21:20:34.599659+00	V2_338309262256111619	auth_request	5	2025-09-17 21:20:34.585778+00	1758144034.585778	4
+projections.users14	338293185505656835	2025-09-17 21:20:36.554275+00	338303017977643011	user	6	2025-09-17 20:46:27.721909+00	1758141987.721909	1
+projections.web_keys1	338293185505656835	2025-09-17 21:20:37.824816+00	338293186797502467	web_key	1	2025-09-17 18:40:52.502632+00	1758134452.502632	3
+projections.restrictions2	338293185505656835	2025-09-17 21:20:37.879978+00			0	0001-01-01 00:00:00+00	0	0
+auth.user_sessions	338293185505656835	2025-09-17 21:04:16.162457+00	338303017977643011	user	5	2025-09-17 20:46:26.122538+00	1758141986.122538	1
+projections.notifications_quota	338293185505656835	2025-09-17 21:04:31.537901+00			0	0001-01-01 00:00:00+00	0	0
+auth.tokens	338293185505656835	2025-09-17 21:06:12.963185+00	338293185506312195	user	2	2025-09-17 18:40:52.502632+00	1758134452.502632	1
+projections.quotas	338293185505656835	2025-09-17 21:06:13.56423+00			0	0001-01-01 00:00:00+00	0	0
+projections.targets2	338293185505656835	2025-09-17 21:06:23.833597+00			0	0001-01-01 00:00:00+00	0	0
+projections.hosted_login_translations	338293185505656835	2025-09-17 21:06:26.661596+00			0	0001-01-01 00:00:00+00	0	0
+projections.idps3	338293185505656835	2025-09-17 21:06:27.788848+00			0	0001-01-01 00:00:00+00	0	0
+projections.project_roles4	338293185505656835	2025-09-17 21:06:27.78961+00			0	0001-01-01 00:00:00+00	0	0
+projections.instance_features2	338293185505656835	2025-09-17 21:06:35.821896+00	338293185505656835	feature	2	2025-09-17 18:40:52.502632+00	1758134452.502632	2
+projections.executions1	338293185505656835	2025-09-17 21:06:44.155077+00			0	0001-01-01 00:00:00+00	0	0
+projections.debug_events	338293185505656835	2025-09-17 21:06:44.778848+00			0	0001-01-01 00:00:00+00	0	0
 \.
 
 
 --
--- Data for Name: custom_texts2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: custom_texts2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.custom_texts2 (aggregate_id, instance_id, creation_date, change_date, sequence, is_default, template, language, key, text, owner_removed) FROM stdin;
@@ -5892,7 +6024,7 @@ COPY projections.custom_texts2 (aggregate_id, instance_id, creation_date, change
 
 
 --
--- Data for Name: debug_events; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: debug_events; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.debug_events (id, creation_date, change_date, resource_owner, instance_id, sequence, blob) FROM stdin;
@@ -5900,7 +6032,7 @@ COPY projections.debug_events (id, creation_date, change_date, resource_owner, i
 
 
 --
--- Data for Name: device_auth_requests2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: device_auth_requests2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.device_auth_requests2 (client_id, device_code, user_code, scopes, audience, creation_date, change_date, sequence, instance_id) FROM stdin;
@@ -5908,7 +6040,7 @@ COPY projections.device_auth_requests2 (client_id, device_code, user_code, scope
 
 
 --
--- Data for Name: domain_policies2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: domain_policies2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.domain_policies2 (id, creation_date, change_date, sequence, state, user_login_must_be_domain, validate_org_domains, smtp_sender_address_matches_instance_domain, is_default, resource_owner, instance_id, owner_removed) FROM stdin;
@@ -5917,7 +6049,7 @@ COPY projections.domain_policies2 (id, creation_date, change_date, sequence, sta
 
 
 --
--- Data for Name: executions1; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: executions1; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.executions1 (id, creation_date, change_date, sequence, instance_id) FROM stdin;
@@ -5925,7 +6057,7 @@ COPY projections.executions1 (id, creation_date, change_date, sequence, instance
 
 
 --
--- Data for Name: executions1_targets; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: executions1_targets; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.executions1_targets (instance_id, execution_id, "position", include, target_id) FROM stdin;
@@ -5933,7 +6065,7 @@ COPY projections.executions1_targets (instance_id, execution_id, "position", inc
 
 
 --
--- Data for Name: failed_events; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: failed_events; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.failed_events (projection_name, failed_sequence, failure_count, error, instance_id, last_failed) FROM stdin;
@@ -5941,7 +6073,7 @@ COPY projections.failed_events (projection_name, failed_sequence, failure_count,
 
 
 --
--- Data for Name: failed_events2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: failed_events2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.failed_events2 (projection_name, instance_id, aggregate_type, aggregate_id, event_creation_date, failed_sequence, failure_count, error, last_failed) FROM stdin;
@@ -5949,7 +6081,7 @@ COPY projections.failed_events2 (projection_name, instance_id, aggregate_type, a
 
 
 --
--- Data for Name: flow_triggers3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: flow_triggers3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.flow_triggers3 (flow_type, change_date, sequence, trigger_type, resource_owner, instance_id, trigger_sequence, action_id) FROM stdin;
@@ -5957,7 +6089,7 @@ COPY projections.flow_triggers3 (flow_type, change_date, sequence, trigger_type,
 
 
 --
--- Data for Name: hosted_login_translations; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: hosted_login_translations; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.hosted_login_translations (instance_id, creation_date, change_date, aggregate_id, aggregate_type, sequence, locale, file, etag) FROM stdin;
@@ -5965,7 +6097,7 @@ COPY projections.hosted_login_translations (instance_id, creation_date, change_d
 
 
 --
--- Data for Name: idp_login_policy_links5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_login_policy_links5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_login_policy_links5 (idp_id, aggregate_id, creation_date, change_date, sequence, resource_owner, instance_id, provider_type, owner_removed) FROM stdin;
@@ -5973,7 +6105,7 @@ COPY projections.idp_login_policy_links5 (idp_id, aggregate_id, creation_date, c
 
 
 --
--- Data for Name: idp_templates6; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6 (id, creation_date, change_date, sequence, resource_owner, instance_id, state, name, owner_type, type, owner_removed, is_creation_allowed, is_linking_allowed, is_auto_creation, is_auto_update, auto_linking) FROM stdin;
@@ -5981,7 +6113,7 @@ COPY projections.idp_templates6 (id, creation_date, change_date, sequence, resou
 
 
 --
--- Data for Name: idp_templates6_apple; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_apple; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_apple (idp_id, instance_id, client_id, team_id, key_id, private_key, scopes) FROM stdin;
@@ -5989,7 +6121,7 @@ COPY projections.idp_templates6_apple (idp_id, instance_id, client_id, team_id, 
 
 
 --
--- Data for Name: idp_templates6_azure; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_azure; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_azure (idp_id, instance_id, client_id, client_secret, scopes, tenant, is_email_verified) FROM stdin;
@@ -5997,7 +6129,7 @@ COPY projections.idp_templates6_azure (idp_id, instance_id, client_id, client_se
 
 
 --
--- Data for Name: idp_templates6_github; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_github; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_github (idp_id, instance_id, client_id, client_secret, scopes) FROM stdin;
@@ -6005,7 +6137,7 @@ COPY projections.idp_templates6_github (idp_id, instance_id, client_id, client_s
 
 
 --
--- Data for Name: idp_templates6_github_enterprise; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_github_enterprise; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_github_enterprise (idp_id, instance_id, client_id, client_secret, authorization_endpoint, token_endpoint, user_endpoint, scopes) FROM stdin;
@@ -6013,7 +6145,7 @@ COPY projections.idp_templates6_github_enterprise (idp_id, instance_id, client_i
 
 
 --
--- Data for Name: idp_templates6_gitlab; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_gitlab; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_gitlab (idp_id, instance_id, client_id, client_secret, scopes) FROM stdin;
@@ -6021,7 +6153,7 @@ COPY projections.idp_templates6_gitlab (idp_id, instance_id, client_id, client_s
 
 
 --
--- Data for Name: idp_templates6_gitlab_self_hosted; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_gitlab_self_hosted; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_gitlab_self_hosted (idp_id, instance_id, issuer, client_id, client_secret, scopes) FROM stdin;
@@ -6029,7 +6161,7 @@ COPY projections.idp_templates6_gitlab_self_hosted (idp_id, instance_id, issuer,
 
 
 --
--- Data for Name: idp_templates6_google; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_google; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_google (idp_id, instance_id, client_id, client_secret, scopes) FROM stdin;
@@ -6037,7 +6169,7 @@ COPY projections.idp_templates6_google (idp_id, instance_id, client_id, client_s
 
 
 --
--- Data for Name: idp_templates6_jwt; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_jwt; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_jwt (idp_id, instance_id, issuer, jwt_endpoint, keys_endpoint, header_name) FROM stdin;
@@ -6045,7 +6177,7 @@ COPY projections.idp_templates6_jwt (idp_id, instance_id, issuer, jwt_endpoint, 
 
 
 --
--- Data for Name: idp_templates6_ldap2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_ldap2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_ldap2 (idp_id, instance_id, servers, start_tls, base_dn, bind_dn, bind_password, user_base, user_object_classes, user_filters, timeout, root_ca, id_attribute, first_name_attribute, last_name_attribute, display_name_attribute, nick_name_attribute, preferred_username_attribute, email_attribute, email_verified, phone_attribute, phone_verified_attribute, preferred_language_attribute, avatar_url_attribute, profile_attribute) FROM stdin;
@@ -6053,7 +6185,7 @@ COPY projections.idp_templates6_ldap2 (idp_id, instance_id, servers, start_tls, 
 
 
 --
--- Data for Name: idp_templates6_oauth2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_oauth2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_oauth2 (idp_id, instance_id, client_id, client_secret, authorization_endpoint, token_endpoint, user_endpoint, scopes, id_attribute, use_pkce) FROM stdin;
@@ -6061,7 +6193,7 @@ COPY projections.idp_templates6_oauth2 (idp_id, instance_id, client_id, client_s
 
 
 --
--- Data for Name: idp_templates6_oidc; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_oidc; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_oidc (idp_id, instance_id, issuer, client_id, client_secret, scopes, id_token_mapping, use_pkce) FROM stdin;
@@ -6069,7 +6201,7 @@ COPY projections.idp_templates6_oidc (idp_id, instance_id, issuer, client_id, cl
 
 
 --
--- Data for Name: idp_templates6_saml; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_templates6_saml; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_templates6_saml (idp_id, instance_id, metadata, key, certificate, binding, with_signed_request, name_id_format, transient_mapping_attribute_name, federated_logout_enabled) FROM stdin;
@@ -6077,7 +6209,7 @@ COPY projections.idp_templates6_saml (idp_id, instance_id, metadata, key, certif
 
 
 --
--- Data for Name: idp_user_links3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idp_user_links3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idp_user_links3 (idp_id, user_id, external_user_id, creation_date, change_date, sequence, resource_owner, instance_id, display_name, owner_removed) FROM stdin;
@@ -6085,7 +6217,7 @@ COPY projections.idp_user_links3 (idp_id, user_id, external_user_id, creation_da
 
 
 --
--- Data for Name: idps3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idps3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idps3 (id, creation_date, change_date, sequence, resource_owner, instance_id, state, name, styling_type, owner_type, auto_register, type, owner_removed) FROM stdin;
@@ -6093,7 +6225,7 @@ COPY projections.idps3 (id, creation_date, change_date, sequence, resource_owner
 
 
 --
--- Data for Name: idps3_jwt_config; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idps3_jwt_config; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idps3_jwt_config (idp_id, instance_id, issuer, keys_endpoint, header_name, endpoint) FROM stdin;
@@ -6101,7 +6233,7 @@ COPY projections.idps3_jwt_config (idp_id, instance_id, issuer, keys_endpoint, h
 
 
 --
--- Data for Name: idps3_oidc_config; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: idps3_oidc_config; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.idps3_oidc_config (idp_id, instance_id, client_id, client_secret, issuer, scopes, display_name_mapping, username_mapping, authorization_endpoint, token_endpoint) FROM stdin;
@@ -6109,7 +6241,7 @@ COPY projections.idps3_oidc_config (idp_id, instance_id, client_id, client_secre
 
 
 --
--- Data for Name: instance_domains; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: instance_domains; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.instance_domains (instance_id, creation_date, change_date, sequence, domain, is_generated, is_primary) FROM stdin;
@@ -6119,7 +6251,7 @@ COPY projections.instance_domains (instance_id, creation_date, change_date, sequ
 
 
 --
--- Data for Name: instance_features2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: instance_features2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.instance_features2 (instance_id, key, creation_date, change_date, sequence, value) FROM stdin;
@@ -6129,7 +6261,7 @@ COPY projections.instance_features2 (instance_id, key, creation_date, change_dat
 
 
 --
--- Data for Name: instance_members4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: instance_members4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.instance_members4 (creation_date, change_date, user_id, user_resource_owner, roles, sequence, resource_owner, instance_id, id) FROM stdin;
@@ -6139,7 +6271,7 @@ COPY projections.instance_members4 (creation_date, change_date, user_id, user_re
 
 
 --
--- Data for Name: instance_trusted_domains; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: instance_trusted_domains; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.instance_trusted_domains (instance_id, creation_date, change_date, sequence, domain) FROM stdin;
@@ -6147,7 +6279,7 @@ COPY projections.instance_trusted_domains (instance_id, creation_date, change_da
 
 
 --
--- Data for Name: instances; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: instances; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.instances (id, name, change_date, creation_date, default_org_id, iam_project_id, console_client_id, console_app_id, sequence, default_language) FROM stdin;
@@ -6156,7 +6288,7 @@ COPY projections.instances (id, name, change_date, creation_date, default_org_id
 
 
 --
--- Data for Name: keys4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: keys4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.keys4 (id, creation_date, change_date, resource_owner, instance_id, sequence, algorithm, use) FROM stdin;
@@ -6164,7 +6296,7 @@ COPY projections.keys4 (id, creation_date, change_date, resource_owner, instance
 
 
 --
--- Data for Name: keys4_certificate; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: keys4_certificate; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.keys4_certificate (id, instance_id, expiry, certificate) FROM stdin;
@@ -6172,7 +6304,7 @@ COPY projections.keys4_certificate (id, instance_id, expiry, certificate) FROM s
 
 
 --
--- Data for Name: keys4_private; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: keys4_private; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.keys4_private (id, instance_id, expiry, key) FROM stdin;
@@ -6180,7 +6312,7 @@ COPY projections.keys4_private (id, instance_id, expiry, key) FROM stdin;
 
 
 --
--- Data for Name: keys4_public; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: keys4_public; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.keys4_public (id, instance_id, expiry, key) FROM stdin;
@@ -6188,7 +6320,7 @@ COPY projections.keys4_public (id, instance_id, expiry, key) FROM stdin;
 
 
 --
--- Data for Name: label_policies3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: label_policies3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.label_policies3 (id, creation_date, change_date, sequence, state, is_default, resource_owner, instance_id, hide_login_name_suffix, watermark_disabled, should_error_popup, font_url, light_primary_color, light_warn_color, light_background_color, light_font_color, light_logo_url, light_icon_url, dark_primary_color, dark_warn_color, dark_background_color, dark_font_color, dark_logo_url, dark_icon_url, owner_removed, theme_mode) FROM stdin;
@@ -6198,7 +6330,7 @@ COPY projections.label_policies3 (id, creation_date, change_date, sequence, stat
 
 
 --
--- Data for Name: limits; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: limits; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.limits (aggregate_id, creation_date, change_date, resource_owner, instance_id, sequence, audit_log_retention, block) FROM stdin;
@@ -6206,7 +6338,7 @@ COPY projections.limits (aggregate_id, creation_date, change_date, resource_owne
 
 
 --
--- Data for Name: lockout_policies3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: lockout_policies3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.lockout_policies3 (id, creation_date, change_date, sequence, state, is_default, resource_owner, instance_id, max_password_attempts, max_otp_attempts, show_failure) FROM stdin;
@@ -6215,7 +6347,7 @@ COPY projections.lockout_policies3 (id, creation_date, change_date, sequence, st
 
 
 --
--- Data for Name: locks; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: locks; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.locks (locker_id, locked_until, projection_name, instance_id) FROM stdin;
@@ -6223,7 +6355,7 @@ COPY projections.locks (locker_id, locked_until, projection_name, instance_id) F
 
 
 --
--- Data for Name: login_names3_domains; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: login_names3_domains; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.login_names3_domains (name, is_primary, resource_owner, instance_id) FROM stdin;
@@ -6232,7 +6364,7 @@ zitadel.localhost	t	338293185505722371	338293185505656835
 
 
 --
--- Data for Name: login_names3_policies; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: login_names3_policies; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.login_names3_policies (must_be_domain, is_default, resource_owner, instance_id) FROM stdin;
@@ -6241,7 +6373,7 @@ f	t	338293185505656835	338293185505656835
 
 
 --
--- Data for Name: login_names3_users; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: login_names3_users; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.login_names3_users (id, user_name, resource_owner, instance_id) FROM stdin;
@@ -6252,7 +6384,7 @@ COPY projections.login_names3_users (id, user_name, resource_owner, instance_id)
 
 
 --
--- Data for Name: login_policies5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: login_policies5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.login_policies5 (aggregate_id, instance_id, creation_date, change_date, sequence, is_default, allow_register, allow_username_password, allow_external_idps, force_mfa, force_mfa_local_only, second_factors, multi_factors, passwordless_type, hide_password_reset, ignore_unknown_usernames, allow_domain_discovery, disable_login_with_email, disable_login_with_phone, default_redirect_uri, password_check_lifetime, external_login_check_lifetime, mfa_init_skip_lifetime, second_factor_check_lifetime, multi_factor_check_lifetime, owner_removed) FROM stdin;
@@ -6261,7 +6393,7 @@ COPY projections.login_policies5 (aggregate_id, instance_id, creation_date, chan
 
 
 --
--- Data for Name: mail_templates2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: mail_templates2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.mail_templates2 (aggregate_id, instance_id, creation_date, change_date, sequence, state, is_default, template, owner_removed) FROM stdin;
@@ -6270,7 +6402,7 @@ COPY projections.mail_templates2 (aggregate_id, instance_id, creation_date, chan
 
 
 --
--- Data for Name: message_texts2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: message_texts2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.message_texts2 (aggregate_id, instance_id, creation_date, change_date, sequence, state, type, language, title, pre_header, subject, greeting, text, button_text, footer_text, owner_removed) FROM stdin;
@@ -6290,7 +6422,7 @@ COPY projections.message_texts2 (aggregate_id, instance_id, creation_date, chang
 
 
 --
--- Data for Name: milestones3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: milestones3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.milestones3 (instance_id, type, reached_date, last_pushed_date) FROM stdin;
@@ -6303,7 +6435,7 @@ COPY projections.milestones3 (instance_id, type, reached_date, last_pushed_date)
 
 
 --
--- Data for Name: notification_policies; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: notification_policies; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.notification_policies (id, creation_date, change_date, resource_owner, instance_id, sequence, state, is_default, password_change, owner_removed) FROM stdin;
@@ -6312,7 +6444,7 @@ COPY projections.notification_policies (id, creation_date, change_date, resource
 
 
 --
--- Data for Name: notification_providers; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: notification_providers; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.notification_providers (aggregate_id, creation_date, change_date, sequence, resource_owner, instance_id, state, provider_type, compact) FROM stdin;
@@ -6320,7 +6452,7 @@ COPY projections.notification_providers (aggregate_id, creation_date, change_dat
 
 
 --
--- Data for Name: oidc_settings2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: oidc_settings2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.oidc_settings2 (aggregate_id, creation_date, change_date, resource_owner, instance_id, sequence, access_token_lifetime, id_token_lifetime, refresh_token_idle_expiration, refresh_token_expiration) FROM stdin;
@@ -6329,7 +6461,7 @@ COPY projections.oidc_settings2 (aggregate_id, creation_date, change_date, resou
 
 
 --
--- Data for Name: org_domains2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: org_domains2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.org_domains2 (org_id, instance_id, creation_date, change_date, sequence, domain, is_verified, is_primary, validation_type, owner_removed) FROM stdin;
@@ -6338,7 +6470,7 @@ COPY projections.org_domains2 (org_id, instance_id, creation_date, change_date, 
 
 
 --
--- Data for Name: org_members4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: org_members4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.org_members4 (creation_date, change_date, user_id, user_resource_owner, roles, sequence, resource_owner, instance_id, org_id) FROM stdin;
@@ -6347,7 +6479,7 @@ COPY projections.org_members4 (creation_date, change_date, user_id, user_resourc
 
 
 --
--- Data for Name: org_metadata2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: org_metadata2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.org_metadata2 (org_id, creation_date, change_date, sequence, resource_owner, instance_id, key, value, owner_removed) FROM stdin;
@@ -6355,7 +6487,7 @@ COPY projections.org_metadata2 (org_id, creation_date, change_date, sequence, re
 
 
 --
--- Data for Name: orgs1; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: orgs1; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.orgs1 (id, creation_date, change_date, resource_owner, instance_id, org_state, sequence, name, primary_domain) FROM stdin;
@@ -6364,7 +6496,7 @@ COPY projections.orgs1 (id, creation_date, change_date, resource_owner, instance
 
 
 --
--- Data for Name: password_age_policies2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: password_age_policies2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.password_age_policies2 (id, creation_date, change_date, sequence, state, is_default, resource_owner, instance_id, expire_warn_days, max_age_days, owner_removed) FROM stdin;
@@ -6373,7 +6505,7 @@ COPY projections.password_age_policies2 (id, creation_date, change_date, sequenc
 
 
 --
--- Data for Name: password_complexity_policies2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: password_complexity_policies2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.password_complexity_policies2 (id, creation_date, change_date, sequence, state, is_default, resource_owner, instance_id, min_length, has_lowercase, has_uppercase, has_symbol, has_number, owner_removed) FROM stdin;
@@ -6382,7 +6514,7 @@ COPY projections.password_complexity_policies2 (id, creation_date, change_date, 
 
 
 --
--- Data for Name: personal_access_tokens3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: personal_access_tokens3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.personal_access_tokens3 (id, creation_date, change_date, sequence, resource_owner, instance_id, user_id, expiration, scopes, owner_removed) FROM stdin;
@@ -6391,7 +6523,7 @@ COPY projections.personal_access_tokens3 (id, creation_date, change_date, sequen
 
 
 --
--- Data for Name: privacy_policies4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: privacy_policies4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.privacy_policies4 (id, creation_date, change_date, sequence, state, is_default, resource_owner, instance_id, privacy_link, tos_link, help_link, support_email, docs_link, custom_link, custom_link_text, owner_removed) FROM stdin;
@@ -6400,7 +6532,7 @@ COPY projections.privacy_policies4 (id, creation_date, change_date, sequence, st
 
 
 --
--- Data for Name: project_grant_members4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: project_grant_members4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.project_grant_members4 (creation_date, change_date, user_id, user_resource_owner, roles, sequence, resource_owner, instance_id, project_id, grant_id, granted_org) FROM stdin;
@@ -6408,7 +6540,7 @@ COPY projections.project_grant_members4 (creation_date, change_date, user_id, us
 
 
 --
--- Data for Name: project_grants4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: project_grants4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.project_grants4 (grant_id, creation_date, change_date, sequence, state, resource_owner, instance_id, project_id, granted_org_id, granted_role_keys) FROM stdin;
@@ -6416,7 +6548,7 @@ COPY projections.project_grants4 (grant_id, creation_date, change_date, sequence
 
 
 --
--- Data for Name: project_members4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: project_members4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.project_members4 (creation_date, change_date, user_id, user_resource_owner, roles, sequence, resource_owner, instance_id, project_id) FROM stdin;
@@ -6424,7 +6556,7 @@ COPY projections.project_members4 (creation_date, change_date, user_id, user_res
 
 
 --
--- Data for Name: project_roles4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: project_roles4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.project_roles4 (project_id, role_key, creation_date, change_date, sequence, resource_owner, instance_id, display_name, group_name) FROM stdin;
@@ -6432,7 +6564,7 @@ COPY projections.project_roles4 (project_id, role_key, creation_date, change_dat
 
 
 --
--- Data for Name: projects4; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: projects4; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.projects4 (id, creation_date, change_date, sequence, state, resource_owner, instance_id, name, project_role_assertion, project_role_check, has_project_check, private_labeling_setting) FROM stdin;
@@ -6442,7 +6574,7 @@ COPY projections.projects4 (id, creation_date, change_date, sequence, state, res
 
 
 --
--- Data for Name: quotas; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: quotas; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.quotas (id, instance_id, unit, amount, from_anchor, "interval", limit_usage) FROM stdin;
@@ -6450,7 +6582,7 @@ COPY projections.quotas (id, instance_id, unit, amount, from_anchor, "interval",
 
 
 --
--- Data for Name: quotas_notifications; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: quotas_notifications; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.quotas_notifications (instance_id, unit, id, call_url, percent, repeat, latest_due_period_start, next_due_threshold) FROM stdin;
@@ -6458,7 +6590,7 @@ COPY projections.quotas_notifications (instance_id, unit, id, call_url, percent,
 
 
 --
--- Data for Name: quotas_periods; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: quotas_periods; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.quotas_periods (instance_id, unit, start, usage) FROM stdin;
@@ -6466,7 +6598,7 @@ COPY projections.quotas_periods (instance_id, unit, start, usage) FROM stdin;
 
 
 --
--- Data for Name: resource_counts; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: resource_counts; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.resource_counts (id, instance_id, table_name, parent_type, parent_id, resource_name, updated_at, amount) FROM stdin;
@@ -6482,7 +6614,7 @@ COPY projections.resource_counts (id, instance_id, table_name, parent_type, pare
 
 
 --
--- Data for Name: restrictions2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: restrictions2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.restrictions2 (aggregate_id, creation_date, change_date, resource_owner, instance_id, sequence, disallow_public_org_registration, allowed_languages) FROM stdin;
@@ -6490,7 +6622,7 @@ COPY projections.restrictions2 (aggregate_id, creation_date, change_date, resour
 
 
 --
--- Data for Name: saml_requests; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: saml_requests; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.saml_requests (id, creation_date, change_date, sequence, resource_owner, instance_id, login_client, issuer, acs, relay_state, binding) FROM stdin;
@@ -6498,7 +6630,7 @@ COPY projections.saml_requests (id, creation_date, change_date, sequence, resour
 
 
 --
--- Data for Name: secret_generators2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: secret_generators2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.secret_generators2 (generator_type, aggregate_id, creation_date, change_date, sequence, resource_owner, instance_id, length, expiry, include_lower_letters, include_upper_letters, include_digits, include_symbols) FROM stdin;
@@ -6515,7 +6647,7 @@ COPY projections.secret_generators2 (generator_type, aggregate_id, creation_date
 
 
 --
--- Data for Name: security_policies2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: security_policies2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.security_policies2 (creation_date, change_date, instance_id, sequence, enable_iframe_embedding, origins, enable_impersonation) FROM stdin;
@@ -6523,7 +6655,7 @@ COPY projections.security_policies2 (creation_date, change_date, instance_id, se
 
 
 --
--- Data for Name: sessions8; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: sessions8; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.sessions8 (id, creation_date, change_date, sequence, state, resource_owner, instance_id, creator, user_id, user_resource_owner, user_checked_at, password_checked_at, intent_checked_at, webauthn_checked_at, webauthn_user_verified, totp_checked_at, otp_sms_checked_at, otp_email_checked_at, metadata, token_id, user_agent_fingerprint_id, user_agent_ip, user_agent_description, user_agent_header, expiration) FROM stdin;
@@ -6533,7 +6665,7 @@ COPY projections.sessions8 (id, creation_date, change_date, sequence, state, res
 
 
 --
--- Data for Name: sms_configs3; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: sms_configs3; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.sms_configs3 (id, aggregate_id, creation_date, change_date, sequence, state, resource_owner, instance_id, description) FROM stdin;
@@ -6541,7 +6673,7 @@ COPY projections.sms_configs3 (id, aggregate_id, creation_date, change_date, seq
 
 
 --
--- Data for Name: sms_configs3_http; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: sms_configs3_http; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.sms_configs3_http (sms_id, instance_id, endpoint) FROM stdin;
@@ -6549,7 +6681,7 @@ COPY projections.sms_configs3_http (sms_id, instance_id, endpoint) FROM stdin;
 
 
 --
--- Data for Name: sms_configs3_twilio; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: sms_configs3_twilio; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.sms_configs3_twilio (sms_id, instance_id, sid, sender_number, token, verify_service_sid) FROM stdin;
@@ -6557,7 +6689,7 @@ COPY projections.sms_configs3_twilio (sms_id, instance_id, sid, sender_number, t
 
 
 --
--- Data for Name: smtp_configs5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: smtp_configs5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.smtp_configs5 (id, aggregate_id, creation_date, change_date, sequence, resource_owner, instance_id, description, state) FROM stdin;
@@ -6565,7 +6697,7 @@ COPY projections.smtp_configs5 (id, aggregate_id, creation_date, change_date, se
 
 
 --
--- Data for Name: smtp_configs5_http; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: smtp_configs5_http; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.smtp_configs5_http (id, instance_id, endpoint) FROM stdin;
@@ -6573,7 +6705,7 @@ COPY projections.smtp_configs5_http (id, instance_id, endpoint) FROM stdin;
 
 
 --
--- Data for Name: smtp_configs5_smtp; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: smtp_configs5_smtp; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.smtp_configs5_smtp (id, instance_id, tls, sender_address, sender_name, reply_to_address, host, username, password) FROM stdin;
@@ -6581,7 +6713,7 @@ COPY projections.smtp_configs5_smtp (id, instance_id, tls, sender_address, sende
 
 
 --
--- Data for Name: system_features; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: system_features; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.system_features (key, creation_date, change_date, sequence, value) FROM stdin;
@@ -6589,7 +6721,7 @@ COPY projections.system_features (key, creation_date, change_date, sequence, val
 
 
 --
--- Data for Name: targets2; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: targets2; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.targets2 (id, creation_date, change_date, resource_owner, instance_id, target_type, sequence, name, endpoint, timeout, interrupt_on_error, signing_key) FROM stdin;
@@ -6597,7 +6729,7 @@ COPY projections.targets2 (id, creation_date, change_date, resource_owner, insta
 
 
 --
--- Data for Name: user_auth_methods5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: user_auth_methods5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.user_auth_methods5 (user_id, method_type, token_id, creation_date, change_date, sequence, state, resource_owner, instance_id, name, domain) FROM stdin;
@@ -6605,7 +6737,7 @@ COPY projections.user_auth_methods5 (user_id, method_type, token_id, creation_da
 
 
 --
--- Data for Name: user_grants5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: user_grants5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.user_grants5 (id, creation_date, change_date, sequence, state, resource_owner, instance_id, user_id, resource_owner_user, project_id, resource_owner_project, grant_id, granted_org, roles) FROM stdin;
@@ -6614,7 +6746,7 @@ COPY projections.user_grants5 (id, creation_date, change_date, sequence, state, 
 
 
 --
--- Data for Name: user_metadata5; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: user_metadata5; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.user_metadata5 (user_id, creation_date, change_date, sequence, resource_owner, instance_id, key, value) FROM stdin;
@@ -6622,7 +6754,7 @@ COPY projections.user_metadata5 (user_id, creation_date, change_date, sequence, 
 
 
 --
--- Data for Name: user_schemas1; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: user_schemas1; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.user_schemas1 (id, creation_date, change_date, sequence, state, instance_id, type, revision, schema, possible_authenticators) FROM stdin;
@@ -6630,7 +6762,7 @@ COPY projections.user_schemas1 (id, creation_date, change_date, sequence, state,
 
 
 --
--- Data for Name: users14; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: users14; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.users14 (id, creation_date, change_date, sequence, state, resource_owner, instance_id, username, type) FROM stdin;
@@ -6641,7 +6773,7 @@ COPY projections.users14 (id, creation_date, change_date, sequence, state, resou
 
 
 --
--- Data for Name: users14_humans; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: users14_humans; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.users14_humans (user_id, instance_id, first_name, last_name, nick_name, display_name, preferred_language, gender, avatar_key, email, is_email_verified, phone, is_phone_verified, password_change_required, password_changed, mfa_init_skipped) FROM stdin;
@@ -6651,7 +6783,7 @@ COPY projections.users14_humans (user_id, instance_id, first_name, last_name, ni
 
 
 --
--- Data for Name: users14_machines; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: users14_machines; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.users14_machines (user_id, instance_id, name, description, secret, access_token_type) FROM stdin;
@@ -6660,7 +6792,7 @@ COPY projections.users14_machines (user_id, instance_id, name, description, secr
 
 
 --
--- Data for Name: users14_notifications; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: users14_notifications; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.users14_notifications (user_id, instance_id, last_email, verified_email, last_phone, verified_phone, password_set) FROM stdin;
@@ -6670,7 +6802,7 @@ COPY projections.users14_notifications (user_id, instance_id, last_email, verifi
 
 
 --
--- Data for Name: web_keys1; Type: TABLE DATA; Schema: projections; Owner: zitadel
+-- Data for Name: web_keys1; Type: TABLE DATA; Schema: projections; Owner: -
 --
 
 COPY projections.web_keys1 (instance_id, key_id, creation_date, change_date, sequence, state, private_key, public_key, config, config_type) FROM stdin;
@@ -6680,7 +6812,7 @@ COPY projections.web_keys1 (instance_id, key_id, creation_date, change_date, seq
 
 
 --
--- Data for Name: river_client; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_client; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_client (id, created_at, metadata, paused_at, updated_at) FROM stdin;
@@ -6688,7 +6820,7 @@ COPY queue.river_client (id, created_at, metadata, paused_at, updated_at) FROM s
 
 
 --
--- Data for Name: river_client_queue; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_client_queue; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_client_queue (river_client_id, name, created_at, max_workers, metadata, num_jobs_completed, num_jobs_running, updated_at) FROM stdin;
@@ -6696,7 +6828,7 @@ COPY queue.river_client_queue (river_client_id, name, created_at, max_workers, m
 
 
 --
--- Data for Name: river_job; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_job; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_job (id, state, attempt, max_attempts, attempted_at, created_at, finalized_at, scheduled_at, priority, args, attempted_by, errors, kind, metadata, queue, tags, unique_key, unique_states) FROM stdin;
@@ -6704,16 +6836,16 @@ COPY queue.river_job (id, state, attempt, max_attempts, attempted_at, created_at
 
 
 --
--- Data for Name: river_leader; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_leader; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_leader (elected_at, expires_at, leader_id, name) FROM stdin;
-2025-09-17 18:40:53.511395+00	2025-09-17 20:56:52.884696+00	5383d22e00e1_2025_09_17T18_40_53_510375	default
+2025-09-17 21:20:22.919602+00	2025-09-17 21:21:02.937471+00	5383d22e00e1_2025_09_17T21_20_22_919027	default
 \.
 
 
 --
--- Data for Name: river_migration; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_migration; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_migration (line, version, created_at) FROM stdin;
@@ -6727,17 +6859,17 @@ main	6	2025-09-17 18:40:52.994857+00
 
 
 --
--- Data for Name: river_queue; Type: TABLE DATA; Schema: queue; Owner: zitadel
+-- Data for Name: river_queue; Type: TABLE DATA; Schema: queue; Owner: -
 --
 
 COPY queue.river_queue (name, created_at, metadata, paused_at, updated_at) FROM stdin;
-service_ping_report	2025-09-17 18:40:53.512755+00	{}	\N	2025-09-17 20:50:53.743089+00
-execution	2025-09-17 18:40:53.51186+00	{}	\N	2025-09-17 20:50:54.637237+00
+service_ping_report	2025-09-17 18:40:53.512755+00	{}	\N	2025-09-17 21:20:22.919964+00
+execution	2025-09-17 18:40:53.51186+00	{}	\N	2025-09-17 21:20:22.928894+00
 \.
 
 
 --
--- Data for Name: assets; Type: TABLE DATA; Schema: system; Owner: zitadel
+-- Data for Name: assets; Type: TABLE DATA; Schema: system; Owner: -
 --
 
 COPY system.assets (instance_id, asset_type, resource_owner, name, content_type, data, updated_at) FROM stdin;
@@ -6746,7 +6878,7 @@ COPY system.assets (instance_id, asset_type, resource_owner, name, content_type,
 
 
 --
--- Data for Name: encryption_keys; Type: TABLE DATA; Schema: system; Owner: zitadel
+-- Data for Name: encryption_keys; Type: TABLE DATA; Schema: system; Owner: -
 --
 
 COPY system.encryption_keys (id, key) FROM stdin;
@@ -6765,21 +6897,21 @@ userAgentCookieKey	7_vKxanfhoD4GvvZaq9LhrDiXpfj9nmiETH5h_YBQhoWypAmR1WRmBqVQis-C
 
 
 --
--- Name: resource_counts_id_seq; Type: SEQUENCE SET; Schema: projections; Owner: zitadel
+-- Name: resource_counts_id_seq; Type: SEQUENCE SET; Schema: projections; Owner: -
 --
 
 SELECT pg_catalog.setval('projections.resource_counts_id_seq', 12, true);
 
 
 --
--- Name: river_job_id_seq; Type: SEQUENCE SET; Schema: queue; Owner: zitadel
+-- Name: river_job_id_seq; Type: SEQUENCE SET; Schema: queue; Owner: -
 --
 
 SELECT pg_catalog.setval('queue.river_job_id_seq', 1, false);
 
 
 --
--- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: zitadel
+-- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: -
 --
 
 ALTER TABLE ONLY adminapi.current_sequences
@@ -6787,7 +6919,7 @@ ALTER TABLE ONLY adminapi.current_sequences
 
 
 --
--- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: zitadel
+-- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: -
 --
 
 ALTER TABLE ONLY adminapi.failed_events
@@ -6795,7 +6927,7 @@ ALTER TABLE ONLY adminapi.failed_events
 
 
 --
--- Name: locks locks_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: zitadel
+-- Name: locks locks_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: -
 --
 
 ALTER TABLE ONLY adminapi.locks
@@ -6803,7 +6935,7 @@ ALTER TABLE ONLY adminapi.locks
 
 
 --
--- Name: styling2 styling2_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: zitadel
+-- Name: styling2 styling2_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: -
 --
 
 ALTER TABLE ONLY adminapi.styling2
@@ -6811,7 +6943,7 @@ ALTER TABLE ONLY adminapi.styling2
 
 
 --
--- Name: styling styling_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: zitadel
+-- Name: styling styling_pkey; Type: CONSTRAINT; Schema: adminapi; Owner: -
 --
 
 ALTER TABLE ONLY adminapi.styling
@@ -6819,7 +6951,7 @@ ALTER TABLE ONLY adminapi.styling
 
 
 --
--- Name: auth_requests auth_requests_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: auth_requests auth_requests_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.auth_requests
@@ -6827,7 +6959,7 @@ ALTER TABLE ONLY auth.auth_requests
 
 
 --
--- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.current_sequences
@@ -6835,7 +6967,7 @@ ALTER TABLE ONLY auth.current_sequences
 
 
 --
--- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.failed_events
@@ -6843,7 +6975,7 @@ ALTER TABLE ONLY auth.failed_events
 
 
 --
--- Name: idp_configs2 idp_configs2_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: idp_configs2 idp_configs2_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.idp_configs2
@@ -6851,7 +6983,7 @@ ALTER TABLE ONLY auth.idp_configs2
 
 
 --
--- Name: idp_configs idp_configs_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: idp_configs idp_configs_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.idp_configs
@@ -6859,7 +6991,7 @@ ALTER TABLE ONLY auth.idp_configs
 
 
 --
--- Name: idp_providers2 idp_providers2_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: idp_providers2 idp_providers2_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.idp_providers2
@@ -6867,7 +6999,7 @@ ALTER TABLE ONLY auth.idp_providers2
 
 
 --
--- Name: idp_providers idp_providers_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: idp_providers idp_providers_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.idp_providers
@@ -6875,7 +7007,7 @@ ALTER TABLE ONLY auth.idp_providers
 
 
 --
--- Name: locks locks_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: locks locks_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.locks
@@ -6883,7 +7015,7 @@ ALTER TABLE ONLY auth.locks
 
 
 --
--- Name: org_project_mapping2 org_project_mapping2_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: org_project_mapping2 org_project_mapping2_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.org_project_mapping2
@@ -6891,7 +7023,7 @@ ALTER TABLE ONLY auth.org_project_mapping2
 
 
 --
--- Name: org_project_mapping org_project_mapping_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: org_project_mapping org_project_mapping_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.org_project_mapping
@@ -6899,7 +7031,7 @@ ALTER TABLE ONLY auth.org_project_mapping
 
 
 --
--- Name: refresh_tokens refresh_tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: refresh_tokens refresh_tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.refresh_tokens
@@ -6907,7 +7039,7 @@ ALTER TABLE ONLY auth.refresh_tokens
 
 
 --
--- Name: tokens tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: tokens tokens_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.tokens
@@ -6915,7 +7047,7 @@ ALTER TABLE ONLY auth.tokens
 
 
 --
--- Name: user_external_idps2 user_external_idps2_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: user_external_idps2 user_external_idps2_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.user_external_idps2
@@ -6923,7 +7055,7 @@ ALTER TABLE ONLY auth.user_external_idps2
 
 
 --
--- Name: user_external_idps user_external_idps_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: user_external_idps user_external_idps_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.user_external_idps
@@ -6931,7 +7063,7 @@ ALTER TABLE ONLY auth.user_external_idps
 
 
 --
--- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: user_sessions user_sessions_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.user_sessions
@@ -6939,7 +7071,7 @@ ALTER TABLE ONLY auth.user_sessions
 
 
 --
--- Name: users2 users2_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: users2 users2_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.users2
@@ -6947,7 +7079,7 @@ ALTER TABLE ONLY auth.users2
 
 
 --
--- Name: users3 users3_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: users3 users3_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.users3
@@ -6955,7 +7087,7 @@ ALTER TABLE ONLY auth.users3
 
 
 --
--- Name: users users_pkey; Type: CONSTRAINT; Schema: auth; Owner: zitadel
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: auth; Owner: -
 --
 
 ALTER TABLE ONLY auth.users
@@ -6963,7 +7095,7 @@ ALTER TABLE ONLY auth.users
 
 
 --
--- Name: objects objects_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: objects objects_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.objects
@@ -6971,7 +7103,7 @@ ALTER TABLE ONLY cache.objects
 
 
 --
--- Name: objects_federated_logout objects_federated_logout_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: objects_federated_logout objects_federated_logout_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.objects_federated_logout
@@ -6979,7 +7111,7 @@ ALTER TABLE ONLY cache.objects_federated_logout
 
 
 --
--- Name: objects_id_p_form_callback objects_id_p_form_callback_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: objects_id_p_form_callback objects_id_p_form_callback_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.objects_id_p_form_callback
@@ -6987,7 +7119,7 @@ ALTER TABLE ONLY cache.objects_id_p_form_callback
 
 
 --
--- Name: string_keys string_keys_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: string_keys string_keys_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.string_keys
@@ -6995,7 +7127,7 @@ ALTER TABLE ONLY cache.string_keys
 
 
 --
--- Name: string_keys_federated_logout string_keys_federated_logout_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout string_keys_federated_logout_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.string_keys_federated_logout
@@ -7003,7 +7135,7 @@ ALTER TABLE ONLY cache.string_keys_federated_logout
 
 
 --
--- Name: string_keys_id_p_form_callback string_keys_id_p_form_callback_pkey; Type: CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback string_keys_id_p_form_callback_pkey; Type: CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE ONLY cache.string_keys_id_p_form_callback
@@ -7011,7 +7143,7 @@ ALTER TABLE ONLY cache.string_keys_id_p_form_callback
 
 
 --
--- Name: events2 events2_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: zitadel
+-- Name: events2 events2_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: -
 --
 
 ALTER TABLE ONLY eventstore.events2
@@ -7019,7 +7151,7 @@ ALTER TABLE ONLY eventstore.events2
 
 
 --
--- Name: fields fields_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: zitadel
+-- Name: fields fields_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: -
 --
 
 ALTER TABLE ONLY eventstore.fields
@@ -7027,7 +7159,7 @@ ALTER TABLE ONLY eventstore.fields
 
 
 --
--- Name: unique_constraints unique_constraints_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: zitadel
+-- Name: unique_constraints unique_constraints_pkey; Type: CONSTRAINT; Schema: eventstore; Owner: -
 --
 
 ALTER TABLE ONLY eventstore.unique_constraints
@@ -7035,7 +7167,7 @@ ALTER TABLE ONLY eventstore.unique_constraints
 
 
 --
--- Name: actions3 actions3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: actions3 actions3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.actions3
@@ -7043,7 +7175,7 @@ ALTER TABLE ONLY projections.actions3
 
 
 --
--- Name: apps7_api_configs apps7_api_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_api_configs apps7_api_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_api_configs
@@ -7051,7 +7183,7 @@ ALTER TABLE ONLY projections.apps7_api_configs
 
 
 --
--- Name: apps7_oidc_configs apps7_oidc_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_oidc_configs apps7_oidc_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_oidc_configs
@@ -7059,7 +7191,7 @@ ALTER TABLE ONLY projections.apps7_oidc_configs
 
 
 --
--- Name: apps7 apps7_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7 apps7_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7
@@ -7067,7 +7199,7 @@ ALTER TABLE ONLY projections.apps7
 
 
 --
--- Name: apps7_saml_configs apps7_saml_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_saml_configs apps7_saml_configs_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_saml_configs
@@ -7075,7 +7207,7 @@ ALTER TABLE ONLY projections.apps7_saml_configs
 
 
 --
--- Name: auth_requests auth_requests_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: auth_requests auth_requests_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.auth_requests
@@ -7083,7 +7215,7 @@ ALTER TABLE ONLY projections.auth_requests
 
 
 --
--- Name: authn_keys2 authn_keys2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: authn_keys2 authn_keys2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.authn_keys2
@@ -7091,7 +7223,7 @@ ALTER TABLE ONLY projections.authn_keys2
 
 
 --
--- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: current_sequences current_sequences_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.current_sequences
@@ -7099,7 +7231,7 @@ ALTER TABLE ONLY projections.current_sequences
 
 
 --
--- Name: current_states current_states_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: current_states current_states_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.current_states
@@ -7107,7 +7239,7 @@ ALTER TABLE ONLY projections.current_states
 
 
 --
--- Name: custom_texts2 custom_texts2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: custom_texts2 custom_texts2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.custom_texts2
@@ -7115,7 +7247,7 @@ ALTER TABLE ONLY projections.custom_texts2
 
 
 --
--- Name: debug_events debug_events_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: debug_events debug_events_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.debug_events
@@ -7123,7 +7255,7 @@ ALTER TABLE ONLY projections.debug_events
 
 
 --
--- Name: device_auth_requests2 device_auth_requests2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: device_auth_requests2 device_auth_requests2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.device_auth_requests2
@@ -7131,7 +7263,7 @@ ALTER TABLE ONLY projections.device_auth_requests2
 
 
 --
--- Name: domain_policies2 domain_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: domain_policies2 domain_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.domain_policies2
@@ -7139,7 +7271,7 @@ ALTER TABLE ONLY projections.domain_policies2
 
 
 --
--- Name: executions1 executions1_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: executions1 executions1_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.executions1
@@ -7147,7 +7279,7 @@ ALTER TABLE ONLY projections.executions1
 
 
 --
--- Name: executions1_targets executions1_targets_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: executions1_targets executions1_targets_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.executions1_targets
@@ -7155,7 +7287,7 @@ ALTER TABLE ONLY projections.executions1_targets
 
 
 --
--- Name: failed_events2 failed_events2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: failed_events2 failed_events2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.failed_events2
@@ -7163,7 +7295,7 @@ ALTER TABLE ONLY projections.failed_events2
 
 
 --
--- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: failed_events failed_events_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.failed_events
@@ -7171,7 +7303,7 @@ ALTER TABLE ONLY projections.failed_events
 
 
 --
--- Name: flow_triggers3 flow_triggers3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: flow_triggers3 flow_triggers3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.flow_triggers3
@@ -7179,7 +7311,7 @@ ALTER TABLE ONLY projections.flow_triggers3
 
 
 --
--- Name: hosted_login_translations hosted_login_translations_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: hosted_login_translations hosted_login_translations_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.hosted_login_translations
@@ -7187,7 +7319,7 @@ ALTER TABLE ONLY projections.hosted_login_translations
 
 
 --
--- Name: idp_login_policy_links5 idp_login_policy_links5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_login_policy_links5 idp_login_policy_links5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_login_policy_links5
@@ -7195,7 +7327,7 @@ ALTER TABLE ONLY projections.idp_login_policy_links5
 
 
 --
--- Name: idp_templates6_apple idp_templates6_apple_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_apple idp_templates6_apple_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_apple
@@ -7203,7 +7335,7 @@ ALTER TABLE ONLY projections.idp_templates6_apple
 
 
 --
--- Name: idp_templates6_azure idp_templates6_azure_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_azure idp_templates6_azure_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_azure
@@ -7211,7 +7343,7 @@ ALTER TABLE ONLY projections.idp_templates6_azure
 
 
 --
--- Name: idp_templates6_github_enterprise idp_templates6_github_enterprise_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github_enterprise idp_templates6_github_enterprise_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_github_enterprise
@@ -7219,7 +7351,7 @@ ALTER TABLE ONLY projections.idp_templates6_github_enterprise
 
 
 --
--- Name: idp_templates6_github idp_templates6_github_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github idp_templates6_github_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_github
@@ -7227,7 +7359,7 @@ ALTER TABLE ONLY projections.idp_templates6_github
 
 
 --
--- Name: idp_templates6_gitlab idp_templates6_gitlab_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab idp_templates6_gitlab_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_gitlab
@@ -7235,7 +7367,7 @@ ALTER TABLE ONLY projections.idp_templates6_gitlab
 
 
 --
--- Name: idp_templates6_gitlab_self_hosted idp_templates6_gitlab_self_hosted_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab_self_hosted idp_templates6_gitlab_self_hosted_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_gitlab_self_hosted
@@ -7243,7 +7375,7 @@ ALTER TABLE ONLY projections.idp_templates6_gitlab_self_hosted
 
 
 --
--- Name: idp_templates6_google idp_templates6_google_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_google idp_templates6_google_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_google
@@ -7251,7 +7383,7 @@ ALTER TABLE ONLY projections.idp_templates6_google
 
 
 --
--- Name: idp_templates6_jwt idp_templates6_jwt_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_jwt idp_templates6_jwt_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_jwt
@@ -7259,7 +7391,7 @@ ALTER TABLE ONLY projections.idp_templates6_jwt
 
 
 --
--- Name: idp_templates6_ldap2 idp_templates6_ldap2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_ldap2 idp_templates6_ldap2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_ldap2
@@ -7267,7 +7399,7 @@ ALTER TABLE ONLY projections.idp_templates6_ldap2
 
 
 --
--- Name: idp_templates6_oauth2 idp_templates6_oauth2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oauth2 idp_templates6_oauth2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_oauth2
@@ -7275,7 +7407,7 @@ ALTER TABLE ONLY projections.idp_templates6_oauth2
 
 
 --
--- Name: idp_templates6_oidc idp_templates6_oidc_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oidc idp_templates6_oidc_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_oidc
@@ -7283,7 +7415,7 @@ ALTER TABLE ONLY projections.idp_templates6_oidc
 
 
 --
--- Name: idp_templates6 idp_templates6_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6 idp_templates6_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6
@@ -7291,7 +7423,7 @@ ALTER TABLE ONLY projections.idp_templates6
 
 
 --
--- Name: idp_templates6_saml idp_templates6_saml_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_saml idp_templates6_saml_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_saml
@@ -7299,7 +7431,7 @@ ALTER TABLE ONLY projections.idp_templates6_saml
 
 
 --
--- Name: idp_user_links3 idp_user_links3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_user_links3 idp_user_links3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_user_links3
@@ -7307,7 +7439,7 @@ ALTER TABLE ONLY projections.idp_user_links3
 
 
 --
--- Name: idps3_jwt_config idps3_jwt_config_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idps3_jwt_config idps3_jwt_config_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idps3_jwt_config
@@ -7315,7 +7447,7 @@ ALTER TABLE ONLY projections.idps3_jwt_config
 
 
 --
--- Name: idps3_oidc_config idps3_oidc_config_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idps3_oidc_config idps3_oidc_config_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idps3_oidc_config
@@ -7323,7 +7455,7 @@ ALTER TABLE ONLY projections.idps3_oidc_config
 
 
 --
--- Name: idps3 idps3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idps3 idps3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idps3
@@ -7331,7 +7463,7 @@ ALTER TABLE ONLY projections.idps3
 
 
 --
--- Name: instance_domains instance_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: instance_domains instance_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.instance_domains
@@ -7339,7 +7471,7 @@ ALTER TABLE ONLY projections.instance_domains
 
 
 --
--- Name: instance_features2 instance_features2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: instance_features2 instance_features2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.instance_features2
@@ -7347,7 +7479,7 @@ ALTER TABLE ONLY projections.instance_features2
 
 
 --
--- Name: instance_members4 instance_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: instance_members4 instance_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.instance_members4
@@ -7355,7 +7487,7 @@ ALTER TABLE ONLY projections.instance_members4
 
 
 --
--- Name: instance_trusted_domains instance_trusted_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: instance_trusted_domains instance_trusted_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.instance_trusted_domains
@@ -7363,7 +7495,7 @@ ALTER TABLE ONLY projections.instance_trusted_domains
 
 
 --
--- Name: instances instances_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: instances instances_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.instances
@@ -7371,7 +7503,7 @@ ALTER TABLE ONLY projections.instances
 
 
 --
--- Name: keys4_certificate keys4_certificate_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_certificate keys4_certificate_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_certificate
@@ -7379,7 +7511,7 @@ ALTER TABLE ONLY projections.keys4_certificate
 
 
 --
--- Name: keys4 keys4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4 keys4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4
@@ -7387,7 +7519,7 @@ ALTER TABLE ONLY projections.keys4
 
 
 --
--- Name: keys4_private keys4_private_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_private keys4_private_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_private
@@ -7395,7 +7527,7 @@ ALTER TABLE ONLY projections.keys4_private
 
 
 --
--- Name: keys4_public keys4_public_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_public keys4_public_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_public
@@ -7403,7 +7535,7 @@ ALTER TABLE ONLY projections.keys4_public
 
 
 --
--- Name: label_policies3 label_policies3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: label_policies3 label_policies3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.label_policies3
@@ -7411,7 +7543,7 @@ ALTER TABLE ONLY projections.label_policies3
 
 
 --
--- Name: limits limits_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: limits limits_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.limits
@@ -7419,7 +7551,7 @@ ALTER TABLE ONLY projections.limits
 
 
 --
--- Name: lockout_policies3 lockout_policies3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: lockout_policies3 lockout_policies3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.lockout_policies3
@@ -7427,7 +7559,7 @@ ALTER TABLE ONLY projections.lockout_policies3
 
 
 --
--- Name: locks locks_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: locks locks_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.locks
@@ -7435,7 +7567,7 @@ ALTER TABLE ONLY projections.locks
 
 
 --
--- Name: login_names3_domains login_names3_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: login_names3_domains login_names3_domains_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.login_names3_domains
@@ -7443,7 +7575,7 @@ ALTER TABLE ONLY projections.login_names3_domains
 
 
 --
--- Name: login_names3_policies login_names3_policies_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: login_names3_policies login_names3_policies_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.login_names3_policies
@@ -7451,7 +7583,7 @@ ALTER TABLE ONLY projections.login_names3_policies
 
 
 --
--- Name: login_names3_users login_names3_users_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: login_names3_users login_names3_users_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.login_names3_users
@@ -7459,7 +7591,7 @@ ALTER TABLE ONLY projections.login_names3_users
 
 
 --
--- Name: login_policies5 login_policies5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: login_policies5 login_policies5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.login_policies5
@@ -7467,7 +7599,7 @@ ALTER TABLE ONLY projections.login_policies5
 
 
 --
--- Name: mail_templates2 mail_templates2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: mail_templates2 mail_templates2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.mail_templates2
@@ -7475,7 +7607,7 @@ ALTER TABLE ONLY projections.mail_templates2
 
 
 --
--- Name: message_texts2 message_texts2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: message_texts2 message_texts2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.message_texts2
@@ -7483,7 +7615,7 @@ ALTER TABLE ONLY projections.message_texts2
 
 
 --
--- Name: milestones3 milestones3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: milestones3 milestones3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.milestones3
@@ -7491,7 +7623,7 @@ ALTER TABLE ONLY projections.milestones3
 
 
 --
--- Name: notification_policies notification_policies_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: notification_policies notification_policies_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.notification_policies
@@ -7499,7 +7631,7 @@ ALTER TABLE ONLY projections.notification_policies
 
 
 --
--- Name: notification_providers notification_providers_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: notification_providers notification_providers_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.notification_providers
@@ -7507,7 +7639,7 @@ ALTER TABLE ONLY projections.notification_providers
 
 
 --
--- Name: oidc_settings2 oidc_settings2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: oidc_settings2 oidc_settings2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.oidc_settings2
@@ -7515,7 +7647,7 @@ ALTER TABLE ONLY projections.oidc_settings2
 
 
 --
--- Name: org_domains2 org_domains2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: org_domains2 org_domains2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.org_domains2
@@ -7523,7 +7655,7 @@ ALTER TABLE ONLY projections.org_domains2
 
 
 --
--- Name: org_members4 org_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: org_members4 org_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.org_members4
@@ -7531,7 +7663,7 @@ ALTER TABLE ONLY projections.org_members4
 
 
 --
--- Name: org_metadata2 org_metadata2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: org_metadata2 org_metadata2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.org_metadata2
@@ -7539,7 +7671,7 @@ ALTER TABLE ONLY projections.org_metadata2
 
 
 --
--- Name: orgs1 orgs1_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: orgs1 orgs1_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.orgs1
@@ -7547,7 +7679,7 @@ ALTER TABLE ONLY projections.orgs1
 
 
 --
--- Name: password_age_policies2 password_age_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: password_age_policies2 password_age_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.password_age_policies2
@@ -7555,7 +7687,7 @@ ALTER TABLE ONLY projections.password_age_policies2
 
 
 --
--- Name: password_complexity_policies2 password_complexity_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: password_complexity_policies2 password_complexity_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.password_complexity_policies2
@@ -7563,7 +7695,7 @@ ALTER TABLE ONLY projections.password_complexity_policies2
 
 
 --
--- Name: personal_access_tokens3 personal_access_tokens3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3 personal_access_tokens3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.personal_access_tokens3
@@ -7571,7 +7703,7 @@ ALTER TABLE ONLY projections.personal_access_tokens3
 
 
 --
--- Name: privacy_policies4 privacy_policies4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: privacy_policies4 privacy_policies4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.privacy_policies4
@@ -7579,7 +7711,7 @@ ALTER TABLE ONLY projections.privacy_policies4
 
 
 --
--- Name: project_grant_members4 project_grant_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: project_grant_members4 project_grant_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.project_grant_members4
@@ -7587,7 +7719,7 @@ ALTER TABLE ONLY projections.project_grant_members4
 
 
 --
--- Name: project_grants4 project_grants4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: project_grants4 project_grants4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.project_grants4
@@ -7595,7 +7727,7 @@ ALTER TABLE ONLY projections.project_grants4
 
 
 --
--- Name: project_members4 project_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: project_members4 project_members4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.project_members4
@@ -7603,7 +7735,7 @@ ALTER TABLE ONLY projections.project_members4
 
 
 --
--- Name: project_roles4 project_roles4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: project_roles4 project_roles4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.project_roles4
@@ -7611,7 +7743,7 @@ ALTER TABLE ONLY projections.project_roles4
 
 
 --
--- Name: projects4 projects4_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: projects4 projects4_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.projects4
@@ -7619,7 +7751,7 @@ ALTER TABLE ONLY projections.projects4
 
 
 --
--- Name: quotas_notifications quotas_notifications_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: quotas_notifications quotas_notifications_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.quotas_notifications
@@ -7627,7 +7759,7 @@ ALTER TABLE ONLY projections.quotas_notifications
 
 
 --
--- Name: quotas_periods quotas_periods_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: quotas_periods quotas_periods_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.quotas_periods
@@ -7635,7 +7767,7 @@ ALTER TABLE ONLY projections.quotas_periods
 
 
 --
--- Name: quotas quotas_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: quotas quotas_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.quotas
@@ -7643,7 +7775,7 @@ ALTER TABLE ONLY projections.quotas
 
 
 --
--- Name: resource_counts resource_counts_instance_id_parent_type_parent_id_table_nam_key; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: resource_counts resource_counts_instance_id_parent_type_parent_id_table_nam_key; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.resource_counts
@@ -7651,7 +7783,7 @@ ALTER TABLE ONLY projections.resource_counts
 
 
 --
--- Name: resource_counts resource_counts_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: resource_counts resource_counts_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.resource_counts
@@ -7659,7 +7791,7 @@ ALTER TABLE ONLY projections.resource_counts
 
 
 --
--- Name: restrictions2 restrictions2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: restrictions2 restrictions2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.restrictions2
@@ -7667,7 +7799,7 @@ ALTER TABLE ONLY projections.restrictions2
 
 
 --
--- Name: saml_requests saml_requests_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: saml_requests saml_requests_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.saml_requests
@@ -7675,7 +7807,7 @@ ALTER TABLE ONLY projections.saml_requests
 
 
 --
--- Name: secret_generators2 secret_generators2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: secret_generators2 secret_generators2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.secret_generators2
@@ -7683,7 +7815,7 @@ ALTER TABLE ONLY projections.secret_generators2
 
 
 --
--- Name: security_policies2 security_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: security_policies2 security_policies2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.security_policies2
@@ -7691,7 +7823,7 @@ ALTER TABLE ONLY projections.security_policies2
 
 
 --
--- Name: sessions8 sessions8_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sessions8 sessions8_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sessions8
@@ -7699,7 +7831,7 @@ ALTER TABLE ONLY projections.sessions8
 
 
 --
--- Name: sms_configs3_http sms_configs3_http_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_http sms_configs3_http_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sms_configs3_http
@@ -7707,7 +7839,7 @@ ALTER TABLE ONLY projections.sms_configs3_http
 
 
 --
--- Name: sms_configs3 sms_configs3_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sms_configs3 sms_configs3_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sms_configs3
@@ -7715,7 +7847,7 @@ ALTER TABLE ONLY projections.sms_configs3
 
 
 --
--- Name: sms_configs3_twilio sms_configs3_twilio_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_twilio sms_configs3_twilio_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sms_configs3_twilio
@@ -7723,7 +7855,7 @@ ALTER TABLE ONLY projections.sms_configs3_twilio
 
 
 --
--- Name: smtp_configs5_http smtp_configs5_http_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_http smtp_configs5_http_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.smtp_configs5_http
@@ -7731,7 +7863,7 @@ ALTER TABLE ONLY projections.smtp_configs5_http
 
 
 --
--- Name: smtp_configs5 smtp_configs5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5 smtp_configs5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.smtp_configs5
@@ -7739,7 +7871,7 @@ ALTER TABLE ONLY projections.smtp_configs5
 
 
 --
--- Name: smtp_configs5_smtp smtp_configs5_smtp_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_smtp smtp_configs5_smtp_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.smtp_configs5_smtp
@@ -7747,7 +7879,7 @@ ALTER TABLE ONLY projections.smtp_configs5_smtp
 
 
 --
--- Name: system_features system_features_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: system_features system_features_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.system_features
@@ -7755,7 +7887,7 @@ ALTER TABLE ONLY projections.system_features
 
 
 --
--- Name: targets2 targets2_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: targets2 targets2_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.targets2
@@ -7763,7 +7895,7 @@ ALTER TABLE ONLY projections.targets2
 
 
 --
--- Name: user_auth_methods5 user_auth_methods5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: user_auth_methods5 user_auth_methods5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.user_auth_methods5
@@ -7771,7 +7903,7 @@ ALTER TABLE ONLY projections.user_auth_methods5
 
 
 --
--- Name: user_grants5 user_grants5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: user_grants5 user_grants5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.user_grants5
@@ -7779,7 +7911,7 @@ ALTER TABLE ONLY projections.user_grants5
 
 
 --
--- Name: user_metadata5 user_metadata5_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: user_metadata5 user_metadata5_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.user_metadata5
@@ -7787,7 +7919,7 @@ ALTER TABLE ONLY projections.user_metadata5
 
 
 --
--- Name: user_schemas1 user_schemas1_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: user_schemas1 user_schemas1_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.user_schemas1
@@ -7795,7 +7927,7 @@ ALTER TABLE ONLY projections.user_schemas1
 
 
 --
--- Name: users14_humans users14_humans_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_humans users14_humans_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_humans
@@ -7803,7 +7935,7 @@ ALTER TABLE ONLY projections.users14_humans
 
 
 --
--- Name: users14_machines users14_machines_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_machines users14_machines_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_machines
@@ -7811,7 +7943,7 @@ ALTER TABLE ONLY projections.users14_machines
 
 
 --
--- Name: users14_notifications users14_notifications_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_notifications users14_notifications_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_notifications
@@ -7819,7 +7951,7 @@ ALTER TABLE ONLY projections.users14_notifications
 
 
 --
--- Name: users14 users14_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14 users14_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14
@@ -7827,7 +7959,7 @@ ALTER TABLE ONLY projections.users14
 
 
 --
--- Name: web_keys1 web_keys1_pkey; Type: CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: web_keys1 web_keys1_pkey; Type: CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.web_keys1
@@ -7835,7 +7967,7 @@ ALTER TABLE ONLY projections.web_keys1
 
 
 --
--- Name: river_client river_client_pkey; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_client river_client_pkey; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_client
@@ -7843,7 +7975,7 @@ ALTER TABLE ONLY queue.river_client
 
 
 --
--- Name: river_client_queue river_client_queue_pkey; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_client_queue river_client_queue_pkey; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_client_queue
@@ -7851,7 +7983,7 @@ ALTER TABLE ONLY queue.river_client_queue
 
 
 --
--- Name: river_job river_job_pkey; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_job river_job_pkey; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_job
@@ -7859,7 +7991,7 @@ ALTER TABLE ONLY queue.river_job
 
 
 --
--- Name: river_leader river_leader_pkey; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_leader river_leader_pkey; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_leader
@@ -7867,7 +7999,7 @@ ALTER TABLE ONLY queue.river_leader
 
 
 --
--- Name: river_migration river_migration_pkey1; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_migration river_migration_pkey1; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_migration
@@ -7875,7 +8007,7 @@ ALTER TABLE ONLY queue.river_migration
 
 
 --
--- Name: river_queue river_queue_pkey; Type: CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_queue river_queue_pkey; Type: CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_queue
@@ -7883,7 +8015,7 @@ ALTER TABLE ONLY queue.river_queue
 
 
 --
--- Name: assets assets_pkey; Type: CONSTRAINT; Schema: system; Owner: zitadel
+-- Name: assets assets_pkey; Type: CONSTRAINT; Schema: system; Owner: -
 --
 
 ALTER TABLE ONLY system.assets
@@ -7891,7 +8023,7 @@ ALTER TABLE ONLY system.assets
 
 
 --
--- Name: encryption_keys encryption_keys_pkey; Type: CONSTRAINT; Schema: system; Owner: zitadel
+-- Name: encryption_keys encryption_keys_pkey; Type: CONSTRAINT; Schema: system; Owner: -
 --
 
 ALTER TABLE ONLY system.encryption_keys
@@ -7899,1064 +8031,1064 @@ ALTER TABLE ONLY system.encryption_keys
 
 
 --
--- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: adminapi; Owner: zitadel
+-- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: adminapi; Owner: -
 --
 
 CREATE INDEX current_sequences_instance_id_idx ON adminapi.current_sequences USING btree (instance_id);
 
 
 --
--- Name: failed_events_instance_id_idx; Type: INDEX; Schema: adminapi; Owner: zitadel
+-- Name: failed_events_instance_id_idx; Type: INDEX; Schema: adminapi; Owner: -
 --
 
 CREATE INDEX failed_events_instance_id_idx ON adminapi.failed_events USING btree (instance_id);
 
 
 --
--- Name: st2_owner_removed_idx; Type: INDEX; Schema: adminapi; Owner: zitadel
+-- Name: st2_owner_removed_idx; Type: INDEX; Schema: adminapi; Owner: -
 --
 
 CREATE INDEX st2_owner_removed_idx ON adminapi.styling2 USING btree (owner_removed);
 
 
 --
--- Name: auth_code_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: auth_code_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX auth_code_idx ON auth.auth_requests USING btree (code);
 
 
 --
--- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX current_sequences_instance_id_idx ON auth.current_sequences USING btree (instance_id);
 
 
 --
--- Name: ext_idps2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: ext_idps2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX ext_idps2_owner_removed_idx ON auth.user_external_idps2 USING btree (owner_removed);
 
 
 --
--- Name: failed_events_instance_id_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: failed_events_instance_id_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX failed_events_instance_id_idx ON auth.failed_events USING btree (instance_id);
 
 
 --
--- Name: idp_conf2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: idp_conf2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX idp_conf2_owner_removed_idx ON auth.idp_configs2 USING btree (owner_removed);
 
 
 --
--- Name: idp_prov2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: idp_prov2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX idp_prov2_owner_removed_idx ON auth.idp_providers2 USING btree (owner_removed);
 
 
 --
--- Name: inst_app_tkn_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: inst_app_tkn_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX inst_app_tkn_idx ON auth.tokens USING btree (instance_id, application_id);
 
 
 --
--- Name: inst_refresh_tkn_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: inst_refresh_tkn_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX inst_refresh_tkn_idx ON auth.tokens USING btree (instance_id, refresh_token_id);
 
 
 --
--- Name: inst_ro_tkn_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: inst_ro_tkn_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX inst_ro_tkn_idx ON auth.tokens USING btree (instance_id, resource_owner);
 
 
 --
--- Name: inst_usr_agnt_tkn_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: inst_usr_agnt_tkn_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX inst_usr_agnt_tkn_idx ON auth.tokens USING btree (instance_id, user_id, user_agent_id);
 
 
 --
--- Name: org_proj_m2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: org_proj_m2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX org_proj_m2_owner_removed_idx ON auth.org_project_mapping2 USING btree (owner_removed);
 
 
 --
--- Name: u2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: u2_owner_removed_idx; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX u2_owner_removed_idx ON auth.users2 USING btree (owner_removed);
 
 
 --
--- Name: unique_client_user_index; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: unique_client_user_index; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_client_user_index ON auth.refresh_tokens USING btree (client_id, user_agent_id, user_id);
 
 
 --
--- Name: user_session_id; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: user_session_id; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX user_session_id ON auth.user_sessions USING btree (id, instance_id);
 
 
 --
--- Name: user_sessions_by_user; Type: INDEX; Schema: auth; Owner: zitadel
+-- Name: user_sessions_by_user; Type: INDEX; Schema: auth; Owner: -
 --
 
 CREATE INDEX user_sessions_by_user ON auth.user_sessions USING btree (instance_id, user_id);
 
 
 --
--- Name: string_keys_object_id_idx; Type: INDEX; Schema: cache; Owner: zitadel
+-- Name: string_keys_object_id_idx; Type: INDEX; Schema: cache; Owner: -
 --
 
 CREATE INDEX string_keys_object_id_idx ON ONLY cache.string_keys USING btree (cache_name, object_id);
 
 
 --
--- Name: string_keys_federated_logout_cache_name_object_id_idx; Type: INDEX; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout_cache_name_object_id_idx; Type: INDEX; Schema: cache; Owner: -
 --
 
 CREATE INDEX string_keys_federated_logout_cache_name_object_id_idx ON cache.string_keys_federated_logout USING btree (cache_name, object_id);
 
 
 --
--- Name: string_keys_id_p_form_callback_cache_name_object_id_idx; Type: INDEX; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback_cache_name_object_id_idx; Type: INDEX; Schema: cache; Owner: -
 --
 
 CREATE INDEX string_keys_id_p_form_callback_cache_name_object_id_idx ON cache.string_keys_id_p_form_callback USING btree (cache_name, object_id);
 
 
 --
--- Name: active_instances_events; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: active_instances_events; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX active_instances_events ON eventstore.events2 USING btree (aggregate_type, event_type) WHERE ((aggregate_type = 'instance'::text) AND (event_type = ANY (ARRAY['instance.added'::text, 'instance.removed'::text])));
 
 
 --
--- Name: es_active_instances; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: es_active_instances; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX es_active_instances ON eventstore.events2 USING btree (created_at DESC, instance_id);
 
 
 --
--- Name: es_instance_position; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: es_instance_position; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX es_instance_position ON eventstore.events2 USING btree (instance_id, "position");
 
 
 --
--- Name: es_projection; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: es_projection; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX es_projection ON eventstore.events2 USING btree (instance_id, aggregate_type, event_type, "position");
 
 
 --
--- Name: es_wm; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: es_wm; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX es_wm ON eventstore.events2 USING btree (instance_id, aggregate_id, aggregate_type, event_type, "position");
 
 
 --
--- Name: events2_current_sequence2; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: events2_current_sequence2; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX events2_current_sequence2 ON eventstore.events2 USING btree (aggregate_id, aggregate_type, instance_id, sequence DESC);
 
 
 --
--- Name: f_aggregate_object_type_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_aggregate_object_type_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX f_aggregate_object_type_idx ON eventstore.fields USING btree (aggregate_type, aggregate_id, object_type);
 
 
 --
--- Name: f_bool_unique_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_bool_unique_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE UNIQUE INDEX f_bool_unique_idx ON eventstore.fields USING btree (instance_id, field_name, bool_value) WHERE value_must_be_unique;
 
 
 --
--- Name: f_bool_value_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_bool_value_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX f_bool_value_idx ON eventstore.fields USING btree (instance_id, object_type, field_name, bool_value) INCLUDE (resource_owner, object_id, object_revision, value) WHERE (bool_value IS NOT NULL);
 
 
 --
--- Name: f_number_unique_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_number_unique_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE UNIQUE INDEX f_number_unique_idx ON eventstore.fields USING btree (instance_id, field_name, number_value) WHERE value_must_be_unique;
 
 
 --
--- Name: f_number_value_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_number_value_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX f_number_value_idx ON eventstore.fields USING btree (instance_id, object_type, field_name, number_value) INCLUDE (resource_owner, object_id, object_revision, value) WHERE (number_value IS NOT NULL);
 
 
 --
--- Name: f_object_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_object_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX f_object_idx ON eventstore.fields USING btree (instance_id, object_type, object_id, object_revision) INCLUDE (resource_owner, field_name, value);
 
 
 --
--- Name: f_text_unique_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_text_unique_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE UNIQUE INDEX f_text_unique_idx ON eventstore.fields USING btree (instance_id, field_name, text_value) WHERE value_must_be_unique;
 
 
 --
--- Name: f_text_value_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: f_text_value_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX f_text_value_idx ON eventstore.fields USING btree (instance_id, object_type, field_name, text_value) INCLUDE (resource_owner, object_id, object_revision, value) WHERE (text_value IS NOT NULL);
 
 
 --
--- Name: fields_instance_domains_idx; Type: INDEX; Schema: eventstore; Owner: zitadel
+-- Name: fields_instance_domains_idx; Type: INDEX; Schema: eventstore; Owner: -
 --
 
 CREATE INDEX fields_instance_domains_idx ON eventstore.fields USING btree (object_id) INCLUDE (instance_id) WHERE ((object_type = 'instance_domain'::text) AND (field_name = 'domain'::text));
 
 
 --
--- Name: log_date_desc; Type: INDEX; Schema: logstore; Owner: zitadel
+-- Name: log_date_desc; Type: INDEX; Schema: logstore; Owner: -
 --
 
 CREATE INDEX log_date_desc ON logstore.execution USING btree (instance_id, log_date DESC) INCLUDE (took);
 
 
 --
--- Name: protocol_date_desc; Type: INDEX; Schema: logstore; Owner: zitadel
+-- Name: protocol_date_desc; Type: INDEX; Schema: logstore; Owner: -
 --
 
 CREATE INDEX protocol_date_desc ON logstore.access USING btree (instance_id, protocol, log_date DESC) INCLUDE (request_url, response_status, request_headers);
 
 
 --
--- Name: actions3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: actions3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX actions3_owner_removed_idx ON projections.actions3 USING btree (owner_removed);
 
 
 --
--- Name: actions3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: actions3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX actions3_resource_owner_idx ON projections.actions3 USING btree (resource_owner);
 
 
 --
--- Name: apps7_api_configs_client_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: apps7_api_configs_client_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX apps7_api_configs_client_id_idx ON projections.apps7_api_configs USING btree (client_id);
 
 
 --
--- Name: apps7_oidc_configs_client_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: apps7_oidc_configs_client_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX apps7_oidc_configs_client_id_idx ON projections.apps7_oidc_configs USING btree (client_id);
 
 
 --
--- Name: apps7_project_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: apps7_project_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX apps7_project_id_idx ON projections.apps7 USING btree (project_id);
 
 
 --
--- Name: apps7_saml_configs_entity_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: apps7_saml_configs_entity_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX apps7_saml_configs_entity_id_idx ON projections.apps7_saml_configs USING btree (entity_id);
 
 
 --
--- Name: authn_keys2_creation_date_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: authn_keys2_creation_date_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX authn_keys2_creation_date_idx ON projections.authn_keys2 USING btree (creation_date);
 
 
 --
--- Name: authn_keys2_enabled_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: authn_keys2_enabled_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX authn_keys2_enabled_idx ON projections.authn_keys2 USING btree (enabled);
 
 
 --
--- Name: authn_keys2_expiration_date_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: authn_keys2_expiration_date_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX authn_keys2_expiration_date_idx ON projections.authn_keys2 USING btree (expiration);
 
 
 --
--- Name: authn_keys2_identifier_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: authn_keys2_identifier_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX authn_keys2_identifier_idx ON projections.authn_keys2 USING btree (identifier);
 
 
 --
--- Name: authn_keys2_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: authn_keys2_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX authn_keys2_resource_owner_idx ON projections.authn_keys2 USING btree (resource_owner);
 
 
 --
--- Name: cs_instance_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: cs_instance_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX cs_instance_id_idx ON projections.current_states USING btree (instance_id);
 
 
 --
--- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: current_sequences_instance_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX current_sequences_instance_id_idx ON projections.current_sequences USING btree (instance_id);
 
 
 --
--- Name: custom_texts2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: custom_texts2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX custom_texts2_owner_removed_idx ON projections.custom_texts2 USING btree (owner_removed);
 
 
 --
--- Name: device_auth_requests2_user_code_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: device_auth_requests2_user_code_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX device_auth_requests2_user_code_idx ON projections.device_auth_requests2 USING btree (instance_id, user_code);
 
 
 --
--- Name: domain_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: domain_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX domain_policies2_owner_removed_idx ON projections.domain_policies2 USING btree (owner_removed);
 
 
 --
--- Name: executions1_targets_execution_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: executions1_targets_execution_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX executions1_targets_execution_idx ON projections.executions1_targets USING btree (instance_id, execution_id);
 
 
 --
--- Name: failed_events_instance_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: failed_events_instance_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX failed_events_instance_id_idx ON projections.failed_events USING btree (instance_id);
 
 
 --
--- Name: fe2_instance_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: fe2_instance_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX fe2_instance_id_idx ON projections.failed_events2 USING btree (instance_id);
 
 
 --
--- Name: idp_login_policy_links5_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_login_policy_links5_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_login_policy_links5_owner_removed_idx ON projections.idp_login_policy_links5 USING btree (owner_removed);
 
 
 --
--- Name: idp_login_policy_links5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_login_policy_links5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_login_policy_links5_resource_owner_idx ON projections.idp_login_policy_links5 USING btree (resource_owner);
 
 
 --
--- Name: idp_templates6_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_templates6_owner_removed_idx ON projections.idp_templates6 USING btree (owner_removed);
 
 
 --
--- Name: idp_templates6_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_templates6_resource_owner_idx ON projections.idp_templates6 USING btree (resource_owner);
 
 
 --
--- Name: idp_user_links3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_user_links3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_user_links3_owner_removed_idx ON projections.idp_user_links3 USING btree (owner_removed);
 
 
 --
--- Name: idp_user_links3_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idp_user_links3_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idp_user_links3_user_id_idx ON projections.idp_user_links3 USING btree (user_id);
 
 
 --
--- Name: idps3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idps3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idps3_owner_removed_idx ON projections.idps3 USING btree (owner_removed);
 
 
 --
--- Name: idps3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: idps3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX idps3_resource_owner_idx ON projections.idps3 USING btree (resource_owner);
 
 
 --
--- Name: instance_domains_instance_domain_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: instance_domains_instance_domain_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX instance_domains_instance_domain_idx ON projections.instance_domains USING btree (domain) INCLUDE (creation_date, change_date, sequence, is_generated, is_primary);
 
 
 --
--- Name: instance_members4_im_instance_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: instance_members4_im_instance_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX instance_members4_im_instance_idx ON projections.instance_members4 USING btree (instance_id) INCLUDE (creation_date, change_date, roles, sequence, resource_owner);
 
 
 --
--- Name: instance_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: instance_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX instance_members4_user_id_idx ON projections.instance_members4 USING btree (user_id);
 
 
 --
--- Name: instance_trusted_domains_instance_trusted_domain_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: instance_trusted_domains_instance_trusted_domain_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX instance_trusted_domains_instance_trusted_domain_idx ON projections.instance_trusted_domains USING btree (domain) INCLUDE (creation_date, change_date, sequence);
 
 
 --
--- Name: label_policies3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: label_policies3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX label_policies3_owner_removed_idx ON projections.label_policies3 USING btree (owner_removed);
 
 
 --
--- Name: login_names3_domain_search; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_domain_search; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_domain_search ON projections.login_names3_domains USING btree (instance_id, resource_owner, name_lower);
 
 
 --
--- Name: login_names3_domain_search_result; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_domain_search_result; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_domain_search_result ON projections.login_names3_domains USING btree (instance_id, resource_owner) INCLUDE (is_primary);
 
 
 --
--- Name: login_names3_policies_is_default_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_policies_is_default_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_policies_is_default_owner_idx ON projections.login_names3_policies USING btree (instance_id, is_default, resource_owner) INCLUDE (must_be_domain);
 
 
 --
--- Name: login_names3_users_instance_user_name_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_users_instance_user_name_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_users_instance_user_name_idx ON projections.login_names3_users USING btree (instance_id, user_name) INCLUDE (resource_owner);
 
 
 --
--- Name: login_names3_users_lnu_instance_ro_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_users_lnu_instance_ro_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_users_lnu_instance_ro_id_idx ON projections.login_names3_users USING btree (instance_id, resource_owner, id) INCLUDE (user_name);
 
 
 --
--- Name: login_names3_users_search; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_names3_users_search; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_names3_users_search ON projections.login_names3_users USING btree (instance_id, user_name_lower) INCLUDE (resource_owner);
 
 
 --
--- Name: login_policies5_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: login_policies5_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX login_policies5_owner_removed_idx ON projections.login_policies5 USING btree (owner_removed);
 
 
 --
--- Name: mail_templates2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: mail_templates2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX mail_templates2_owner_removed_idx ON projections.mail_templates2 USING btree (owner_removed);
 
 
 --
--- Name: message_texts2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: message_texts2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX message_texts2_owner_removed_idx ON projections.message_texts2 USING btree (owner_removed);
 
 
 --
--- Name: org_domains2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: org_domains2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX org_domains2_owner_removed_idx ON projections.org_domains2 USING btree (owner_removed);
 
 
 --
--- Name: org_members4_om_instance_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: org_members4_om_instance_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX org_members4_om_instance_idx ON projections.org_members4 USING btree (instance_id) INCLUDE (creation_date, change_date, roles, sequence, resource_owner);
 
 
 --
--- Name: org_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: org_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX org_members4_user_id_idx ON projections.org_members4 USING btree (user_id);
 
 
 --
--- Name: org_metadata2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: org_metadata2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX org_metadata2_owner_removed_idx ON projections.org_metadata2 USING btree (owner_removed);
 
 
 --
--- Name: orgs1_domain_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: orgs1_domain_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX orgs1_domain_idx ON projections.orgs1 USING btree (primary_domain);
 
 
 --
--- Name: orgs1_name_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: orgs1_name_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX orgs1_name_idx ON projections.orgs1 USING btree (name);
 
 
 --
--- Name: password_age_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: password_age_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX password_age_policies2_owner_removed_idx ON projections.password_age_policies2 USING btree (owner_removed);
 
 
 --
--- Name: password_complexity_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: password_complexity_policies2_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX password_complexity_policies2_owner_removed_idx ON projections.password_complexity_policies2 USING btree (owner_removed);
 
 
 --
--- Name: personal_access_tokens3_creation_date_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3_creation_date_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX personal_access_tokens3_creation_date_idx ON projections.personal_access_tokens3 USING btree (creation_date);
 
 
 --
--- Name: personal_access_tokens3_expiration_date_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3_expiration_date_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX personal_access_tokens3_expiration_date_idx ON projections.personal_access_tokens3 USING btree (expiration);
 
 
 --
--- Name: personal_access_tokens3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX personal_access_tokens3_owner_removed_idx ON projections.personal_access_tokens3 USING btree (owner_removed);
 
 
 --
--- Name: personal_access_tokens3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX personal_access_tokens3_resource_owner_idx ON projections.personal_access_tokens3 USING btree (resource_owner);
 
 
 --
--- Name: personal_access_tokens3_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: personal_access_tokens3_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX personal_access_tokens3_user_id_idx ON projections.personal_access_tokens3 USING btree (user_id);
 
 
 --
--- Name: privacy_policies4_owner_removed_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: privacy_policies4_owner_removed_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX privacy_policies4_owner_removed_idx ON projections.privacy_policies4 USING btree (owner_removed);
 
 
 --
--- Name: project_grant_members4_pgm_instance_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_grant_members4_pgm_instance_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_grant_members4_pgm_instance_idx ON projections.project_grant_members4 USING btree (instance_id) INCLUDE (creation_date, change_date, roles, sequence, resource_owner);
 
 
 --
--- Name: project_grant_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_grant_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_grant_members4_user_id_idx ON projections.project_grant_members4 USING btree (user_id);
 
 
 --
--- Name: project_grants4_granted_org_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_grants4_granted_org_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_grants4_granted_org_idx ON projections.project_grants4 USING btree (granted_org_id);
 
 
 --
--- Name: project_grants4_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_grants4_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_grants4_resource_owner_idx ON projections.project_grants4 USING btree (resource_owner);
 
 
 --
--- Name: project_members4_pm_instance_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_members4_pm_instance_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_members4_pm_instance_idx ON projections.project_members4 USING btree (instance_id) INCLUDE (creation_date, change_date, roles, sequence, resource_owner);
 
 
 --
--- Name: project_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: project_members4_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX project_members4_user_id_idx ON projections.project_members4 USING btree (user_id);
 
 
 --
--- Name: projects4_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: projects4_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX projects4_resource_owner_idx ON projections.projects4 USING btree (resource_owner);
 
 
 --
--- Name: sessions8_user_agent_fingerprint_id_idx_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: sessions8_user_agent_fingerprint_id_idx_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX sessions8_user_agent_fingerprint_id_idx_idx ON projections.sessions8 USING btree (user_agent_fingerprint_id);
 
 
 --
--- Name: sessions8_user_id_idx_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: sessions8_user_id_idx_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX sessions8_user_id_idx_idx ON projections.sessions8 USING btree (user_id);
 
 
 --
--- Name: user_auth_methods5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: user_auth_methods5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX user_auth_methods5_resource_owner_idx ON projections.user_auth_methods5 USING btree (resource_owner);
 
 
 --
--- Name: user_grants5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: user_grants5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX user_grants5_resource_owner_idx ON projections.user_grants5 USING btree (resource_owner);
 
 
 --
--- Name: user_grants5_user_id_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: user_grants5_user_id_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX user_grants5_user_id_idx ON projections.user_grants5 USING btree (user_id);
 
 
 --
--- Name: user_metadata5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: user_metadata5_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX user_metadata5_resource_owner_idx ON projections.user_metadata5 USING btree (resource_owner);
 
 
 --
--- Name: users14_humans_email_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: users14_humans_email_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX users14_humans_email_idx ON projections.users14_humans USING btree (instance_id, lower(email));
 
 
 --
--- Name: users14_notifications_email_search; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: users14_notifications_email_search; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX users14_notifications_email_search ON projections.users14_notifications USING btree (instance_id, verified_email_lower);
 
 
 --
--- Name: users14_resource_owner_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: users14_resource_owner_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX users14_resource_owner_idx ON projections.users14 USING btree (resource_owner);
 
 
 --
--- Name: users14_username_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: users14_username_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX users14_username_idx ON projections.users14 USING btree (username);
 
 
 --
--- Name: web_keys1_web_key_state_idx; Type: INDEX; Schema: projections; Owner: zitadel
+-- Name: web_keys1_web_key_state_idx; Type: INDEX; Schema: projections; Owner: -
 --
 
 CREATE INDEX web_keys1_web_key_state_idx ON projections.web_keys1 USING btree (instance_id, state);
 
 
 --
--- Name: river_job_args_index; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_args_index; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE INDEX river_job_args_index ON queue.river_job USING gin (args);
 
 
 --
--- Name: river_job_kind; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_kind; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE INDEX river_job_kind ON queue.river_job USING btree (kind);
 
 
 --
--- Name: river_job_metadata_index; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_metadata_index; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE INDEX river_job_metadata_index ON queue.river_job USING gin (metadata);
 
 
 --
--- Name: river_job_prioritized_fetching_index; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_prioritized_fetching_index; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE INDEX river_job_prioritized_fetching_index ON queue.river_job USING btree (state, queue, priority, scheduled_at, id);
 
 
 --
--- Name: river_job_state_and_finalized_at_index; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_state_and_finalized_at_index; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE INDEX river_job_state_and_finalized_at_index ON queue.river_job USING btree (state, finalized_at) WHERE (finalized_at IS NOT NULL);
 
 
 --
--- Name: river_job_unique_idx; Type: INDEX; Schema: queue; Owner: zitadel
+-- Name: river_job_unique_idx; Type: INDEX; Schema: queue; Owner: -
 --
 
 CREATE UNIQUE INDEX river_job_unique_idx ON queue.river_job USING btree (unique_key) WHERE ((unique_key IS NOT NULL) AND (unique_states IS NOT NULL) AND queue.river_job_state_in_bitmask(unique_states, state));
 
 
 --
--- Name: objects_federated_logout_pkey; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: objects_federated_logout_pkey; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.objects_pkey ATTACH PARTITION cache.objects_federated_logout_pkey;
 
 
 --
--- Name: objects_id_p_form_callback_pkey; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: objects_id_p_form_callback_pkey; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.objects_pkey ATTACH PARTITION cache.objects_id_p_form_callback_pkey;
 
 
 --
--- Name: string_keys_federated_logout_cache_name_object_id_idx; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout_cache_name_object_id_idx; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.string_keys_object_id_idx ATTACH PARTITION cache.string_keys_federated_logout_cache_name_object_id_idx;
 
 
 --
--- Name: string_keys_federated_logout_pkey; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_federated_logout_pkey; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.string_keys_pkey ATTACH PARTITION cache.string_keys_federated_logout_pkey;
 
 
 --
--- Name: string_keys_id_p_form_callback_cache_name_object_id_idx; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback_cache_name_object_id_idx; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.string_keys_object_id_idx ATTACH PARTITION cache.string_keys_id_p_form_callback_cache_name_object_id_idx;
 
 
 --
--- Name: string_keys_id_p_form_callback_pkey; Type: INDEX ATTACH; Schema: cache; Owner: zitadel
+-- Name: string_keys_id_p_form_callback_pkey; Type: INDEX ATTACH; Schema: cache; Owner: -
 --
 
 ALTER INDEX cache.string_keys_pkey ATTACH PARTITION cache.string_keys_id_p_form_callback_pkey;
 
 
 --
--- Name: actions3 count_action_v1; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: actions3 count_action_v1; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_action_v1 AFTER INSERT OR DELETE ON projections.actions3 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'action_v1');
 
 
 --
--- Name: executions1 count_execution; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: executions1 count_execution; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_execution AFTER INSERT OR DELETE ON projections.executions1 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'execution');
 
 
 --
--- Name: executions1_targets count_execution_target; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: executions1_targets count_execution_target; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_execution_target AFTER INSERT OR DELETE ON projections.executions1_targets FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'execution_target');
 
 
 --
--- Name: instance_members4 count_iam_admin; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: instance_members4 count_iam_admin; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_iam_admin AFTER INSERT OR DELETE ON projections.instance_members4 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'resource_owner', 'iam_admin');
 
 
 --
--- Name: idps3 count_identity_provider; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: idps3 count_identity_provider; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_identity_provider AFTER INSERT OR DELETE ON projections.idps3 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'identity_provider');
 
 
 --
--- Name: idp_templates6_ldap2 count_identity_provider_ldap; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_ldap2 count_identity_provider_ldap; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_identity_provider_ldap AFTER INSERT OR DELETE ON projections.idp_templates6_ldap2 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'identity_provider_ldap');
 
 
 --
--- Name: lockout_policies3 count_lockout_policy; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: lockout_policies3 count_lockout_policy; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_lockout_policy AFTER INSERT OR DELETE ON projections.lockout_policies3 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'lockout_policy');
 
 
 --
--- Name: login_policies5 count_login_policy; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: login_policies5 count_login_policy; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_login_policy AFTER INSERT OR DELETE ON projections.login_policies5 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'login_policy');
 
 
 --
--- Name: orgs1 count_organization; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: orgs1 count_organization; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_organization AFTER INSERT OR DELETE ON projections.orgs1 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'organization');
 
 
 --
--- Name: password_complexity_policies2 count_password_complexity_policy; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: password_complexity_policies2 count_password_complexity_policy; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_password_complexity_policy AFTER INSERT OR DELETE ON projections.password_complexity_policies2 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'password_complexity_policy');
 
 
 --
--- Name: password_age_policies2 count_password_expiry_policy; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: password_age_policies2 count_password_expiry_policy; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_password_expiry_policy AFTER INSERT OR DELETE ON projections.password_age_policies2 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('instance', 'instance_id', 'instance_id', 'password_expiry_policy');
 
 
 --
--- Name: projects4 count_project; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: projects4 count_project; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_project AFTER INSERT OR DELETE ON projections.projects4 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('organization', 'instance_id', 'resource_owner', 'project');
 
 
 --
--- Name: users14 count_user; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: users14 count_user; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER count_user AFTER INSERT OR DELETE ON projections.users14 FOR EACH ROW EXECUTE FUNCTION projections.count_resource('organization', 'instance_id', 'resource_owner', 'user');
 
 
 --
--- Name: instances delete_parent_counts_trigger; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: instances delete_parent_counts_trigger; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER delete_parent_counts_trigger AFTER DELETE ON projections.instances FOR EACH ROW EXECUTE FUNCTION projections.delete_parent_counts('instance', 'id', 'id');
 
 
 --
--- Name: orgs1 delete_parent_counts_trigger; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: orgs1 delete_parent_counts_trigger; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER delete_parent_counts_trigger AFTER DELETE ON projections.orgs1 FOR EACH ROW EXECUTE FUNCTION projections.delete_parent_counts('organization', 'instance_id', 'id');
 
 
 --
--- Name: actions3 truncate_action_v1_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: actions3 truncate_action_v1_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_action_v1_counts AFTER TRUNCATE ON projections.actions3 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: executions1 truncate_execution_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: executions1 truncate_execution_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_execution_counts AFTER TRUNCATE ON projections.executions1 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: executions1_targets truncate_execution_target_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: executions1_targets truncate_execution_target_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_execution_target_counts AFTER TRUNCATE ON projections.executions1_targets FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: instance_members4 truncate_iam_admin_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: instance_members4 truncate_iam_admin_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_iam_admin_counts AFTER TRUNCATE ON projections.instance_members4 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: idps3 truncate_identity_provider_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: idps3 truncate_identity_provider_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_identity_provider_counts AFTER TRUNCATE ON projections.idps3 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: idp_templates6_ldap2 truncate_identity_provider_ldap_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_ldap2 truncate_identity_provider_ldap_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_identity_provider_ldap_counts AFTER TRUNCATE ON projections.idp_templates6_ldap2 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: lockout_policies3 truncate_lockout_policy_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: lockout_policies3 truncate_lockout_policy_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_lockout_policy_counts AFTER TRUNCATE ON projections.lockout_policies3 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: login_policies5 truncate_login_policy_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: login_policies5 truncate_login_policy_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_login_policy_counts AFTER TRUNCATE ON projections.login_policies5 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: orgs1 truncate_organization_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: orgs1 truncate_organization_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_organization_counts AFTER TRUNCATE ON projections.orgs1 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: password_complexity_policies2 truncate_password_complexity_policy_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: password_complexity_policies2 truncate_password_complexity_policy_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_password_complexity_policy_counts AFTER TRUNCATE ON projections.password_complexity_policies2 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: password_age_policies2 truncate_password_expiry_policy_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: password_age_policies2 truncate_password_expiry_policy_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_password_expiry_policy_counts AFTER TRUNCATE ON projections.password_age_policies2 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: projects4 truncate_project_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: projects4 truncate_project_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_project_counts AFTER TRUNCATE ON projections.projects4 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: users14 truncate_user_counts; Type: TRIGGER; Schema: projections; Owner: zitadel
+-- Name: users14 truncate_user_counts; Type: TRIGGER; Schema: projections; Owner: -
 --
 
 CREATE TRIGGER truncate_user_counts AFTER TRUNCATE ON projections.users14 FOR EACH STATEMENT EXECUTE FUNCTION projections.delete_table_counts();
 
 
 --
--- Name: string_keys fk_object; Type: FK CONSTRAINT; Schema: cache; Owner: zitadel
+-- Name: string_keys fk_object; Type: FK CONSTRAINT; Schema: cache; Owner: -
 --
 
 ALTER TABLE cache.string_keys
@@ -8964,7 +9096,7 @@ ALTER TABLE cache.string_keys
 
 
 --
--- Name: apps7_api_configs fk_api_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_api_configs fk_api_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_api_configs
@@ -8972,7 +9104,7 @@ ALTER TABLE ONLY projections.apps7_api_configs
 
 
 --
--- Name: idp_templates6_apple fk_apple_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_apple fk_apple_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_apple
@@ -8980,7 +9112,7 @@ ALTER TABLE ONLY projections.idp_templates6_apple
 
 
 --
--- Name: idp_templates6_azure fk_azure_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_azure fk_azure_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_azure
@@ -8988,7 +9120,7 @@ ALTER TABLE ONLY projections.idp_templates6_azure
 
 
 --
--- Name: keys4_certificate fk_certificate_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_certificate fk_certificate_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_certificate
@@ -8996,7 +9128,7 @@ ALTER TABLE ONLY projections.keys4_certificate
 
 
 --
--- Name: executions1_targets fk_executions1_targets_execution; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: executions1_targets fk_executions1_targets_execution; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.executions1_targets
@@ -9004,7 +9136,7 @@ ALTER TABLE ONLY projections.executions1_targets
 
 
 --
--- Name: idp_templates6_github_enterprise fk_github_enterprise_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github_enterprise fk_github_enterprise_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_github_enterprise
@@ -9012,7 +9144,7 @@ ALTER TABLE ONLY projections.idp_templates6_github_enterprise
 
 
 --
--- Name: idp_templates6_github fk_github_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_github fk_github_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_github
@@ -9020,7 +9152,7 @@ ALTER TABLE ONLY projections.idp_templates6_github
 
 
 --
--- Name: idp_templates6_gitlab fk_gitlab_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab fk_gitlab_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_gitlab
@@ -9028,7 +9160,7 @@ ALTER TABLE ONLY projections.idp_templates6_gitlab
 
 
 --
--- Name: idp_templates6_gitlab_self_hosted fk_gitlab_self_hosted_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_gitlab_self_hosted fk_gitlab_self_hosted_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_gitlab_self_hosted
@@ -9036,7 +9168,7 @@ ALTER TABLE ONLY projections.idp_templates6_gitlab_self_hosted
 
 
 --
--- Name: idp_templates6_google fk_google_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_google fk_google_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_google
@@ -9044,7 +9176,7 @@ ALTER TABLE ONLY projections.idp_templates6_google
 
 
 --
--- Name: sms_configs3_http fk_http_ref_sms_configs3; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_http fk_http_ref_sms_configs3; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sms_configs3_http
@@ -9052,7 +9184,7 @@ ALTER TABLE ONLY projections.sms_configs3_http
 
 
 --
--- Name: smtp_configs5_http fk_http_ref_smtp_configs5; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_http fk_http_ref_smtp_configs5; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.smtp_configs5_http
@@ -9060,7 +9192,7 @@ ALTER TABLE ONLY projections.smtp_configs5_http
 
 
 --
--- Name: users14_humans fk_humans_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_humans fk_humans_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_humans
@@ -9068,7 +9200,7 @@ ALTER TABLE ONLY projections.users14_humans
 
 
 --
--- Name: idps3_jwt_config fk_jwt_config_ref_idps3; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idps3_jwt_config fk_jwt_config_ref_idps3; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idps3_jwt_config
@@ -9076,7 +9208,7 @@ ALTER TABLE ONLY projections.idps3_jwt_config
 
 
 --
--- Name: idp_templates6_jwt fk_jwt_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_jwt fk_jwt_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_jwt
@@ -9084,7 +9216,7 @@ ALTER TABLE ONLY projections.idp_templates6_jwt
 
 
 --
--- Name: idp_templates6_ldap2 fk_ldap2_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_ldap2 fk_ldap2_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_ldap2
@@ -9092,7 +9224,7 @@ ALTER TABLE ONLY projections.idp_templates6_ldap2
 
 
 --
--- Name: users14_machines fk_machines_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_machines fk_machines_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_machines
@@ -9100,7 +9232,7 @@ ALTER TABLE ONLY projections.users14_machines
 
 
 --
--- Name: users14_notifications fk_notifications_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: users14_notifications fk_notifications_ref_users14; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.users14_notifications
@@ -9108,7 +9240,7 @@ ALTER TABLE ONLY projections.users14_notifications
 
 
 --
--- Name: idp_templates6_oauth2 fk_oauth2_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oauth2 fk_oauth2_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_oauth2
@@ -9116,7 +9248,7 @@ ALTER TABLE ONLY projections.idp_templates6_oauth2
 
 
 --
--- Name: idps3_oidc_config fk_oidc_config_ref_idps3; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idps3_oidc_config fk_oidc_config_ref_idps3; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idps3_oidc_config
@@ -9124,7 +9256,7 @@ ALTER TABLE ONLY projections.idps3_oidc_config
 
 
 --
--- Name: apps7_oidc_configs fk_oidc_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_oidc_configs fk_oidc_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_oidc_configs
@@ -9132,7 +9264,7 @@ ALTER TABLE ONLY projections.apps7_oidc_configs
 
 
 --
--- Name: idp_templates6_oidc fk_oidc_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_oidc fk_oidc_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_oidc
@@ -9140,7 +9272,7 @@ ALTER TABLE ONLY projections.idp_templates6_oidc
 
 
 --
--- Name: keys4_private fk_private_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_private fk_private_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_private
@@ -9148,7 +9280,7 @@ ALTER TABLE ONLY projections.keys4_private
 
 
 --
--- Name: keys4_public fk_public_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: keys4_public fk_public_ref_keys4; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.keys4_public
@@ -9156,7 +9288,7 @@ ALTER TABLE ONLY projections.keys4_public
 
 
 --
--- Name: apps7_saml_configs fk_saml_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: apps7_saml_configs fk_saml_configs_ref_apps7; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.apps7_saml_configs
@@ -9164,7 +9296,7 @@ ALTER TABLE ONLY projections.apps7_saml_configs
 
 
 --
--- Name: idp_templates6_saml fk_saml_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: idp_templates6_saml fk_saml_ref_idp_templates6; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.idp_templates6_saml
@@ -9172,7 +9304,7 @@ ALTER TABLE ONLY projections.idp_templates6_saml
 
 
 --
--- Name: smtp_configs5_smtp fk_smtp_ref_smtp_configs5; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: smtp_configs5_smtp fk_smtp_ref_smtp_configs5; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.smtp_configs5_smtp
@@ -9180,7 +9312,7 @@ ALTER TABLE ONLY projections.smtp_configs5_smtp
 
 
 --
--- Name: sms_configs3_twilio fk_twilio_ref_sms_configs3; Type: FK CONSTRAINT; Schema: projections; Owner: zitadel
+-- Name: sms_configs3_twilio fk_twilio_ref_sms_configs3; Type: FK CONSTRAINT; Schema: projections; Owner: -
 --
 
 ALTER TABLE ONLY projections.sms_configs3_twilio
@@ -9188,7 +9320,7 @@ ALTER TABLE ONLY projections.sms_configs3_twilio
 
 
 --
--- Name: river_client_queue river_client_queue_river_client_id_fkey; Type: FK CONSTRAINT; Schema: queue; Owner: zitadel
+-- Name: river_client_queue river_client_queue_river_client_id_fkey; Type: FK CONSTRAINT; Schema: queue; Owner: -
 --
 
 ALTER TABLE ONLY queue.river_client_queue
@@ -9196,15 +9328,8 @@ ALTER TABLE ONLY queue.river_client_queue
 
 
 --
--- Name: DATABASE zitadel; Type: ACL; Schema: -; Owner: postgres
---
-
-GRANT ALL ON DATABASE zitadel TO zitadel;
-
-
---
 -- PostgreSQL database dump complete
 --
 
-\unrestrict Az1eR2VnDby8gASzcMbuRhJK74HFk2ed1volqGB6YODhcunx03pkhQ8MlzyUSnP
+\unrestrict PVcsfMWH5w6LZlJYoh3rd2bOVZAGIM4pSdzqAB0US8fJFyDYpGffxkS6zLpdRPv
 
