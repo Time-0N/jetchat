@@ -10,7 +10,6 @@
       <div class="stat-content">
         <h3>Profile Status</h3>
         <p class="stat-value">Active</p>
-        <small>Member since <%= @current_user.created_at.strftime("%B %Y") %></small>
       </div>
     </div>
   </div>
@@ -37,10 +36,6 @@
       <div class="info-item">
         <label>Last Name:</label>
         <span><%= @current_user.last_name || "Not set" %></span>
-      </div>
-      <div class="info-item">
-        <label>Account Created:</label>
-        <span><%= @current_user.created_at.strftime("%B %d, %Y at %I:%M %p") %></span>
       </div>
     </div>
   </section>

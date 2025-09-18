@@ -17,11 +17,11 @@ class AuthController < ApplicationController
       tokens = exchange_code_for_tokens(params[:code])
 
       if tokens
-        @access_token = tokens[:access_token]
-        @id_token = tokens[:id_token]
-        @refresh_token = tokens[:refresh_token]
+        decoded_id_token = JWT.decode(tokens[:id_token], nil, false)
+        Rails.logger.info "ID Token payload: #{decoded_id_token[0].inspect}"
+        set_auth_cookies(tokens)
 
-        render :callback
+        redirect_to "/dashboard", notice: "Login Successful!"
       else
         redirect_to root_path, alert: "Authentication failed - could not exchange code for tokens"
       end
@@ -36,9 +36,17 @@ class AuthController < ApplicationController
     response = refresh_access_token(refresh_token)
 
     if response
+      cookies.signed[:access_token] = {
+        value: response["access_token"],
+        expires: response["expires_in"].seconds.from_now,
+        httponly: true,
+        secure: Rails.env.production?,
+        same_site: :strict
+      }
+
       render json: {
         access_token: response["access_token"],
-        expires_in: response["expires_in"]
+        expires_in: response["expires_in"],
       }
     else
       render json: { error: "Failed to refresh token" }, status: :unauthorized
@@ -46,12 +54,10 @@ class AuthController < ApplicationController
   end
 
   def logout
-    reset_session
+    clear_auth_cookies
 
     logout_url = "#{ENV['ZITADEL_ISSUER']}/oidc/v1/end_session"
     redirect_to logout_url, allow_other_host: true
-
-    redirect_to root_path, notice: "Logged out successfully"
   end
 
   private
@@ -134,5 +140,38 @@ class AuthController < ApplicationController
       Rails.logger.error "Token refresh failed: #{http_response.body}"
       nil
     end
+  end
+
+  def set_auth_cookies(tokens)
+    cookie_options = {
+      httponly: true,
+      secure: Rails.env.production?,
+      same_site: :strict
+    }
+
+    cookies.signed[:access_token] = cookie_options.merge(
+      value: tokens[:access_token],
+      expires: 1.hour.from_now
+    )
+
+    cookies.signed[:id_token] = cookie_options.merge(
+      value: tokens[:id_token],
+      expires: 1.hour.from_now
+    )
+
+    cookies.signed[:refresh_token] = cookie_options.merge(
+      value: tokens[:refresh_token],
+      expires: 30.days.from_now
+    )
+
+    Rails.logger.info "Auth cookies set successfully"
+  end
+
+  def clear_auth_cookies
+    cookies.delete(:access_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
+    cookies.delete(:id_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
+    cookies.delete(:refresh_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
+
+    Rails.logger.info "Auth cookies cleared"
   end
 end
