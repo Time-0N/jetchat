@@ -127,7 +127,6 @@ services:
       - "5432:5432"
     volumes:
       - './init/:/docker-entrypoint-initdb.d/01-init:ro'
-      - './dev-data/:/docker-entrypoint-initdb.d/02-dev-data:ro'
       - 'data:/var/lib/postgresql/data:rw'
 
 networks:

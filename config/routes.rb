@@ -2,6 +2,8 @@ Rails.application.routes.draw do
   get "home/index"
   root "home#index"
 
+  get "dashboard", to: "dashboard#index"
+
   # OAuth flow endpoints
   get "/auth/login", to: "auth#login"
   get "/auth/callback", to: "auth#callback"

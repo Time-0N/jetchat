@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Dashboard</title>
+</head>
+<body>
+<div>
+  <h1 id="welcome">Loading...</h1>
+</div>
+
+<script>
+  const accessToken = localStorage.getItem('access_token');
+
+  if (!accessToken) {
+      window.location.href= '/';
+  } else {
+      fetch('/api/me', {
+          headers: {
+              'Authorization': 'Bearer ' + accessToken,
+              'Accept': 'application/json'
+          }
+      })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Failed to fetch user data')
+              }
+              return response.json();
+          })
+          .then(data => {
+              document.getElementById('welcome').textContent = `Welcome, ${data.name}!`;
+          })
+          .catch(error => {
+              console.error("Error: ", error);
+              document.getElementById('welcome').textContent = 'Error loading user data'
+          });
+  }
+</script>
+</body>
+</html>
