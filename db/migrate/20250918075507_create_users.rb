@@ -6,9 +6,12 @@ class CreateUsers < ActiveRecord::Migration[8.0]
       t.string :name
       t.string :first_name
       t.string :last_name
-      t.text :metadata
+      t.jsonb :metadata
 
       t.timestamps
     end
+
+    add_index :users, :sub, unique: true
+    add_index :users, :email, unique: true
   end
 end
