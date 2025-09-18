@@ -1,0 +1,205 @@
+<div class="friends-container">
+  <header class="page-header">
+    <h1>My Friends</h1>
+    <p>You have <%= @friends.count %> friends</p>
+  </header>
+
+  <% if @friends.any? %>
+    <div class="friends-grid">
+      <% @friends.each do |friend| %>
+        <div class="friend-card">
+          <div class="friend-info">
+            <h3><%= friend.name %></h3>
+            <p class="friend-email"><%= friend.email %></p>
+            <% if @friendships_data[friend.id] %>
+              <p class="friend-since">Friends since <%= @friendships_data[friend.id].became_friends_at.strftime("%B %Y") %></p>
+            <% end %>
+          </div>
+
+          <div class="friend-actions">
+            <button class="btn btn-primary" onclick="startChat(<%= friend.id %>)">
+              💬 Chat
+            </button>
+            <button class="btn btn-secondary" onclick="viewProfile(<%= friend.id %>)">
+              👤 Profile
+            </button>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <div class="empty-icon">👥</div>
+      <h3>No friends yet</h3>
+      <p>Start by discovering people and sending friend requests!</p>
+      <div class="empty-actions">
+        <%= link_to "Discover People", discover_friends_path, class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="page-actions">
+    <%= link_to "Discover People", discover_friends_path, class: "btn btn-primary" %>
+    <% if @pending_requests_count > 0 %>
+      <%= link_to "Friend Requests (#{@pending_requests_count})", friend_requests_path, class: "btn btn-warning" %>
+    <% else %>
+      <%= link_to "Friend Requests", friend_requests_path, class: "btn btn-secondary" %>
+    <% end %>
+    <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<style>
+    .friends-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .friends-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .friend-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .friend-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .friend-info {
+        margin-bottom: 1rem;
+    }
+
+    .friend-info h3 {
+        margin: 0 0 0.5rem 0;
+        color: #2c3e50;
+    }
+
+    .friend-email {
+        margin: 0 0 0.25rem 0;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .friend-since {
+        margin: 0;
+        color: #95a5a6;
+        font-size: 0.8rem;
+    }
+
+    .friend-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        flex: 1;
+        white-space: nowrap;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+
+    .btn-warning {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #e67e22;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #7f8c8d;
+    }
+
+    .empty-icon {
+        font-size: 5rem;
+        margin-bottom: 1rem;
+    }
+
+    .empty-actions {
+        margin-top: 2rem;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+        .friend-actions {
+            flex-direction: column;
+        }
+
+        .page-actions {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+</style>
+
+<script>
+    // Placeholder functions for chat and profile features
+    function startChat(friendId) {
+        // TODO: Implement chat functionality
+        alert('Chat feature coming soon!');
+    }
+
+    function viewProfile(friendId) {
+        // TODO: Implement profile view
+        alert('Profile view coming soon!');
+    }
+</script>

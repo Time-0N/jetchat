@@ -1,0 +1,21 @@
+<div class="user-card">
+  <div class="user-info">
+    <h3><%= user.name || "#{user.first_name} #{user.last_name}".strip %></h3>
+    <p><%= user.email %></p>
+  </div>
+
+  <div class="user-actions">
+    <% case friendship_status %>
+    <% when 'friends' %>
+      <span class="btn btn-success">✓ Friends</span>
+    <% when 'request_sent' %>
+      <span class="btn btn-warning">Request Sent</span>
+    <% when 'request_received' %>
+      <%= link_to "Respond to Request", friend_requests_path, class: "btn btn-primary" %>
+    <% else %>
+      <button class="btn btn-primary" onclick="sendFriendRequest(<%= user.id %>, this)">
+        Add Friend
+      </button>
+    <% end %>
+  </div>
+</div>

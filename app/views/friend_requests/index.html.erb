@@ -1,0 +1,278 @@
+<div class="friend-requests-container">
+  <header class="page-header">
+    <h1>Friend Requests</h1>
+    <p>Manage your friend requests</p>
+  </header>
+
+  <div class="requests-sections">
+    <section class="requests-section">
+      <h2>Received Requests <span class="count-badge"><%= @received_requests.count %></span></h2>
+
+      <% if @received_requests.any? %>
+        <div class="requests-list">
+          <% @received_requests.each do |request| %>
+            <div class="request-card">
+              <div class="request-info">
+                <h3><%= request.sender.name %></h3>
+                <p class="request-email"><%= request.sender.email %></p>
+                <p class="request-date">Sent <%= time_ago_in_words(request.created_at) %> ago</p>
+                <% if request.message.present? %>
+                  <p class="request-message">"<%= request.message %>"</p>
+                <% end %>
+              </div>
+
+              <div class="request-actions">
+                <%= button_to "Accept", accept_friend_request_path(request),
+                              method: :patch,
+                              class: "btn btn-success",
+                              data: { confirm: "Accept friend request from #{request.sender.name}?" } %>
+                <%= button_to "Decline", decline_friend_request_path(request),
+                              method: :patch,
+                              class: "btn btn-decline",
+                              data: { confirm: "Decline friend request from #{request.sender.name}?" } %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-icon">📫</div>
+          <h3>No pending requests</h3>
+          <p>You don't have any friend requests at the moment.</p>
+        </div>
+      <% end %>
+    </section>
+
+    <section class="requests-section">
+      <h2>Sent Requests <span class="count-badge"><%= @sent_requests.count %></span></h2>
+
+      <% if @sent_requests.any? %>
+        <div class="requests-list">
+          <% @sent_requests.each do |request| %>
+            <div class="request-card sent-request">
+              <div class="request-info">
+                <h3><%= request.receiver.name %></h3>
+                <p class="request-email"><%= request.receiver.email %></p>
+                <p class="request-date">Sent <%= time_ago_in_words(request.created_at) %> ago</p>
+                <% if request.message.present? %>
+                  <p class="request-message">"<%= request.message %>"</p>
+                <% end %>
+              </div>
+
+              <div class="request-actions">
+                <span class="btn btn-pending">Pending</span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-icon">📤</div>
+          <h3>No sent requests</h3>
+          <p>You haven't sent any friend requests recently.</p>
+        </div>
+      <% end %>
+    </section>
+  </div>
+
+  <div class="page-actions">
+    <%= link_to "Discover People", discover_friends_path, class: "btn btn-primary" %>
+    <%= link_to "My Friends", friends_path, class: "btn btn-secondary" %>
+    <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<style>
+    .friend-requests-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .requests-sections {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .requests-sections {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .requests-section {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+
+    .requests-section h2 {
+        background: #f8f9fa;
+        margin: 0;
+        padding: 1.5rem;
+        color: #2c3e50;
+        border-bottom: 1px solid #e1e8ed;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .count-badge {
+        background: #3498db;
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: normal;
+    }
+
+    .requests-list {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+
+    .request-card {
+        padding: 1.5rem;
+        border-bottom: 1px solid #f1f3f4;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: background-color 0.2s ease;
+    }
+
+    .request-card:hover {
+        background: #f8f9fa;
+    }
+
+    .request-card:last-child {
+        border-bottom: none;
+    }
+
+    .sent-request {
+        opacity: 0.8;
+    }
+
+    .request-info {
+        flex: 1;
+    }
+
+    .request-info h3 {
+        margin: 0 0 0.5rem 0;
+        color: #2c3e50;
+    }
+
+    .request-email {
+        margin: 0 0 0.25rem 0;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .request-date {
+        margin: 0 0 0.5rem 0;
+        color: #95a5a6;
+        font-size: 0.8rem;
+    }
+
+    .request-message {
+        margin: 0.5rem 0 0 0;
+        color: #34495e;
+        font-style: italic;
+        font-size: 0.9rem;
+        background: #ecf0f1;
+        padding: 0.5rem;
+        border-radius: 4px;
+    }
+
+    .request-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        min-width: 100px;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #2ecc71;
+    }
+
+    .btn-decline {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .btn-decline:hover {
+        background: #c0392b;
+    }
+
+    .btn-pending {
+        background: #f39c12;
+        color: white;
+        cursor: default;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #7f8c8d;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1.5rem;
+        color: #7f8c8d;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+</style>

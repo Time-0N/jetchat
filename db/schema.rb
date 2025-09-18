@@ -10,9 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_18_075507) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_18_195708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
+
+  create_table "friend_requests", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
+    t.string "status", default: "pending"
+    t.text "message"
+    t.datetime "responded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id", "status"], name: "index_friend_requests_on_receiver_id_and_status"
+    t.index ["receiver_id"], name: "index_friend_requests_on_receiver_id"
+    t.index ["sender_id", "receiver_id"], name: "index_friend_requests_on_sender_id_and_receiver_id", unique: true
+    t.index ["sender_id", "status"], name: "index_friend_requests_on_sender_id_and_status"
+    t.index ["sender_id"], name: "index_friend_requests_on_sender_id"
+  end
+
+  create_table "friendships", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "friend_id", null: false
+    t.bigint "friend_request_id", null: false
+    t.datetime "became_friends_at", default: -> { "CURRENT_TIMESTAMP" }
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["friend_id", "user_id"], name: "index_friendships_on_friend_id_and_user_id"
+    t.index ["friend_id"], name: "index_friendships_on_friend_id"
+    t.index ["friend_request_id"], name: "index_friendships_on_friend_request_id"
+    t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
+    t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email"
@@ -20,8 +50,19 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_18_075507) do
     t.string "name"
     t.string "first_name"
     t.string "last_name"
-    t.text "metadata"
+    t.jsonb "metadata"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["first_name"], name: "index_users_on_first_name", opclass: :gin_trgm_ops, using: :gin
+    t.index ["last_name"], name: "index_users_on_last_name", opclass: :gin_trgm_ops, using: :gin
+    t.index ["name"], name: "index_users_on_name", opclass: :gin_trgm_ops, using: :gin
+    t.index ["sub"], name: "index_users_on_sub", unique: true
   end
+
+  add_foreign_key "friend_requests", "users", column: "receiver_id"
+  add_foreign_key "friend_requests", "users", column: "sender_id"
+  add_foreign_key "friendships", "friend_requests"
+  add_foreign_key "friendships", "users"
+  add_foreign_key "friendships", "users", column: "friend_id"
 end

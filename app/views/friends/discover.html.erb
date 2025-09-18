@@ -1,0 +1,420 @@
+<div class="discover-container">
+  <header class="page-header">
+    <h1>Discover People</h1>
+    <p>Find and connect with new friends</p>
+  </header>
+
+  <div class="search-section">
+    <%= form_with url: discover_friends_path, method: :get, local: false, id: "search-form", class: "search-form" do |f| %>
+      <div class="search-input-group">
+        <%= f.text_field :search,
+                         placeholder: "Search by name...",
+                         value: params[:search],
+                         class: "search-input",
+                         autocomplete: "off" %>
+        <%= f.submit "Search", class: "search-btn" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div id="results-container">
+    <% if @users.any? %>
+      <div class="users-grid" id="users-grid">
+        <% @users.each do |user| %>
+          <%= render 'user_card', user: user, friendship_status: @friendship_status[user.id] %>
+        <% end %>
+      </div>
+
+      <% unless @is_search %>
+        <% if @users.count == 10 %>
+          <div class="load-more-container">
+            <button id="load-more-btn" class="load-more-btn" data-page="<%= @page + 1 %>">
+              Load More
+            </button>
+          </div>
+        <% end %>
+      <% end %>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-icon">👥</div>
+        <h3>No users found</h3>
+        <p>
+          <% if @is_search %>
+            Try a different search term
+          <% else %>
+            Check back later for new people to connect with!
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="page-actions">
+    <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+  </div>
+</div>
+
+<style>
+    .discover-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    .search-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .search-form {
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .search-input-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .search-input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 2px solid #e1e8ed;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #3498db;
+    }
+
+    .search-btn {
+        padding: 0.75rem 1.5rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .search-btn:hover {
+        background: #2980b9;
+    }
+
+    .users-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .user-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .user-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .user-info {
+        margin-bottom: 1rem;
+    }
+
+    .user-info h3 {
+        margin: 0 0 0.5rem 0;
+        color: #2c3e50;
+    }
+
+    .user-info p {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .user-actions {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: flex-end;
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border: none;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background: #3498db;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #2980b9;
+    }
+
+    .btn-success {
+        background: #27ae60;
+        color: white;
+    }
+
+    .btn-warning {
+        background: #f39c12;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #95a5a6;
+        color: white;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #7f8c8d;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+    }
+
+    .load-more-container {
+        text-align: center;
+    }
+
+    .load-more-btn {
+        padding: 1rem 2rem;
+        background: #3498db;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+
+    .load-more-btn:hover {
+        background: #2980b9;
+    }
+
+    .load-more-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .page-actions {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.querySelector('.search-input');
+        const loadMoreBtn = document.getElementById('load-more-btn');
+        const usersGrid = document.getElementById('users-grid');
+
+        let searchTimeout;
+
+        // Auto-search as user types
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchForm.requestSubmit();
+                }, 500);
+            });
+        }
+
+        // Handle search form submission
+        if (searchForm) {
+            searchForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const formData = new FormData(searchForm);
+                const searchParams = new URLSearchParams(formData);
+
+                fetch(`${searchForm.action}?${searchParams}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        usersGrid.innerHTML = '';
+
+                        if (data.users.length > 0) {
+                            data.users.forEach(user => {
+                                const userCard = createUserCard(user, data.friendship_status[user.id]);
+                                usersGrid.appendChild(userCard);
+                            });
+                        } else {
+                            usersGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div class="empty-icon">👥</div>
+              <h3>No users found</h3>
+              <p>Try a different search term</p>
+            </div>
+          `;
+                        }
+
+                        // Hide/show load more button
+                        const loadMoreContainer = document.querySelector('.load-more-container');
+                        if (loadMoreContainer) {
+                            loadMoreContainer.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Search error:', error);
+                    });
+            });
+        }
+
+        // Handle load more button
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                const page = this.dataset.page;
+                loadMoreBtn.disabled = true;
+                loadMoreBtn.textContent = 'Loading...';
+
+                fetch(`/friends/discover?page=${page}`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.users.length > 0) {
+                            data.users.forEach(user => {
+                                const userCard = createUserCard(user, data.friendship_status[user.id]);
+                                usersGrid.appendChild(userCard);
+                            });
+
+                            // Update page number
+                            this.dataset.page = parseInt(page) + 1;
+                        }
+
+                        // Hide load more if no more results
+                        if (!data.has_more || data.users.length === 0) {
+                            this.parentElement.style.display = 'none';
+                        }
+
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.textContent = 'Load More';
+                    })
+                    .catch(error => {
+                        console.error('Load more error:', error);
+                        loadMoreBtn.disabled = false;
+                        loadMoreBtn.textContent = 'Load More';
+                    });
+            });
+        }
+
+        // Create user card element
+        function createUserCard(user, friendshipStatus) {
+            const card = document.createElement('div');
+            card.className = 'user-card';
+
+            const actionButton = getActionButton(user, friendshipStatus);
+
+            card.innerHTML = `
+      <div class="user-info">
+        <h3>${user.name || (user.first_name + ' ' + user.last_name)}</h3>
+        <p>${user.email}</p>
+      </div>
+      <div class="user-actions">
+        ${actionButton}
+      </div>
+    `;
+
+            return card;
+        }
+
+        // Get appropriate action button based on friendship status
+        function getActionButton(user, status) {
+            switch(status) {
+                case 'friends':
+                    return '<span class="btn btn-success">✓ Friends</span>';
+                case 'request_sent':
+                    return '<span class="btn btn-warning">Request Sent</span>';
+                case 'request_received':
+                    return `<a href="/friend_requests" class="btn btn-primary">Respond to Request</a>`;
+                default:
+                    return `<button class="btn btn-primary" onclick="sendFriendRequest(${user.id}, this)">Add Friend</button>`;
+            }
+        }
+
+        // Send friend request function
+        window.sendFriendRequest = function(userId, button) {
+            button.disabled = true;
+            button.textContent = 'Sending...';
+
+            fetch('/friend_requests', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    receiver_id: userId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        button.textContent = 'Request Sent';
+                        button.className = 'btn btn-warning';
+                        button.disabled = true;
+                    } else {
+                        button.textContent = 'Add Friend';
+                        button.disabled = false;
+                        alert(data.message || 'Failed to send friend request');
+                    }
+                })
+                .catch(error => {
+                    console.error('Friend request error:', error);
+                    button.textContent = 'Add Friend';
+                    button.disabled = false;
+                    alert('Failed to send friend request');
+                });
+        };
+    });
+</script>

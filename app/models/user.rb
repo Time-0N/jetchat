@@ -1,57 +1,94 @@
 class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates :sub, presence: true, uniqueness: true
+  has_many :sent_friend_requests, class_name: "FriendRequest", foreign_key: "sender_id", dependent: :destroy
+  has_many :received_friend_requests, class_name: "FriendRequest", foreign_key: "receiver_id", dependent: :destroy
+  has_many :friendships, dependent: :destroy
+  has_many :friends, through: :friendships
+  has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
+  has_many :inverse_friends, through: :inverse_friendships, source: :user
 
   def self.find_or_create_from_jwt(jwt_payload)
-    Rails.logger.info "=== USER MODEL DEBUG ==="
-    Rails.logger.info "JWT Payload received: #{jwt_payload.inspect}"
-    Rails.logger.info "JWT Payload class: #{jwt_payload.class}"
-
-    Rails.logger.info "Available JWT fields: #{jwt_payload.keys}"
-    Rails.logger.info "Sub: #{jwt_payload['sub']}"
-    Rails.logger.info "Email: #{jwt_payload['email']}"
-    Rails.logger.info "Name: #{jwt_payload['name']}"
-    Rails.logger.info "Given name: #{jwt_payload['given_name']}"
-    Rails.logger.info "Family name: #{jwt_payload['family_name']}"
-
     if jwt_payload["sub"].blank?
-      Rails.logger.error "Missing 'sub' field in JWT payload"
       raise "Missing required 'sub' field"
     end
 
     if jwt_payload["email"].blank?
-      Rails.logger.error "Missing 'email' field in JWT payload"
       raise "Missing required 'email' field"
     end
 
-    Rails.logger.info "Looking for existing user with sub: #{jwt_payload['sub']}"
-
     user = where(sub: jwt_payload["sub"]).first_or_create do |new_user|
-      Rails.logger.info "=== CREATING NEW USER ==="
-      Rails.logger.info "Creating new user with sub: #{jwt_payload['sub']}"
-
       new_user.sub = jwt_payload["sub"]
       new_user.email = jwt_payload["email"]
       new_user.name = jwt_payload["name"] || build_full_name(jwt_payload)
       new_user.first_name = jwt_payload["given_name"]
       new_user.last_name = jwt_payload["family_name"]
       new_user.metadata = jwt_payload
-
-      Rails.logger.info "New user attributes before save:"
-      Rails.logger.info "  sub: #{new_user.sub}"
-      Rails.logger.info "  email: #{new_user.email}"
-      Rails.logger.info "  name: #{new_user.name}"
-      Rails.logger.info "  first_name: #{new_user.first_name}"
-      Rails.logger.info "  last_name: #{new_user.last_name}"
     end
-
-    Rails.logger.info "=== USER CREATION RESULT ==="
-    Rails.logger.info "User persisted: #{user.persisted?}"
-    Rails.logger.info "User errors: #{user.errors.full_messages}" if user.errors.any?
-    Rails.logger.info "Final user: #{user.inspect}"
-    Rails.logger.info "=== END USER MODEL DEBUG ==="
-
     user
+  end
+
+  def all_friends
+    User.where(id: friends.pluck(:id) + inverse_friends.pluck(:id)).distinct
+  end
+
+  def friends_with?(other_user)
+    friendships.exists?(friend: other_user) || inverse_friendships.exists?(user: other_user)
+  end
+
+  def friend_request_pending?(other_user)
+    FriendRequest.pending.exists?(sender: self, receiver: other_user) ||
+      FriendRequest.pending.exists?(sender: other_user, receiver: self)
+  end
+
+  def send_friend_request(to_user, message = nil)
+    return false if friends_with?(to_user) || friend_request_pending?(to_user)
+
+    sent_friend_requests.create(receiver: to_user, message: message)
+  end
+
+  def self.search_by_name(query, limit: 10)
+    return none if query.blank?
+
+    exact_matches = where("LOWER(name) LIKE ?", "#{query.downcase}%")
+                      .or(where("LOWER(first_name) LIKE ?", "#{query.downcase}%"))
+                      .or(where("LOWER(last_name) LIKE ?", "#{query.downcase}%"))
+                      .limit(limit)
+
+    return exact_matches if exact_matches.count >= limit
+
+    if connection.adapter_name.downcase.include?("postgresql")
+      similarity_matches = where(
+        "similarity(LOWER(name), ?) > 0.3 OR similarity(LOWER(first_name || ' ' || last_name), ?) > 0.3",
+        query.downcase, query.downcase
+      ).order(
+        Arel.sql("GREATEST(similarity(LOWER(name), '#{query.downcase}'), similarity(LOWER(first_name || ' ' || last_name), '#{query.downcase}')) DESC")
+      ).limit(limit - exact_matches.count)
+
+      (exact_matches + similarity_matches).uniq.first(limit)
+    else
+      like_matches = where(
+        "LOWER(name) LIKE ? OR LOWER(first_name) LIKE ? OR LOWER(last_name) LIKE ?",
+        "%#{query.downcase}%", "%#{query.downcase}%", "%#{query.downcase}%"
+      ).where.not(id: exact_matches.pluck(:id))
+       .limit(limit - exact_matches.count)
+
+      exact_matches + like_matches
+    end
+  end
+
+  def pending_friend_requests_count
+    received_friend_requests.pending.count
+  end
+
+  def self.for_discovery(current_user, page: 1, per_page: 10)
+    friend_ids = current_user.all_friends.pluck(:id)
+    excluded_ids = friend_ids + [current_user.id]
+
+    where.not(id: excluded_ids)
+         .order(created_at: :desc)
+         .page(page)
+         .per(per_page)
   end
 
   private

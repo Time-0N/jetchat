@@ -12,7 +12,73 @@
         <p class="stat-value">Active</p>
       </div>
     </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">👥</div>
+      <div class="stat-content">
+        <h3>Friends</h3>
+        <p class="stat-value"><%= @current_user.all_friends.count %></p>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon">📬</div>
+      <div class="stat-content">
+        <h3>Friend Requests</h3>
+        <p class="stat-value">
+          <%= @pending_friend_requests_count %>
+          <% if @pending_friend_requests_count > 0 %>
+            <span class="badge">New!</span>
+          <% end %>
+        </p>
+      </div>
+    </div>
   </div>
+
+  <div class="actions-grid">
+    <div class="action-card">
+      <%= link_to discover_friends_path, class: "action-link" do %>
+        <div class="action-icon">🔍</div>
+        <h3>Discover People</h3>
+        <p>Find and connect with new friends</p>
+      <% end %>
+    </div>
+
+    <div class="action-card">
+      <%= link_to friends_path, class: "action-link" do %>
+        <div class="action-icon">👥</div>
+        <h3>My Friends</h3>
+        <p>View all your friends</p>
+      <% end %>
+    </div>
+
+    <div class="action-card">
+      <%= link_to friend_requests_path, class: "action-link" do %>
+        <div class="action-icon">📬</div>
+        <h3>Friend Requests</h3>
+        <p>Manage pending requests</p>
+        <% if @pending_friend_requests_count > 0 %>
+          <span class="notification-badge"><%= @pending_friend_requests_count %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <% if @recent_friends.any? %>
+    <section class="recent-friends">
+      <h2>Recent Friends</h2>
+      <div class="friends-list">
+        <% @recent_friends.each do |friend| %>
+          <div class="friend-card">
+            <div class="friend-info">
+              <h4><%= friend.name %></h4>
+              <p class="text-muted"><%= friend.email %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
 
   <section class="user-details">
     <h2>User Information</h2>
@@ -40,3 +106,96 @@
     </div>
   </section>
 </div>
+
+<style>
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+    }
+
+    .action-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .action-link {
+        display: block;
+        padding: 2rem;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .action-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .action-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #2c3e50;
+    }
+
+    .action-card p {
+        margin: 0;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #e74c3c;
+        color: white;
+        border-radius: 50%;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        font-weight: bold;
+    }
+
+    .badge {
+        background: #e74c3c;
+        color: white;
+        padding: 0.2rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.7rem;
+        margin-left: 0.5rem;
+    }
+
+    .recent-friends {
+        margin: 2rem 0;
+    }
+
+    .friends-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .friend-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .friend-info h4 {
+        margin: 0 0 0.5rem 0;
+        color: #2c3e50;
+    }
+</style>

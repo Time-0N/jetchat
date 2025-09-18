@@ -11,10 +11,22 @@ Rails.application.routes.draw do
     get "/", to: "dashboard#index", as: :dashboard
   end
 
-  # API endpoints
   namespace :api do
     get "/me", to: "users#me"
     resources :resources
+  end
+
+  resources :friends, only: [:index] do
+    collection do
+      get :discover
+    end
+  end
+
+  resources :friend_requests, only: [:index, :create] do
+    member do
+      patch :accept
+      patch :decline
+    end
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
