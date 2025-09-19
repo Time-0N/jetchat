@@ -1,0 +1,59 @@
+<div class="chat-index-container">
+  <header class="page-header">
+    <h1>My Chats</h1>
+    <p>Your conversations with friends</p>
+  </header>
+
+  <% if @chat_rooms.any? %>
+    <div class="chat-rooms-list">
+      <% @chat_rooms.each do |room| %>
+        <div class="chat-room-card">
+          <%= link_to room, class: "chat-room-link" do %>
+            <div class="chat-room-info">
+              <h3>
+                <% if room.is_private? %>
+                  <%= room.other_user(@current_user)&.name || "Private Chat" %>
+                <% else %>
+                  <%= room.name %>
+                <% end %>
+              </h3>
+
+              <% if room.last_message %>
+                <p class="last-message">
+                  <span class="sender"><%= room.last_message.user.name %>:</span>
+                  <%= truncate(room.last_message.content, length: 50) %>
+                </p>
+                <p class="last-message-time">
+                  <%= time_ago_in_words(room.last_message.created_at) %> ago
+                </p>
+              <% else %>
+                <p class="last-message">No messages yet</p>
+              <% end %>
+            </div>
+
+            <div class="chat-room-meta">
+              <% if @unread_counts[room.id] > 0 %>
+                <span class="unread-badge"><%= @unread_counts[room.id] %></span>
+              <% end %>
+              <span class="arrow">→</span>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="empty-state">
+      <div class="empty-icon">💬</div>
+      <h3>No chats yet</h3>
+      <p>Start chatting with your friends!</p>
+      <div class="empty-actions">
+        <%= link_to "View Friends", friends_path, class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="page-actions">
+    <%= link_to "My Friends", friends_path, class: "btn btn-secondary" %>
+    <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
+  </div>
+</div>

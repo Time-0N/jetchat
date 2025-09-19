@@ -1,0 +1,80 @@
+class ChatRoomChannel < ApplicationCable::Channel
+  def subscribed
+    chat_room = ChatRoom.find(params[:chat_room_id])
+
+    if current_user.chat_rooms.include?(chat_room)
+      stream_from "chat_room_#{chat_room.id}"
+
+      ActionCable.server.broadcast(
+        "chat_room_#{chat_room.id}",
+        {
+          type: "user_status",
+          user_id: current_user.id,
+          status: "online"
+        }
+      )
+    else
+      reject
+    end
+  end
+
+  def unsubscribed
+    chat_room_id = params[:chat_room_id]
+    if chat_room_id
+      ActionCable.server.broadcast(
+        "chat_room_#{chat_room_id}",
+        {
+          type: "user_status",
+          user_id: current_user.id,
+          status: "offline"
+        }
+      )
+    end
+  end
+
+  def receive(data)
+    chat_room = ChatRoom.find(params[:chat_room_id])
+
+    if current_user.chat_rooms.include?(chat_room)
+      Rails.logger.info "Creating message with content: '#{data['message']}'"
+
+      begin
+        message = chat_room.messages.create!(
+          user: current_user,
+          content: data['message'].to_s.strip,
+          message_type: 'text'
+        )
+
+        Rails.logger.info "Message created successfully: #{message.inspect}"
+      rescue => e
+        Rails.logger.error "Message creation failed: #{e.message}"
+        Rails.logger.error "Data received: #{data.inspect}"
+      end
+    end
+  end
+
+  def typing
+    chat_room_id = params[:chat_room_id]
+    ActionCable.server.broadcast(
+      "chat_room_#{chat_room_id}",
+      {
+        type: "typing",
+        user_id: current_user.id,
+        user_name: current_user.name,
+        typing: true
+      }
+    )
+  end
+
+  def stop_typing
+    chat_room_id = params[:chat_room_id]
+    ActionCable.server.broadcast(
+    "chat_room_#{chat_room_id}",
+    {
+      type: "typing",
+      user_id: current_user.id,
+      typing: false
+    }
+    )
+  end
+end

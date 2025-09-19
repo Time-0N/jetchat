@@ -7,6 +7,10 @@ class User < ApplicationRecord
   has_many :friends, through: :friendships
   has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id", dependent: :destroy
   has_many :inverse_friends, through: :inverse_friendships, source: :user
+  has_many :chat_room_memberships, dependent: :destroy
+  has_many :chat_rooms, through: :chat_room_memberships
+  has_many :created_chat_rooms, class_name: "ChatRoom", foreign_key: "created_by_id"
+  has_many :messages, dependent: :destroy
 
   def self.find_or_create_from_jwt(jwt_payload)
     if jwt_payload["sub"].blank?
@@ -89,6 +93,10 @@ class User < ApplicationRecord
          .order(created_at: :desc)
          .page(page)
          .per(per_page)
+  end
+
+  def can_chat_with?(other_user)
+    friends_with?(other_user)
   end
 
   private

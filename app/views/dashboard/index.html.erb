@@ -53,6 +53,14 @@
     </div>
 
     <div class="action-card">
+      <%= link_to chat_rooms_path, class: "action-link" do %>
+        <div class="action-icon">💬</div>
+        <h3>My Chats</h3>
+        <p>View your conversations</p>
+      <% end %>
+    </div>
+
+    <div class="action-card">
       <%= link_to friend_requests_path, class: "action-link" do %>
         <div class="action-icon">📬</div>
         <h3>Friend Requests</h3>
