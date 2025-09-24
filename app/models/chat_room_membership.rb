@@ -6,5 +6,20 @@ class ChatRoomMembership < ApplicationRecord
 
   def mark_as_read!
     update!(last_read_at: Time.current)
+    broadcast_unread_count_update
+  end
+
+  private
+
+  def broadcast_unread_count_update
+    unread_count = user.unread_messages_count
+
+    ActionCable.server.broadcast(
+      "user_notifications_#{user.id}",
+      {
+        type: "unread_messages_update",
+        unread_count: unread_count
+      }
+    )
   end
 end

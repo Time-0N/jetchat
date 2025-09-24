@@ -99,6 +99,21 @@ class User < ApplicationRecord
     friends_with?(other_user)
   end
 
+  def unread_messages_count
+    total_unread = 0
+
+    chat_room_memberships.includes(:chat_room).each do |membership|
+      last_read = membership.last_read_at || membership.created_at
+      unread_in_room = membership.chat_room.messages
+                                 .where("created_at > ?", last_read)
+                                 .where.not(user_id: id)
+                                 .count
+      total_unread += unread_in_room
+    end
+
+    total_unread
+  end
+
   private
 
   def self.build_full_name(jwt_payload)

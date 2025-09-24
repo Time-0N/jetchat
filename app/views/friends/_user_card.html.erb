@@ -6,6 +6,8 @@
 
   <div class="user-actions">
     <% case friendship_status %>
+    <% when 'self' %>
+      <span class="btn btn-secondary" style="cursor: default;">You</span>
     <% when 'friends' %>
       <span class="btn btn-success">✓ Friends</span>
     <% when 'request_sent' %>

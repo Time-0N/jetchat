@@ -1,0 +1,124 @@
+.friend-requests-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.requests-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .requests-sections {
+        grid-template-columns: 1fr;
+    }
+}
+
+.requests-section {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.requests-section h2 {
+    background: #f8f9fa;
+    margin: 0;
+    padding: 1.5rem;
+    color: #2c3e50;
+    border-bottom: 1px solid #e1e8ed;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.count-badge {
+    background: #3498db;
+    color: white;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: normal;
+}
+
+.requests-list {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.request-card {
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f3f4;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s ease;
+}
+
+.request-card:hover {
+    background: #f8f9fa;
+}
+
+.request-card:last-child {
+    border-bottom: none;
+}
+
+.sent-request {
+    opacity: 0.8;
+}
+
+.request-info {
+    flex: 1;
+}
+
+.request-info h3 {
+    margin: 0 0 0.5rem 0;
+    color: #2c3e50;
+}
+
+.request-email {
+    margin: 0 0 0.25rem 0;
+    color: #7f8c8d;
+    font-size: 0.9rem;
+}
+
+.request-date {
+    margin: 0 0 0.5rem 0;
+    color: #95a5a6;
+    font-size: 0.8rem;
+}
+
+.request-message {
+    margin: 0.5rem 0 0 0;
+    color: #34495e;
+    font-style: italic;
+    font-size: 0.9rem;
+    background: #ecf0f1;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.request-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 100px;
+}
+
+.btn-decline {
+    background: #e74c3c;
+    color: white;
+}
+
+.btn-decline:hover:not(:disabled) {
+    background: #c0392b;
+}
+
+.btn-pending {
+    background: #f39c12;
+    color: white;
+    cursor: default;
+}

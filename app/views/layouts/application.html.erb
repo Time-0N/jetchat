@@ -25,7 +25,59 @@
   </head>
 
   <body>
-    <%= yield %>
+    <% unless controller_name == 'home' && action_name == 'index' %>
+      <header class="app-header">
+        <div class="header-content">
+          <%= link_to dashboard_path, class: "app-logo" do %>
+            <div class="app-logo-icon">💬</div>
+            <span>Social Hub</span>
+          <% end %>
+
+          <nav class="nav-menu">
+            <%= link_to friends_path, class: "nav-link #{'active' if controller_name == 'friends'}" do %>
+              <span>👥</span>
+              <span>Friends</span>
+            <% end %>
+
+            <%= link_to discover_friends_path, class: "nav-link #{'active' if action_name == 'discover'}" do %>
+              <span>🔍</span>
+              <span>Discover</span>
+            <% end %>
+
+            <%= link_to chat_rooms_path, class: "nav-link #{'active' if controller_name == 'chat_rooms'}" do %>
+              <span>💬</span>
+              <span>Chats</span>
+            <% end %>
+
+            <%= link_to friend_requests_path, class: "nav-link #{'active' if controller_name == 'friend_requests'}" do %>
+              <span>📬</span>
+              <span>Requests</span>
+              <% if defined?(current_user) && current_user&.pending_friend_requests_count && current_user.pending_friend_requests_count > 0 %>
+                <span class="nav-badge"><%= current_user.pending_friend_requests_count %></span>
+              <% end %>
+            <% end %>
+          </nav>
+
+          <div class="user-menu">
+            <% if defined?(current_user) && current_user %>
+              <div class="user-info">
+                <div class="user-avatar">
+                  <%= current_user.name&.first || current_user.email&.first || "U" %>
+                </div>
+                <span><%= current_user.name || current_user.email %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </header>
+
+      <main class="main-content">
+        <%= yield %>
+      </main>
+    <% else %>
+      <%= yield %>
+    <% end %>
+
     <%= javascript_importmap_tags %>
   </body>
 </html>
