@@ -116,14 +116,12 @@
 }
 
 .status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #95a5a6;
+    font-size: 0.8rem;
 }
 
-.status-indicator.online {
-    background: #27ae60;
+.user-status-small {
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
 }
 
 .messages-container {
@@ -280,3 +278,13 @@
         max-width: 85%;
     }
 }
+
+/* User Status Styles */
+.user-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+

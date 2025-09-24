@@ -12,7 +12,9 @@
             <div class="chat-room-info">
               <h3>
                 <% if room.is_private? %>
-                  <%= room.other_user(@current_user)&.name || "Private Chat" %>
+                  <% other_user = room.other_user(@current_user) %>
+                  <%= other_user&.name || "Private Chat" %>
+                  <span class="user-status-small" data-user-id="<%= other_user&.id %>">🔴</span>
                 <% else %>
                   <%= room.name %>
                 <% end %>
@@ -56,3 +58,40 @@
     <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    <% if @chat_rooms.any? %>
+      // Subscribe to all chat rooms to get status updates
+      const cable = ActionCable.createConsumer();
+
+      <% @chat_rooms.each do |room| %>
+        <% if room.is_private? && room.other_user(@current_user) %>
+          cable.subscriptions.create({
+            channel: 'ChatRoomChannel',
+            chat_room_id: <%= room.id %>
+          }, {
+            received: function(data) {
+              if (data.type === 'user_status') {
+                updateChatListStatus(<%= room.other_user(@current_user).id %>, data.status);
+              }
+            }
+          });
+        <% end %>
+      <% end %>
+    <% end %>
+
+    function updateChatListStatus(userId, status) {
+      // Find the specific status indicator for this user
+      const statusIndicator = document.querySelector(`[data-user-id="${userId}"]`);
+
+      if (statusIndicator) {
+        if (status === 'online') {
+          statusIndicator.textContent = '🟢';
+        } else {
+          statusIndicator.textContent = '🔴';
+        }
+      }
+    }
+  });
+</script>

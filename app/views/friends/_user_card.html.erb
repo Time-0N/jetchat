@@ -15,7 +15,7 @@
     <% when 'request_received' %>
       <%= link_to "Respond to Request", friend_requests_path, class: "btn btn-primary" %>
     <% else %>
-      <button class="btn btn-primary" onclick="sendFriendRequest(<%= user.id %>, this)">
+      <button class="btn btn-primary" data-action="send-friend-request" data-user-id="<%= user.id %>">
         Add Friend
       </button>
     <% end %>

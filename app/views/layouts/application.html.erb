@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Modul 223" %></title>
+    <title><%= content_for(:title) || "JetChat" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -30,16 +30,16 @@
         <div class="header-content">
           <%= link_to dashboard_path, class: "app-logo" do %>
             <div class="app-logo-icon">💬</div>
-            <span>Social Hub</span>
+            <span>JetChat</span>
           <% end %>
 
           <nav class="nav-menu">
-            <%= link_to friends_path, class: "nav-link #{'active' if controller_name == 'friends'}" do %>
+            <%= link_to friends_path, class: "nav-link #{'active' if controller_name == 'friends' && action_name == 'index'}" do %>
               <span>👥</span>
               <span>Friends</span>
             <% end %>
 
-            <%= link_to discover_friends_path, class: "nav-link #{'active' if action_name == 'discover'}" do %>
+            <%= link_to discover_friends_path, class: "nav-link #{'active' if controller_name == 'friends' && action_name == 'discover'}" do %>
               <span>🔍</span>
               <span>Discover</span>
             <% end %>
@@ -52,20 +52,19 @@
             <%= link_to friend_requests_path, class: "nav-link #{'active' if controller_name == 'friend_requests'}" do %>
               <span>📬</span>
               <span>Requests</span>
-              <% if defined?(current_user) && current_user&.pending_friend_requests_count && current_user.pending_friend_requests_count > 0 %>
-                <span class="nav-badge"><%= current_user.pending_friend_requests_count %></span>
+              <% user = defined?(current_user) && current_user ? current_user : @current_user %>
+              <% if user&.pending_friend_requests_count && user.pending_friend_requests_count > 0 %>
+                <span class="nav-badge"><%= user.pending_friend_requests_count %></span>
               <% end %>
             <% end %>
           </nav>
 
           <div class="user-menu">
-            <% if defined?(current_user) && current_user %>
-              <div class="user-info">
-                <div class="user-avatar">
-                  <%= current_user.name&.first || current_user.email&.first || "U" %>
-                </div>
-                <span><%= current_user.name || current_user.email %></span>
-              </div>
+            <% if (defined?(current_user) && current_user) || (defined?(@current_user) && @current_user) %>
+              <%= button_to "/auth/logout", method: :post, class: "logout-btn", data: { confirm: "Are you sure you want to logout?" } do %>
+                <span>🚪</span>
+                <span>Logout</span>
+              <% end %>
             <% end %>
           </div>
         </div>
@@ -79,5 +78,17 @@
     <% end %>
 
     <%= javascript_importmap_tags %>
+
+    <% if (defined?(current_user) && current_user) || (defined?(@current_user) && @current_user) %>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          // Subscribe to presence channel for global online/offline status
+          if (typeof ActionCable !== 'undefined') {
+            const cable = ActionCable.createConsumer();
+            const presenceChannel = cable.subscriptions.create('PresenceChannel');
+          }
+        });
+      </script>
+    <% end %>
   </body>
 </html>

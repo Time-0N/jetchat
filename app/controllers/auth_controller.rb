@@ -12,6 +12,10 @@ class AuthController < ApplicationController
     redirect_to authorization_url, allow_other_host: true
   end
 
+  def register
+    redirect_to registration_url, allow_other_host: true
+  end
+
   def callback
     if params[:code].present?
       tokens = exchange_code_for_tokens(params[:code])
@@ -78,6 +82,30 @@ class AuthController < ApplicationController
       scope: "openid profile email offline_access",
       code_challenge: code_challenge,
       code_challenge_method: "S256"
+    }
+
+    "#{ENV['ZITADEL_ISSUER']}/oauth/v2/authorize?#{params.to_query}"
+  end
+
+  def registration_url
+    @code_verifier = SecureRandom.urlsafe_base64(32)
+    code_challenge = Base64.urlsafe_encode64(
+      Digest::SHA256.digest(@code_verifier),
+      padding: false
+    )
+
+    session[:code_verifier] = @code_verifier
+
+    params = {
+      client_id: ENV["ZITADEL_CLIENT_ID"],
+      redirect_uri: auth_callback_url(host: request.host, port: request.port),
+      response_type: "code",
+      scope: "openid profile email offline_access",
+      code_challenge: code_challenge,
+      code_challenge_method: "S256",
+      # Add registration-specific parameters
+      screen_hint: "register",
+      prompt: "create"
     }
 
     "#{ENV['ZITADEL_ISSUER']}/oauth/v2/authorize?#{params.to_query}"

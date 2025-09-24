@@ -114,6 +114,7 @@ class User < ApplicationRecord
     total_unread
   end
 
+
   private
 
   def self.build_full_name(jwt_payload)

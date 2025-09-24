@@ -4,32 +4,12 @@ class ChatRoomChannel < ApplicationCable::Channel
 
     if current_user.chat_rooms.include?(chat_room)
       stream_from "chat_room_#{chat_room.id}"
-
-      ActionCable.server.broadcast(
-        "chat_room_#{chat_room.id}",
-        {
-          type: "user_status",
-          user_id: current_user.id,
-          status: "online"
-        }
-      )
     else
       reject
     end
   end
 
   def unsubscribed
-    chat_room_id = params[:chat_room_id]
-    if chat_room_id
-      ActionCable.server.broadcast(
-        "chat_room_#{chat_room_id}",
-        {
-          type: "user_status",
-          user_id: current_user.id,
-          status: "offline"
-        }
-      )
-    end
   end
 
   def receive(data)

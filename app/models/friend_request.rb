@@ -3,13 +3,16 @@ class FriendRequest < ApplicationRecord
   belongs_to :receiver, class_name: "User"
   has_one :friendship, dependent: :destroy
 
-  validates :status, inclusion: { in: %w[pending accepted declined] }
-  validates :sender_id, uniqueness: { scope: :receiver_id, message: "Friend request already exists" }
+  validates :status, inclusion: { in: %w[pending accepted] }
+  validates :sender_id, uniqueness: {
+    scope: :receiver_id,
+    conditions: -> { where(status: 'pending') },
+    message: "Pending friend request already exists"
+  }
   validate :cannot_send_to_self
 
   scope :pending, -> { where(status: "pending") }
   scope :accepted, -> { where(status: "accepted") }
-  scope :declined, -> { where(status: "declined") }
 
   def accept!
     transaction do
@@ -23,7 +26,9 @@ class FriendRequest < ApplicationRecord
   end
 
   def decline!
-    update!(status: "declined", responded_at: Time.current)
+    # Simply delete the request instead of marking as declined
+    # This allows the sender to send another request later
+    destroy!
   end
 
   def pending?

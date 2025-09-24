@@ -8,12 +8,12 @@
           <%= @chat_room.name %>
         <% end %>
       </h2>
-      <div class="user-status" id="user-status">
-        <% if @other_user %>
-          <span class="status-indicator offline" id="status-indicator"></span>
+      <% if @other_user %>
+        <div class="user-status" id="user-status">
+          <span class="status-indicator" id="status-indicator">🔴</span>
           <span id="status-text">Offline</span>
-        <% end %>
-      </div>
+        </div>
+      <% end %>
     </div>
 
     <div class="chat-actions">
@@ -115,17 +115,17 @@
             scrollToBottom();
         }
 
-        // Handle user status updates
+        // Handle user status updates (websocket-based online/offline detection)
         function updateUserStatus(data) {
             const statusIndicator = document.getElementById('status-indicator');
             const statusText = document.getElementById('status-text');
 
             if (statusIndicator && statusText) {
                 if (data.status === 'online') {
-                    statusIndicator.classList.add('online');
+                    statusIndicator.textContent = '🟢';
                     statusText.textContent = 'Online';
                 } else {
-                    statusIndicator.classList.remove('online');
+                    statusIndicator.textContent = '🔴';
                     statusText.textContent = 'Offline';
                 }
             }

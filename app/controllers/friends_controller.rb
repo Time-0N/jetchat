@@ -42,6 +42,28 @@ class FriendsController < ApplicationController
     end
   end
 
+  def unfriend
+    friend = User.find(params[:id])
+
+    # Remove the friendship from both directions
+    current_user.friendships.where(friend: friend).destroy_all
+    current_user.inverse_friendships.where(user: friend).destroy_all
+
+    # Remove chat rooms between these users (as mentioned, chat data can be thrown out)
+    chat_rooms_to_remove = current_user.chat_rooms.joins(:users)
+                                      .where(is_private: true)
+                                      .group('chat_rooms.id')
+                                      .having('COUNT(users.id) = 2')
+                                      .where(users: { id: [current_user.id, friend.id] })
+
+    chat_rooms_to_remove.destroy_all
+
+    respond_to do |format|
+      format.json { render json: { status: 'success', message: 'Friend removed successfully' } }
+      format.html { redirect_to friends_path, notice: 'Friend removed successfully' }
+    end
+  end
+
   private
 
   def friendship_status_for(user)

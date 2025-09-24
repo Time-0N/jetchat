@@ -23,6 +23,9 @@
             <button class="btn btn-secondary" data-action="view-profile" data-friend-id="<%= friend.id %>">
               👤 Profile
             </button>
+            <button class="btn btn-danger btn-sm" data-action="unfriend" data-friend-id="<%= friend.id %>">
+              ❌ Unfriend
+            </button>
           </div>
         </div>
       <% end %>
@@ -60,6 +63,8 @@
           startChat(friendId);
         } else if (action === 'view-profile') {
           viewProfile(friendId);
+        } else if (action === 'unfriend') {
+          unfriendUser(friendId);
         }
       });
     }
@@ -92,6 +97,46 @@
     function viewProfile(friendId) {
       // TODO: Implement profile view
       alert('Profile view coming soon!');
+    }
+
+    function unfriendUser(friendId) {
+      if (!confirm('Are you sure you want to remove this friend? This will also delete your chat history.')) {
+        return;
+      }
+
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+      fetch(`/friends/${friendId}/unfriend`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken,
+          'Accept': 'application/json'
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 'success') {
+            // Remove the friend card from the page
+            const friendCard = document.querySelector(`[data-friend-id="${friendId}"]`).closest('.friend-card');
+            friendCard.remove();
+
+            // Update friends count if visible
+            const friendCountElement = document.querySelector('header p');
+            if (friendCountElement && friendCountElement.textContent.includes('friends')) {
+              const currentCount = parseInt(friendCountElement.textContent.match(/\d+/)[0]);
+              friendCountElement.textContent = `You have ${currentCount - 1} friends`;
+            }
+
+            alert('Friend removed successfully');
+          } else {
+            alert(data.message || 'Failed to remove friend');
+          }
+        })
+        .catch(error => {
+          console.error('Error removing friend:', error);
+          alert('Failed to remove friend. Please try again.');
+        });
     }
   });
 </script>

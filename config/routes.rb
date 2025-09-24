@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   # OAuth flow endpoints
   get "/auth/login", to: "auth#login"
+  get "/auth/register", to: "auth#register"
   get "/auth/callback", to: "auth#callback"
   post "/auth/refresh", to: "auth#refresh"
   post "/auth/logout", to: "auth#logout"
@@ -10,6 +11,7 @@ Rails.application.routes.draw do
   scope :dashboard do
     get "/", to: "dashboard#index", as: :dashboard
   end
+
 
   namespace :api do
     get "/me", to: "users#me"
@@ -19,6 +21,9 @@ Rails.application.routes.draw do
   resources :friends, only: [:index] do
     collection do
       get :discover
+    end
+    member do
+      delete :unfriend
     end
   end
 

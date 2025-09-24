@@ -53,3 +53,186 @@
     <%= link_to "Back to Dashboard", dashboard_path, class: "btn btn-secondary" %>
   </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchForm = document.getElementById('search-form');
+    const searchInput = document.querySelector('.search-input');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    const usersGrid = document.getElementById('users-grid');
+
+    let searchTimeout;
+
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchForm.requestSubmit();
+            }, 500);
+        });
+    }
+
+    if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(searchForm);
+            const searchParams = new URLSearchParams(formData);
+
+            fetch(`${searchForm.action}?${searchParams}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    usersGrid.innerHTML = '';
+
+                    if (data.users.length > 0) {
+                        data.users.forEach(user => {
+                            const userCard = createUserCard(user, data.friendship_status[user.id]);
+                            usersGrid.appendChild(userCard);
+                        });
+                    } else {
+                        usersGrid.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1;">
+              <div class="empty-icon">👥</div>
+              <h3>No users found</h3>
+              <p>Try a different search term</p>
+            </div>
+          `;
+                    }
+
+                    const loadMoreContainer = document.querySelector('.load-more-container');
+                    if (loadMoreContainer) {
+                        loadMoreContainer.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                });
+        });
+    }
+
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener('click', function() {
+            const page = this.dataset.page;
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.textContent = 'Loading...';
+
+            fetch(`/friends/discover?page=${page}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.users.length > 0) {
+                        data.users.forEach(user => {
+                            const userCard = createUserCard(user, data.friendship_status[user.id]);
+                            usersGrid.appendChild(userCard);
+                        });
+
+                        // Update page number
+                        this.dataset.page = parseInt(page) + 1;
+                    }
+
+                    // Hide load more if no more results
+                    if (!data.has_more || data.users.length === 0) {
+                        this.parentElement.style.display = 'none';
+                    }
+
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = 'Load More';
+                })
+                .catch(error => {
+                    console.error('Load more error:', error);
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = 'Load More';
+                });
+        });
+    }
+
+    function createUserCard(user, friendshipStatus) {
+        const card = document.createElement('div');
+        card.className = 'user-card';
+
+        const actionButton = getActionButton(user, friendshipStatus);
+
+        card.innerHTML = `
+      <div class="user-info">
+        <h3>${user.name || (user.first_name + ' ' + user.last_name)}</h3>
+        <p>${user.email}</p>
+      </div>
+      <div class="user-actions">
+        ${actionButton}
+      </div>
+    `;
+
+        return card;
+    }
+
+    function getActionButton(user, status) {
+        switch(status) {
+            case 'self':
+                return '<span class="btn btn-secondary" style="cursor: default;">You</span>';
+            case 'friends':
+                return '<span class="btn btn-success">✓ Friends</span>';
+            case 'request_sent':
+                return '<span class="btn btn-warning">Request Sent</span>';
+            case 'request_received':
+                return `<a href="/friend_requests" class="btn btn-primary">Respond to Request</a>`;
+            default:
+                return `<button class="btn btn-primary" data-action="send-friend-request" data-user-id="${user.id}">Add Friend</button>`;
+        }
+    }
+
+    // Add event delegation for dynamically created buttons
+    if (usersGrid) {
+        usersGrid.addEventListener('click', function(e) {
+            const button = e.target.closest('[data-action="send-friend-request"]');
+            if (!button) return;
+
+            const userId = parseInt(button.dataset.userId);
+            sendFriendRequest(userId, button);
+        });
+    }
+
+    function sendFriendRequest(userId, button) {
+        button.disabled = true;
+        button.textContent = 'Sending...';
+
+        fetch('/friend_requests', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                receiver_id: userId
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    button.textContent = 'Request Sent';
+                    button.className = 'btn btn-warning';
+                    button.disabled = true;
+                } else {
+                    button.textContent = 'Add Friend';
+                    button.disabled = false;
+                    alert(data.message || 'Failed to send friend request');
+                }
+            })
+            .catch(error => {
+                console.error('Friend request error:', error);
+                button.textContent = 'Add Friend';
+                button.disabled = false;
+                alert('Failed to send friend request');
+            });
+    }
+});
+</script>
