@@ -25,6 +25,10 @@ class ChatRoomChannel < ApplicationCable::Channel
           message_type: "text"
         )
 
+        # Auto-mark as read for the sender
+        membership = chat_room.chat_room_memberships.find_by(user: current_user)
+        membership&.update!(last_read_at: Time.current)
+
         Rails.logger.info "Message created successfully: #{message.inspect}"
       rescue => e
         Rails.logger.error "Message creation failed: #{e.message}"
