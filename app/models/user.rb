@@ -21,14 +21,42 @@ class User < ApplicationRecord
       raise "Missing required 'email' field"
     end
 
-    user = where(sub: jwt_payload["sub"]).first_or_create do |new_user|
+    user = where(sub: jwt_payload["sub"]).first_or_initialize do |new_user|
       new_user.sub = jwt_payload["sub"]
-      new_user.email = jwt_payload["email"]
-      new_user.name = jwt_payload["name"] || build_full_name(jwt_payload)
-      new_user.first_name = jwt_payload["given_name"]
-      new_user.last_name = jwt_payload["family_name"]
-      new_user.metadata = jwt_payload
     end
+
+    # Extract user data from JWT
+    new_email = jwt_payload["email"]
+    new_name = jwt_payload["name"] || build_full_name(jwt_payload)
+    new_first_name = jwt_payload["given_name"]
+    new_last_name = jwt_payload["family_name"]
+
+    # Check if any user data has changed
+    data_changed = user.new_record? ||
+                   user.email != new_email ||
+                   user.name != new_name ||
+                   user.first_name != new_first_name ||
+                   user.last_name != new_last_name
+
+    if data_changed
+      user.assign_attributes(
+        email: new_email,
+        name: new_name,
+        first_name: new_first_name,
+        last_name: new_last_name,
+        metadata: jwt_payload
+      )
+
+      user.save!
+      Rails.logger.info "Updated user #{user.sub} with new data from JWT"
+    else
+      # Still update metadata to keep it fresh
+      if user.metadata != jwt_payload
+        user.update!(metadata: jwt_payload)
+        Rails.logger.info "Updated metadata for user #{user.sub}"
+      end
+    end
+
     user
   end
 

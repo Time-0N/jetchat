@@ -219,5 +219,17 @@
 
         // Initial scroll to bottom
         scrollToBottom();
+
+        // Mark messages as read when user comes back to the tab
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden) {
+                markAsRead();
+            }
+        });
+
+        // Mark messages as read when user focuses the window
+        window.addEventListener('focus', function() {
+            markAsRead();
+        });
     });
 </script>

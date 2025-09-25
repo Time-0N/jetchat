@@ -93,7 +93,12 @@
   <% end %>
 
   <section class="user-details">
-    <h2>User Information</h2>
+    <div class="user-details-header">
+      <h2>User Information</h2>
+      <%= link_to ENV['ZITADEL_ISSUER'], class: "zitadel-link", target: "_blank", rel: "noopener noreferrer", title: "Edit profile in Zitadel" do %>
+        🔗
+      <% end %>
+    </div>
     <div class="info-grid">
       <div class="info-item">
         <label>User ID (sub):</label>
