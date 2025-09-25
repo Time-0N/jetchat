@@ -39,7 +39,7 @@ services:
       # Database Configuration - matches database.yml production config
       MODUL_223_DATABASE_PASSWORD: postgres
       # Zitadel Configuration
-      ZITADEL_ISSUER: https://jetchat-5jjotf.us1.zitadel.cloud/
+      ZITADEL_ISSUER: https://jetchat-5jjotf.us1.zitadel.cloud
       ZITADEL_CLIENT_ID: "339386197019301969"
       # Rails Configuration
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-6e7e17f6ae38014e7e10f660e33fea06}
