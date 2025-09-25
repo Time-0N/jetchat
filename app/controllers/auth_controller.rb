@@ -174,7 +174,8 @@ class AuthController < ApplicationController
     cookie_options = {
       httponly: true,
       secure: Rails.env.production?,
-      same_site: :strict
+      same_site: :lax,
+      path: '/'
     }
 
     cookies.signed[:access_token] = cookie_options.merge(
@@ -196,9 +197,16 @@ class AuthController < ApplicationController
   end
 
   def clear_auth_cookies
-    cookies.delete(:access_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
-    cookies.delete(:id_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
-    cookies.delete(:refresh_token, httponly: true, secure: Rails.env.production?, same_site: :strict)
+    cookie_options = {
+      httponly: true,
+      secure: Rails.env.production?,
+      same_site: :lax,
+      path: '/'
+    }
+
+    cookies.delete(:access_token, cookie_options)
+    cookies.delete(:id_token, cookie_options)
+    cookies.delete(:refresh_token, cookie_options)
 
     Rails.logger.info "Auth cookies cleared"
   end
