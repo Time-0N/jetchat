@@ -3,7 +3,7 @@ class Message < ApplicationRecord
   belongs_to :chat_room
 
   validates :content, presence: true, length: { maximum: 200 }
-  validates :message_type, inclusion: { in: %w(text system) }
+  validates :message_type, inclusion: { in: %w[text system] }
 
   scope :recent, -> { order(created_at: :desc) }
   scope :in_room, ->(room_id) { where(chat_room_id: room_id) }
@@ -22,7 +22,7 @@ class Message < ApplicationRecord
         content: content,
         user: {
           id: user.id,
-          name: user.name,
+          name: user.name
         },
         created_at: created_at.strftime("%H:%M"),
         message_type: message_type

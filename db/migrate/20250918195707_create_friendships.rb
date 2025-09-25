@@ -10,7 +10,7 @@ class CreateFriendships < ActiveRecord::Migration[8.0]
     end
 
     # Ensure friendship uniqueness and fast lookups
-    add_index :friendships, [:user_id, :friend_id], unique: true
-    add_index :friendships, [:friend_id, :user_id]
+    add_index :friendships, [ :user_id, :friend_id ], unique: true
+    add_index :friendships, [ :friend_id, :user_id ]
   end
 end

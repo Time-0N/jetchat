@@ -11,6 +11,6 @@ class CreateMessages < ActiveRecord::Migration[8.0]
     end
 
     # Critical indexes for performance
-    add_index :messages, [:chat_room_id, :created_at]
+    add_index :messages, [ :chat_room_id, :created_at ]
   end
 end

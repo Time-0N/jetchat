@@ -52,15 +52,15 @@ class FriendsController < ApplicationController
     # Remove chat rooms between these users (as mentioned, chat data can be thrown out)
     chat_rooms_to_remove = current_user.chat_rooms.joins(:users)
                                       .where(is_private: true)
-                                      .group('chat_rooms.id')
-                                      .having('COUNT(users.id) = 2')
-                                      .where(users: { id: [current_user.id, friend.id] })
+                                      .group("chat_rooms.id")
+                                      .having("COUNT(users.id) = 2")
+                                      .where(users: { id: [ current_user.id, friend.id ] })
 
     chat_rooms_to_remove.destroy_all
 
     respond_to do |format|
-      format.json { render json: { status: 'success', message: 'Friend removed successfully' } }
-      format.html { redirect_to friends_path, notice: 'Friend removed successfully' }
+      format.json { render json: { status: "success", message: "Friend removed successfully" } }
+      format.html { redirect_to friends_path, notice: "Friend removed successfully" }
     end
   end
 

@@ -11,8 +11,8 @@ class CreateFriendRequests < ActiveRecord::Migration[8.0]
     end
 
     # Prevent duplicate requests
-    add_index :friend_requests, [:sender_id, :receiver_id], unique: true
-    add_index :friend_requests, [:receiver_id, :status]
-    add_index :friend_requests, [:sender_id, :status]
+    add_index :friend_requests, [ :sender_id, :receiver_id ], unique: true
+    add_index :friend_requests, [ :receiver_id, :status ]
+    add_index :friend_requests, [ :sender_id, :status ]
   end
 end

@@ -50,7 +50,7 @@ class AuthController < ApplicationController
 
       render json: {
         access_token: response["access_token"],
-        expires_in: response["expires_in"],
+        expires_in: response["expires_in"]
       }
     else
       render json: { error: "Failed to refresh token" }, status: :unauthorized

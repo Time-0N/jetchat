@@ -87,7 +87,7 @@ class User < ApplicationRecord
 
   def self.for_discovery(current_user, page: 1, per_page: 10)
     friend_ids = current_user.all_friends.pluck(:id)
-    excluded_ids = friend_ids + [current_user.id]
+    excluded_ids = friend_ids + [ current_user.id ]
 
     where.not(id: excluded_ids)
          .order(created_at: :desc)

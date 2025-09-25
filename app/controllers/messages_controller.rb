@@ -21,7 +21,7 @@ class MessagesController < ApplicationController
       }
     else
       render json: {
-        error: @message.errors.full_messages.first,
+        error: @message.errors.full_messages.first
       }, status: :unprocessable_entity
     end
   end

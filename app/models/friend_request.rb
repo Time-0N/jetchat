@@ -6,7 +6,7 @@ class FriendRequest < ApplicationRecord
   validates :status, inclusion: { in: %w[pending accepted] }
   validates :sender_id, uniqueness: {
     scope: :receiver_id,
-    conditions: -> { where(status: 'pending') },
+    conditions: -> { where(status: "pending") },
     message: "Pending friend request already exists"
   }
   validate :cannot_send_to_self

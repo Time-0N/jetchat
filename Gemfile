@@ -35,7 +35,7 @@ gem "faraday"
 gem "jwt"
 gem "dotenv-rails"
 gem "pundit"
-gem 'kaminari'
+gem "kaminari"
 
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false

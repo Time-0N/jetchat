@@ -21,8 +21,8 @@ class ChatRoomChannel < ApplicationCable::Channel
       begin
         message = chat_room.messages.create!(
           user: current_user,
-          content: data['message'].to_s.strip,
-          message_type: 'text'
+          content: data["message"].to_s.strip,
+          message_type: "text"
         )
 
         Rails.logger.info "Message created successfully: #{message.inspect}"

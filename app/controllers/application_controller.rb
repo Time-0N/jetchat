@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     uri = URI("#{ENV['ZITADEL_ISSUER']}/oauth/v2/token")
 
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = uri.scheme == 'https'
+    http.use_ssl = uri.scheme == "https"
 
     http_request = Net::HTTP::Post.new(uri)
     http_request["Content-Type"] = "application/x-www-form-urlencoded"
