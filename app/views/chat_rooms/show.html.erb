@@ -31,7 +31,7 @@
               <span class="message-time"><%= message.created_at.strftime('%H:%M') %></span>
             </div>
             <div class="message-body">
-              <%= simple_format(message.content) %>
+              <%= simple_format(h(message.content)) %>
             </div>
           </div>
         </div>
@@ -49,7 +49,7 @@
         id="message-input"
         placeholder="Type your message..."
         rows="1"
-        maxlength="2000"></textarea>
+        maxlength="200"></textarea>
       <button type="submit" class="send-btn" id="send-btn">
         <span class="send-icon">→</span>
       </button>
@@ -64,6 +64,14 @@
         const currentUserId = parseInt(chatContainer?.dataset.currentUserId);
 
         if (!chatRoomId) return;
+
+        // Enable fullscreen chat mode
+        document.body.classList.add('chat-fullscreen');
+
+        // Cleanup when page unloads
+        window.addEventListener('beforeunload', function() {
+            document.body.classList.remove('chat-fullscreen');
+        });
 
         // Initialize Action Cable
         const consumer = ActionCable.createConsumer();
@@ -95,6 +103,17 @@
             messagesList.scrollTop = messagesList.scrollHeight;
         }
 
+        // Mark messages as read
+        function markAsRead() {
+            fetch(`/chat_rooms/<%= @chat_room.id %>/mark_as_read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': document.querySelector('[name="csrf-token"]').content
+                }
+            }).catch(error => console.log('Error marking as read:', error));
+        }
+
         // Add message to chat
         function addMessage(data) {
             const messageDiv = document.createElement('div');
@@ -104,15 +123,25 @@
             messageDiv.innerHTML = `
       <div class="message-content">
         <div class="message-header">
-          <span class="sender-name">${data.user.name}</span>
-          <span class="message-time">${data.created_at}</span>
+          <span class="sender-name"></span>
+          <span class="message-time"></span>
         </div>
-        <div class="message-body">${data.content.replace(/\n/g, '<br>')}</div>
+        <div class="message-body"></div>
       </div>
     `;
 
+            // Safely set text content to prevent XSS
+            messageDiv.querySelector('.sender-name').textContent = data.user.name;
+            messageDiv.querySelector('.message-time').textContent = data.created_at;
+            messageDiv.querySelector('.message-body').textContent = data.content.replace(/\n/g, '\n');
+
             messagesList.appendChild(messageDiv);
             scrollToBottom();
+
+            // Mark as read when new messages arrive (if not from current user)
+            if (!isOwnMessage) {
+                markAsRead();
+            }
         }
 
         // Handle user status updates (websocket-based online/offline detection)
