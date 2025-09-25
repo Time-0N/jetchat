@@ -3,7 +3,7 @@ name: Build and Push Docker Image (ARM + x86_64)
 on:
   push:
     branches:
-      - main   # change if you use a different default branch
+      - main
 
 jobs:
   test:
@@ -63,7 +63,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/my-ruby-app:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/jetchat-ruby_on_rails:latest
           platforms: linux/amd64,linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
