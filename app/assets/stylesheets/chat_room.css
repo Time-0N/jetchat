@@ -79,17 +79,25 @@
     font-size: 1.2rem;
 }
 
+/* Disable body scrolling when chat is fullscreen */
+body.chat-fullscreen {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+}
+
 .chat-container {
-    height: calc(100vh - 9rem);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    max-width: 1000px;
-    margin: 0 auto;
-    min-height: 500px;
+    width: 100%;
+    margin: 0;
     background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
     overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .chat-header {

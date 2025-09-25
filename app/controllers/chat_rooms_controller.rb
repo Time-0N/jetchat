@@ -1,5 +1,5 @@
 class ChatRoomsController < ApplicationController
-  before_action :find_chat_room, only: [ :show ]
+  before_action :find_chat_room, only: [ :show, :mark_as_read ]
 
   def index
     @chat_rooms = current_user.chat_rooms
@@ -47,6 +47,18 @@ class ChatRoomsController < ApplicationController
       format.json { render json: { chat_room_id: @chat_room.id, redirect_url: chat_room_path(@chat_room) } }
       format.html { redirect_to @chat_room }
     end
+  end
+
+  def mark_as_read
+    unless @chat_room.users.include?(current_user)
+      render json: { error: "Access denied" }, status: :forbidden
+      return
+    end
+
+    membership = @chat_room.chat_room_memberships.find_by(user: current_user)
+    membership&.update!(last_read_at: Time.current)
+
+    render json: { success: true }
   end
 
   private

@@ -4,17 +4,19 @@ services:
   postgres:
     image: postgres:15
     container_name: jetchat-postgres
+    env_file:
+      - .env.prod
     environment:
-      POSTGRES_DB: modul_223_production
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -24,29 +26,30 @@ services:
   jetchat:
     image: masterbaiter/jetchat-ruby_on_rails:latest
     container_name: jetchat-app
+    env_file:
+      - .env.prod
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      RAILS_ENV: production
-      SERVER_PORT: 5000
-      # Database URL - should override database.yml completely
-      DATABASE_URL: postgres://modul_223:postgres@postgres:5432/modul_223_production
-      # Cache, Queue, and Cable database URLs for Rails multi-database setup
-      CACHE_DATABASE_URL: postgres://modul_223:postgres@postgres:5432/modul_223_production_cache
-      QUEUE_DATABASE_URL: postgres://modul_223:postgres@postgres:5432/modul_223_production_queue
-      CABLE_DATABASE_URL: postgres://modul_223:postgres@postgres:5432/modul_223_production_cable
-      # Database Configuration - matches database.yml production config
-      MODUL_223_DATABASE_PASSWORD: postgres
-      # Zitadel Configuration
-      ZITADEL_ISSUER: https://jetchat-5jjotf.us1.zitadel.cloud
-      ZITADEL_CLIENT_ID: "339386197019301969"
+      RAILS_ENV: ${RAILS_ENV}
+      SERVER_PORT: ${SERVER_PORT}
+      # Database URLs for Rails multi-database setup
+      DATABASE_URL: ${DATABASE_URL}
+      CACHE_DATABASE_URL: ${CACHE_DATABASE_URL}
+      QUEUE_DATABASE_URL: ${QUEUE_DATABASE_URL}
+      CABLE_DATABASE_URL: ${CABLE_DATABASE_URL}
+      # Database Configuration
+      MODUL_223_DATABASE_PASSWORD: ${MODUL_223_DATABASE_PASSWORD}
+      # Zitadel OAuth Configuration
+      ZITADEL_ISSUER: ${ZITADEL_ISSUER}
+      ZITADEL_CLIENT_ID: ${ZITADEL_CLIENT_ID}
       # Rails Configuration
-      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY:-6e7e17f6ae38014e7e10f660e33fea06}
-      RAILS_SERVE_STATIC_FILES: "true"
-      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      RAILS_SERVE_STATIC_FILES: ${RAILS_SERVE_STATIC_FILES}
+      RAILS_LOG_TO_STDOUT: ${RAILS_LOG_TO_STDOUT}
       # Security
-      SECRET_KEY_BASE: ${SECRET_KEY_BASE:-your_secret_key_base}
+      SECRET_KEY_BASE: ${SECRET_KEY_BASE}
     ports:
       - "5000:5000"
     volumes:

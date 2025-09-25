@@ -36,6 +36,9 @@ Rails.application.routes.draw do
 
   resources :chat_rooms, only: [ :index, :show ] do
     resources :messages, only: [ :create ]
+    member do
+      post :mark_as_read
+    end
   end
 
   post "chat_rooms/private/:friend_id", to: "chat_rooms#create_private_chat", as: "create_private_chat"
