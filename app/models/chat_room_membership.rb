@@ -12,6 +12,9 @@ class ChatRoomMembership < ApplicationRecord
   private
 
   def broadcast_unread_count_update
+    # Temporarily disabled due to ActionCable/Solid Cable insert_all issue
+    return
+
     unread_count = user.unread_messages_count
 
     ActionCable.server.broadcast(
