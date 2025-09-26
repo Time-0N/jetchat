@@ -10,7 +10,12 @@
 # Ignore all environment files.
 /.env*
 .env
-/devops/.env*
+/devops/.env.prod
+/devops/.env.dev
+/devops/.env.local
+/devops/.env.staging
+# But keep example files
+!/devops/*.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
