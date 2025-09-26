@@ -38,51 +38,53 @@ A modern real-time chat application built with Ruby on Rails 8, featuring friend
 
 #### Prerequisites
 
-> TODO: Add installation instructions for:
 > - Ruby installation (rbenv/rvm)
 > - PostgreSQL setup
 > - Node.js installation
 > - Environment variable configuration
+> - Run ```docker compose up -d``` in ``/devops``
 
 #### Database Setup
 
-> TODO: Add database setup steps:
-> - Database creation
-> - Migrations
-> - Seed data (if any)
+> - Database creation. Either via. the dev Webview or manuel in psql ```CREATE DATABASE modul_223db;```
+> - Migrations via ```rails db:migrate``` or through the dev webview
 
 #### OAuth Configuration
 
-> TODO: Add OAuth setup instructions:
-> - Zitadel configuration
-> - Environment variables for OAuth
-> - JWT configuration
+> - Zitadel configuration under: ```http://localhost:8080/ui/console?login_hint=zitadel-admin@zitadel.localhost```
+> - Default Password for the zitadel admin is: ```Password1!```
+> - Under ```Project``` create a new project
+> - In the Project create a new application.
+> - Select ```SPA``` and give it a name. 
+> - For the authentication method select: ```PKCE```
+> - For the redirect URLs define: ```http://localhost:{SERVER_PORT}/auth/callback```
+> - For the post logout URL define: ```http://localhost:5000/```
+> - Lastly enable development mode, to allow http
+> - Then create the application and copy the client id. Add it to your local .env file
+> - Also define the URL of the ISSUER, in this case this would be: ```http://localhost:8080```
+> - In your application enable refresh token.
+> - In your application go to ```Token Settings``` and switch to ``JWT``. Then active ``User Info inside ID Token``
+> - Next go to ```Default Settings```
+> - Here go to ```Password Complexity``` and configure it as desired
+> - If you wish to enable user registration: go to ```Login Behavior and Security``` and select ```User Registration allowed```. You also need to define the user policies. This can be done under ```External Links```. Here you need to define: ```Link to Terms of Service``` and ```Link to Privacy Policy```. Just use: ```https://example.com/terms``` and ```https://example.com/privacy``` for dev
 
 #### Running the Application
 
-> TODO: Add startup instructions:
 > - Bundle installation
-> - Asset compilation
-> - Server startup
-> - WebSocket setup verification
+> - Then just run ```rails s```
 
 ### Production Deployment
 
+> - Instructions coming soon: See devops .env.prod.example 
+
 #### Docker Deployment
 
-> TODO: Add Docker deployment steps:
-> - Environment file setup
-> - Docker Compose configuration
-> - SSL/HTTPS setup
-> - Domain configuration
+> - See devops .env.prod.example for environment
+> - Dockerhub image: https://hub.docker.com/r/masterbaiter/jetchat-ruby_on_rails
 
 #### Environment Variables
 
-> TODO: Document required environment variables:
-> - Database configuration
-> - OAuth settings
-> - Action Cable settings
-> - Application secrets
+> - See .env.example
 
 ## 🏗 Architecture
 

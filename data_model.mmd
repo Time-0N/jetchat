@@ -1,0 +1,90 @@
+erDiagram
+    User {
+        bigint id PK
+        string email UK
+        string sub UK "JWT subject identifier"
+        string name
+        string first_name
+        string last_name
+        jsonb metadata "JWT payload data"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    FriendRequest {
+        bigint id PK
+        bigint sender_id FK
+        bigint receiver_id FK
+        string status "pending, accepted"
+        text message "optional message"
+        timestamp responded_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Friendship {
+        bigint id PK
+        bigint user_id FK
+        bigint friend_id FK
+        bigint friend_request_id FK
+        timestamp became_friends_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ChatRoom {
+        bigint id PK
+        string name
+        boolean is_private "default: true"
+        bigint created_by_id FK
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ChatRoomMembership {
+        bigint id PK
+        bigint user_id FK
+        bigint chat_room_id FK
+        timestamp joined_at
+        timestamp last_read_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    Message {
+        bigint id PK
+        bigint user_id FK
+        bigint chat_room_id FK
+        text content
+        string message_type "text, system"
+        json metadata
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% Relationships
+    User ||--o{ FriendRequest : "sends (sender_id)"
+    User ||--o{ FriendRequest : "receives (receiver_id)"
+    User ||--o{ Friendship : "has (user_id)"
+    User ||--o{ Friendship : "friend_of (friend_id)"
+    User ||--o{ ChatRoom : "creates (created_by_id)"
+    User ||--o{ ChatRoomMembership : "member_of"
+    User ||--o{ Message : "sends"
+
+    FriendRequest ||--o{ Friendship : "creates_when_accepted"
+
+    ChatRoom ||--o{ ChatRoomMembership : "has_members"
+    ChatRoom ||--o{ Message : "contains"
+
+    ChatRoomMembership }o--|| ChatRoom : "belongs_to"
+    ChatRoomMembership }o--|| User : "belongs_to"
+
+    Message }o--|| User : "written_by"
+    Message }o--|| ChatRoom : "posted_in"
+
+    %% Key Business Rules
+    %% 1. Friend requests are bidirectional - when accepted, two Friendship records are created
+    %% 2. Chat rooms can be private (1-on-1) or public (group)
+    %% 3. Private chat rooms are automatically created between friends
+    %% 4. Users can only message friends (enforced in application logic)
+    %% 5. Friendship is symmetric - if A is friends with B, then B is friends with A
