@@ -10,7 +10,7 @@
 # Ignore all environment files.
 /.env*
 .env
-/devops/.env.prod
+/devops/.env*
 
 # Ignore all logfiles and tempfiles.
 /log/*
