@@ -16,6 +16,7 @@
 /devops/.env.staging
 # But keep example files
 !/devops/*.example
+!.env.example
 
 # Ignore all logfiles and tempfiles.
 /log/*
