@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(error => {
                     console.error('Search error:', error);
+                    showError('Search failed. Please try again.');
                 });
         });
     }
@@ -151,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Load more error:', error);
                     loadMoreBtn.disabled = false;
                     loadMoreBtn.textContent = 'Load More';
+                    showError('Failed to load more users. Please try again.');
                 });
         });
     }
@@ -221,17 +223,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     button.textContent = 'Request Sent';
                     button.className = 'btn btn-warning';
                     button.disabled = true;
+                    showSuccess('Friend request sent successfully!');
                 } else {
                     button.textContent = 'Add Friend';
                     button.disabled = false;
-                    alert(data.message || 'Failed to send friend request');
+                    showError(data.message || 'Failed to send friend request');
                 }
             })
             .catch(error => {
                 console.error('Friend request error:', error);
                 button.textContent = 'Add Friend';
                 button.disabled = false;
-                alert('Failed to send friend request');
+                showError('Failed to send friend request. Please try again.');
             });
     }
 });

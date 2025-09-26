@@ -16,6 +16,7 @@
 @import url("friends_discover.css");
 @import url("friend_requests.css");
 @import url("chat_room.css");
+@import url("notifications.css");
 
 /* Global Base Styles */
 * {

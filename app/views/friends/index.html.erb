@@ -83,20 +83,21 @@
         .then(response => response.json())
         .then(data => {
           if (data.redirect_url) {
+            showSuccess('Opening chat...');
             window.location.href = data.redirect_url;
           } else if (data.error) {
-            alert(data.error);
+            showError(data.error);
           }
         })
         .catch(error => {
           console.error('Error starting chat:', error);
-          alert('Failed to start chat. Please try again.');
+          showError('Failed to start chat. Please try again.');
         });
     }
 
     function viewProfile(friendId) {
       // TODO: Implement profile view
-      alert('Profile view coming soon!');
+      showInfo('Profile view coming soon!');
     }
 
     function unfriendUser(friendId) {
@@ -128,14 +129,14 @@
               friendCountElement.textContent = `You have ${currentCount - 1} friends`;
             }
 
-            alert('Friend removed successfully');
+            showSuccess('Friend removed successfully');
           } else {
-            alert(data.message || 'Failed to remove friend');
+            showError(data.message || 'Failed to remove friend');
           }
         })
         .catch(error => {
           console.error('Error removing friend:', error);
-          alert('Failed to remove friend. Please try again.');
+          showError('Failed to remove friend. Please try again.');
         });
     }
   });

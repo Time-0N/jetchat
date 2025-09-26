@@ -1,0 +1,200 @@
+/* Notification System Styles */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+}
+
+.notification {
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1.4;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transform: translateX(420px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    pointer-events: auto;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.notification.show {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.notification.hide {
+    transform: translateX(420px);
+    opacity: 0;
+}
+
+/* Notification Types */
+.notification.success {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #f56565, #e53e3e);
+    color: white;
+}
+
+.notification.warning {
+    background: linear-gradient(135deg, #ed8936, #dd6b20);
+    color: white;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+}
+
+/* Progress Bar */
+.notification::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    animation: notification-timer var(--duration, 4s) linear forwards;
+}
+
+.notification.success::before {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.notification.error::before {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.notification.warning::before {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.notification.info::before {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+@keyframes notification-timer {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* Close Button */
+.notification-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.notification-close:hover {
+    color: white;
+}
+
+/* Notification Content */
+.notification-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding-right: 20px;
+}
+
+.notification-icon {
+    font-size: 18px;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+.notification-message {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+.notification-text {
+    opacity: 0.95;
+    font-size: 13px;
+}
+
+/* Icons for different types */
+.notification.success .notification-icon::before {
+    content: '✅';
+}
+
+.notification.error .notification-icon::before {
+    content: '❌';
+}
+
+.notification.warning .notification-icon::before {
+    content: '⚠️';
+}
+
+.notification.info .notification-icon::before {
+    content: 'ℹ️';
+}
+
+/* Hover Effects */
+.notification:hover {
+    transform: translateX(-5px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.notification:hover::before {
+    animation-play-state: paused;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    #notification-container {
+        top: 10px;
+        right: 10px;
+        left: 10px;
+        max-width: none;
+    }
+
+    .notification {
+        transform: translateY(-100px);
+    }
+
+    .notification.show {
+        transform: translateY(0);
+    }
+
+    .notification.hide {
+        transform: translateY(-100px);
+    }
+
+    .notification:hover {
+        transform: translateY(-2px) scale(1.01);
+    }
+}
+
+/* Stack animations */
+.notification:nth-child(1) { animation-delay: 0s; }
+.notification:nth-child(2) { animation-delay: 0.1s; }
+.notification:nth-child(3) { animation-delay: 0.2s; }
+.notification:nth-child(4) { animation-delay: 0.3s; }
+.notification:nth-child(5) { animation-delay: 0.4s; }

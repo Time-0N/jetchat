@@ -25,6 +25,14 @@
   </head>
 
   <body>
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Flash Messages for Notification System -->
+    <% flash.each do |type, message| %>
+      <div data-flash-message data-flash-type="<%= type == 'notice' ? 'success' : type == 'alert' ? 'error' : type %>" style="display: none;"><%= message %></div>
+    <% end %>
+
     <% unless controller_name == 'home' && action_name == 'index' %>
       <header class="app-header">
         <div class="header-content">
@@ -76,6 +84,151 @@
     <% else %>
       <%= yield %>
     <% end %>
+
+    <!-- Notification System - Available immediately -->
+    <script>
+      // Notification System Class
+      class NotificationSystem {
+          constructor() {
+              this.container = document.getElementById('notification-container') || this.createContainer();
+              this.notifications = new Map();
+              this.maxNotifications = 5;
+              this.defaultDuration = 4000;
+          }
+
+          createContainer() {
+              const container = document.createElement('div');
+              container.id = 'notification-container';
+              if (document.body) {
+                  document.body.appendChild(container);
+              }
+              return container;
+          }
+
+          show(message, type = 'info', options = {}) {
+              const config = {
+                  title: options.title || this.getDefaultTitle(type),
+                  message: message,
+                  type: type,
+                  duration: options.duration || this.defaultDuration,
+                  closable: options.closable !== false,
+                  id: options.id || this.generateId()
+              };
+
+              if (this.notifications.has(config.id)) {
+                  this.hide(config.id);
+              }
+
+              if (this.notifications.size >= this.maxNotifications) {
+                  const oldestId = this.notifications.keys().next().value;
+                  this.hide(oldestId);
+              }
+
+              const notification = this.createElement(config);
+              this.container.appendChild(notification);
+              this.notifications.set(config.id, notification);
+
+              requestAnimationFrame(() => {
+                  notification.classList.add('show');
+              });
+
+              if (config.duration > 0) {
+                  setTimeout(() => {
+                      this.hide(config.id);
+                  }, config.duration);
+              }
+
+              return config.id;
+          }
+
+          success(message, options = {}) { return this.show(message, 'success', options); }
+          error(message, options = {}) { return this.show(message, 'error', { duration: 6000, ...options }); }
+          warning(message, options = {}) { return this.show(message, 'warning', { duration: 5000, ...options }); }
+          info(message, options = {}) { return this.show(message, 'info', options); }
+
+          hide(id) {
+              if (!this.notifications.has(id)) return;
+              const notification = this.notifications.get(id);
+              notification.classList.remove('show');
+              notification.classList.add('hide');
+              setTimeout(() => {
+                  if (notification.parentNode) {
+                      notification.parentNode.removeChild(notification);
+                  }
+                  this.notifications.delete(id);
+              }, 300);
+          }
+
+          createElement(config) {
+              const notification = document.createElement('div');
+              notification.className = `notification ${config.type}`;
+              notification.style.setProperty('--duration', `${config.duration}ms`);
+
+              notification.innerHTML = `
+                  <div class="notification-content">
+                      <div class="notification-icon"></div>
+                      <div class="notification-message">
+                          <div class="notification-title">${this.escapeHtml(config.title)}</div>
+                          <div class="notification-text">${this.escapeHtml(config.message)}</div>
+                      </div>
+                  </div>
+                  ${config.closable ? '<button class="notification-close" aria-label="Close">&times;</button>' : ''}
+              `;
+
+              if (config.closable) {
+                  const closeBtn = notification.querySelector('.notification-close');
+                  closeBtn.addEventListener('click', (e) => {
+                      e.stopPropagation();
+                      this.hide(config.id);
+                  });
+              }
+
+              notification.addEventListener('click', () => {
+                  this.hide(config.id);
+              });
+
+              return notification;
+          }
+
+          getDefaultTitle(type) {
+              const titles = { success: 'Success!', error: 'Error', warning: 'Warning', info: 'Info' };
+              return titles[type] || 'Notification';
+          }
+
+          generateId() {
+              return `notification-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          }
+
+          escapeHtml(text) {
+              const div = document.createElement('div');
+              div.textContent = text;
+              return div.innerHTML;
+          }
+      }
+
+      // Initialize immediately - available everywhere
+      window.notifications = new NotificationSystem();
+
+      // Global helper functions - available immediately
+      window.showNotification = (message, type, options) => window.notifications.show(message, type, options);
+      window.showSuccess = (message, options) => window.notifications.success(message, options);
+      window.showError = (message, options) => window.notifications.error(message, options);
+      window.showWarning = (message, options) => window.notifications.warning(message, options);
+      window.showInfo = (message, options) => window.notifications.info(message, options);
+
+      // Handle Rails flash messages when DOM is ready
+      document.addEventListener('DOMContentLoaded', function() {
+          const flashMessages = document.querySelectorAll('[data-flash-message]');
+          flashMessages.forEach(flash => {
+              const message = flash.textContent.trim();
+              const type = flash.dataset.flashType || 'info';
+              if (message) {
+                  window.notifications.show(message, type);
+              }
+              flash.remove();
+          });
+      });
+    </script>
 
     <%= javascript_importmap_tags %>
 
