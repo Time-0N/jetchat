@@ -12,12 +12,6 @@ Rails.application.routes.draw do
     get "/", to: "dashboard#index", as: :dashboard
   end
 
-
-  namespace :api do
-    get "/me", to: "users#me"
-    resources :resources
-  end
-
   resources :friends, only: [ :index ] do
     collection do
       get :discover
